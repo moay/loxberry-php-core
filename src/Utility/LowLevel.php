@@ -28,4 +28,28 @@ class LowLevel
     {
         return posix_getpwuid(posix_getpwnam($userName));
     }
+
+    /**
+     * @param string $message
+     *
+     * @return bool
+     */
+    public function errorLog(string $message): bool
+    {
+        return error_log($message);
+    }
+
+    /**
+     * Enables static access to low level methods. Use only if injection is not possible.
+     *
+     * @param $name
+     * @param $arguments
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        $instance = new LowLevel();
+        if (method_exists($instance, $name)) {
+            call_user_func_array([$instance, $name], $arguments);
+        }
+    }
 }

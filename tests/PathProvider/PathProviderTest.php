@@ -21,6 +21,8 @@ class PathProviderTest extends TestCase
             ->willReturn(null);
         $lowLevelMock->method('getEnvironmentVariable')
             ->willReturn(null);
+        $lowLevelMock->method('errorLog')
+            ->willReturn(true);
 
         $pathProvider = new PathProvider($lowLevelMock);
         $this->assertEquals($expectedDirectory, $pathProvider->getPath($pathName));
@@ -30,7 +32,23 @@ class PathProviderTest extends TestCase
     {
         return [
             ['LBHOMEDIR', '/opt/loxberry'],
+            ['LOG_DATABASE_FILE', '/opt/loxberry/log/system_tmpfs/logs_sqlite.dat']
         ];
+    }
+
+    public function testThrowsExceptionIfUnkownPathRequested()
+    {
+        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock->method('getUserInfo')
+            ->willReturn(null);
+        $lowLevelMock->method('getEnvironmentVariable')
+            ->willReturn(null);
+        $lowLevelMock->method('errorLog')
+            ->willReturn(true);
+
+        $pathProvider = new PathProvider($lowLevelMock);
+        $this->expectException(\InvalidArgumentException::class);
+        $pathProvider->getPath('UNKNOWN');
     }
 
     public function testHomeDirCanBeSetViaEnvironmentVariable()
@@ -57,5 +75,21 @@ class PathProviderTest extends TestCase
         $this->assertEquals('TestPath2', $pathProvider->getPath('LBHOMEDIR'));
     }
 
-    // Todo: Test env variable and user info mapping for LBHOMEDIR as well as logging
+    public function testFallingBackToBasePathWillBeLogged()
+    {
+        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock->method('getUserInfo')
+            ->willReturn(null);
+        $lowLevelMock->method('getEnvironmentVariable')
+            ->willReturn(null);
+        $lowLevelMock->method('errorLog')
+            ->willReturn(true)
+            ->willThrowException(new \Exception('Testing the logger'));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Testing the logger');
+
+        $pathProvider = new PathProvider($lowLevelMock);
+        $this->assertEquals('TestPath', $pathProvider->getPath('LBHOMEDIR'));
+    }
 }
