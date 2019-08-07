@@ -25,5 +25,20 @@ class LogFileDatabase
     private function initializeDatabase()
     {
         $this->database->query('PRAGMA journal_mode = wal;');
+        $this->database->create('logs', [
+            'LOGKEY' => ['INT', 'NOT NULL', 'PRIMARY KEY'],
+            'PACKAGE' => ['VARCHAR(255)', 'NOT NULL'],
+            'NAME' => ['VARCHAR(255)', 'NOT NULL'],
+            'FILENAME' => ['VARCHAR(255)', 'NOT NULL'],
+            'LOGSTART' => ['DATETIME'],
+            'LOGEND' => ['DATETIME'],
+            'LASTMODIFIED' => ['DATETIME', 'NOT NULL']
+        ]);
+        $this->database->create('logs_attr', [
+            'keyref' => ['INT', 'NOT NULL'],
+            'attrib' => ['VARCHAR(255)', 'NOT NULL'],
+            'value' => ['VARCHAR(255)'],
+            'PRIMARY KEY (<keyref>, <attrib>)'
+        ]);
     }
 }

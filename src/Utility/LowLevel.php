@@ -9,6 +9,8 @@ namespace LoxBerry\Utility;
  */
 class LowLevel
 {
+    const USERNAME = 'loxberry';
+
     /**
      * @param string $name
      *
@@ -16,7 +18,30 @@ class LowLevel
      */
     public function getEnvironmentVariable(string $name)
     {
-        return getenv($name);
+        return $this->execLowLevelFunction('getenv', $name);
+    }
+
+    /**
+     * @param string $file
+     *
+     * @return string
+     */
+    public function getFileOwner(string $file): string
+    {
+        $fileOwner = $this->execLowLevelFunction('fileowner', $file);
+
+        return $this->execLowLevelFunction('posix_getpwuid', $fileOwner)['name'];
+    }
+
+    /**
+     * @param string $file
+     * @param string $userName
+     *
+     * @return bool
+     */
+    public function setFileOwner(string $file, string $userName): bool
+    {
+        return $this->execLowLevelFunction('chown', [$file, $userName]);
     }
 
     /**
@@ -26,7 +51,9 @@ class LowLevel
      */
     public function getUserInfo(string $userName)
     {
-        return posix_getpwuid(posix_getpwnam($userName));
+        $userInfo = $this->execLowLevelFunction('posix_getpwnam', $userName);
+
+        return $this->execLowLevelFunction('posix_getpwuid', $userInfo);
     }
 
     /**
@@ -36,20 +63,48 @@ class LowLevel
      */
     public function errorLog(string $message): bool
     {
-        return error_log($message);
+        return $this->execLowLevelFunction('error_log', $message);
+    }
+
+    /**
+     * @param string $functionName
+     * @param $arguments
+     *
+     * @return mixed
+     */
+    public function execLowLevelFunction(string $functionName, $arguments)
+    {
+        if (!function_exists($functionName)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Cannot call low level function %s',
+                $functionName
+            ));
+        }
+
+        if (!is_array($arguments)) {
+            return call_user_func($functionName, $arguments);
+        }
+
+        return call_user_func_array($functionName, $arguments);
     }
 
     /**
      * Enables static access to low level methods. Use only if injection is not possible.
      *
-     * @param $name
+     * @param string $name
      * @param $arguments
+     *
+     * @return mixed
      */
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, $arguments)
     {
         $instance = new LowLevel();
         if (method_exists($instance, $name)) {
-            call_user_func_array([$instance, $name], $arguments);
+            if (!is_array($arguments)) {
+                return call_user_func([$instance, $name], $arguments);
+            }
+
+            return call_user_func_array([$instance, $name], $arguments);
         }
     }
 }
