@@ -3,7 +3,7 @@
 namespace LoxBerry\System;
 
 use LoxBerry\Exceptions\PathProviderException;
-use LoxBerry\Utility\LowLevel;
+use LoxBerry\Utility\LowLevelExecutor;
 
 /**
  * Class PathProvider.
@@ -17,15 +17,15 @@ class PathProvider
         Paths::PATH_LOG_DATABASE_FILE,
     ];
 
-    /** @var LowLevel */
+    /** @var LowLevelExecutor */
     private $lowLevel;
 
     /**
      * PathProvider constructor.
      *
-     * @param LowLevel $lowLevel
+     * @param LowLevelExecutor $lowLevel
      */
-    public function __construct(LowLevel $lowLevel)
+    public function __construct(LowLevelExecutor $lowLevel)
     {
         $this->lowLevel = $lowLevel;
     }

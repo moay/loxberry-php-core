@@ -2,17 +2,17 @@
 
 namespace LoxBerry\Tests\Utility;
 
-use LoxBerry\Utility\LowLevel;
+use LoxBerry\Utility\LowLevelExecutor;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class LowLevelTest.
  */
-class LowLevelTest extends TestCase
+class LowLevelExecutorTest extends TestCase
 {
     public function testEnvironmentVariablesAreFetchedFromEnv()
     {
-        $lowLevel = $this->createPartialMock(LowLevel::class, ['execLowLevelFunction']);
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
         $lowLevel
             ->expects($this->once())
             ->method('execLowLevelFunction')
@@ -24,7 +24,7 @@ class LowLevelTest extends TestCase
 
     public function testUserInfoIsProperlyRead()
     {
-        $lowLevel = $this->createPartialMock(LowLevel::class, ['execLowLevelFunction']);
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
         $lowLevel
             ->expects($this->at(0))
             ->method('execLowLevelFunction')
@@ -41,7 +41,7 @@ class LowLevelTest extends TestCase
 
     public function testErrorLogIsPassed()
     {
-        $lowLevel = $this->createPartialMock(LowLevel::class, ['execLowLevelFunction']);
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
         $lowLevel
             ->expects($this->once())
             ->method('execLowLevelFunction')
@@ -54,7 +54,7 @@ class LowLevelTest extends TestCase
 
     public function testFileOwnerIsProperlyRead()
     {
-        $lowLevel = $this->createPartialMock(LowLevel::class, ['execLowLevelFunction']);
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
         $lowLevel
             ->expects($this->at(0))
             ->method('execLowLevelFunction')
@@ -71,7 +71,7 @@ class LowLevelTest extends TestCase
 
     public function testFileOwnerCanBeSet()
     {
-        $lowLevel = $this->createPartialMock(LowLevel::class, ['execLowLevelFunction']);
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
         $lowLevel
             ->expects($this->once())
             ->method('execLowLevelFunction')

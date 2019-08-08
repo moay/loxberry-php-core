@@ -4,7 +4,7 @@ namespace LoxBerry\Logging;
 
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\Paths;
-use LoxBerry\Utility\LowLevel;
+use LoxBerry\Utility\LowLevelExecutor;
 use Medoo\Medoo;
 
 /**
@@ -15,16 +15,24 @@ class LogFileDatabaseFactory
     /** @var PathProvider */
     private $pathProvider;
 
+    /** @var LowLevelExecutor */
+    private $lowLevel;
+
     /**
      * LogFileDatabaseFactory constructor.
+     *
      * @param PathProvider $pathProvider
+     * @param LowLevelExecutor $lowLevel
      */
-    public function __construct(PathProvider $pathProvider, LowLevel $lowLevel)
+    public function __construct(PathProvider $pathProvider, LowLevelExecutor $lowLevel)
     {
         $this->pathProvider = $pathProvider;
+        $this->lowLevel = $lowLevel;
     }
 
     /**
+     * @param bool $forceRecreate
+     *
      * @return LogFileDatabase
      */
     public function create(bool $forceRecreate = false): LogFileDatabase
@@ -35,8 +43,8 @@ class LogFileDatabaseFactory
             unlink($databaseFilePath);
         }
 
-        if (LowLevel::USERNAME !== LowLevel::getFileOwner($databaseFilePath)) {
-            LowLevel::changeFileOwner($databaseFilePath, LowLevel::USERNAME);
+        if (LowLevelExecutor::USERNAME !== $this->lowLevel->getFileOwner($databaseFilePath)) {
+            $this->lowLevel->setFileOwner($databaseFilePath, LowLevelExecutor::USERNAME);
         }
 
         $database = new Medoo([

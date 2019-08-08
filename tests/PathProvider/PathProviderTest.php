@@ -3,7 +3,7 @@
 namespace LoxBerry\Tests\PathProvider;
 
 use LoxBerry\System\PathProvider;
-use LoxBerry\Utility\LowLevel;
+use LoxBerry\Utility\LowLevelExecutor;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,7 +16,7 @@ class PathProviderTest extends TestCase
      */
     public function testDirectoriesAreProvidedCorrectly($pathName, $expectedDirectory)
     {
-        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $lowLevelMock->method('getUserInfo')
             ->willReturn(null);
         $lowLevelMock->method('getEnvironmentVariable')
@@ -38,7 +38,7 @@ class PathProviderTest extends TestCase
 
     public function testThrowsExceptionIfUnkownPathRequested()
     {
-        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $lowLevelMock->method('getUserInfo')
             ->willReturn(null);
         $lowLevelMock->method('getEnvironmentVariable')
@@ -53,7 +53,7 @@ class PathProviderTest extends TestCase
 
     public function testHomeDirCanBeSetViaEnvironmentVariable()
     {
-        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $lowLevelMock->method('getEnvironmentVariable')
             ->willReturn('TestPath');
         $lowLevelMock->method('getUserInfo')
@@ -65,7 +65,7 @@ class PathProviderTest extends TestCase
 
     public function testHomeDirWillBeLoadedFromSystemUser()
     {
-        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $lowLevelMock->method('getEnvironmentVariable')
             ->willReturn(null);
         $lowLevelMock->method('getUserInfo')
@@ -77,7 +77,7 @@ class PathProviderTest extends TestCase
 
     public function testFallingBackToBasePathWillBeLogged()
     {
-        $lowLevelMock = $this->createMock(LowLevel::class);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $lowLevelMock->method('getUserInfo')
             ->willReturn(null);
         $lowLevelMock->method('getEnvironmentVariable')
