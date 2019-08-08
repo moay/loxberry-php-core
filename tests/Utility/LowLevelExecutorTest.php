@@ -79,4 +79,19 @@ class LowLevelExecutorTest extends TestCase
 
         $this->assertEquals(true, $lowLevel->setFileOwner('test', 'owner'));
     }
+
+    public function testLowLevelExecutionRunsNativeFunctions()
+    {
+        $lowLevel = new LowLevelExecutor();
+        $this->assertEquals('TEST', $lowLevel->execLowLevelFunction('strtoupper', 'test'));
+        $this->assertEquals(36, $lowLevel->execLowLevelFunction('pow', [6, 2]));
+        $this->assertEquals('foo,bar', $lowLevel->execLowLevelFunction('implode', [',', ['foo', 'bar']]));
+    }
+
+    public function testStaticAccessToMethodsWorksProperly()
+    {
+        $this->assertEquals('TEST', LowLevelExecutor::execLowLevelFunction('strtoupper', 'test'));
+        $this->assertEquals(36, LowLevelExecutor::execLowLevelFunction('pow', [6, 2]));
+        $this->assertEquals('foo,bar', LowLevelExecutor::execLowLevelFunction('implode', [',', ['foo', 'bar']]));
+    }
 }
