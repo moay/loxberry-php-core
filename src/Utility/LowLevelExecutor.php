@@ -3,7 +3,7 @@
 namespace LoxBerry\Utility;
 
 /**
- * Class class LowLevelExecutor
+ * Class class LowLevelExecutor.
  *
  * Helper class to allow proper testing of the library without regard for low level issues
  */
@@ -98,7 +98,7 @@ class LowLevelExecutor
      */
     public static function __callStatic(string $name, $arguments)
     {
-        $instance = new LowLevelExecutor();
+        $instance = new self();
         if (method_exists($instance, $name)) {
             if (!is_array($arguments)) {
                 return call_user_func([$instance, $name], $arguments);

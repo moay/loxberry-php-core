@@ -7,5 +7,4 @@ namespace LoxBerry\Tests\ConfigurationParser;
  */
 class SystemConfigurationParserTest
 {
-
 }

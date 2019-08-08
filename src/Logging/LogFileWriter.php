@@ -7,5 +7,4 @@ namespace LoxBerry\Logging;
  */
 class LogFileWriter
 {
-
 }

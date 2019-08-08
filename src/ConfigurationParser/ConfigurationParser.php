@@ -14,6 +14,7 @@ class ConfigurationParser
 
     /**
      * ConfigurationParser constructor.
+     *
      * @param string $fileName
      */
     public function __construct(string $fileName)
@@ -54,7 +55,7 @@ class ConfigurationParser
     }
 
     /**
-     * @param string $section
+     * @param string      $section
      * @param string|null $key
      *
      * @return bool

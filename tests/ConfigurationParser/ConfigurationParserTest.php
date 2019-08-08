@@ -11,17 +11,18 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigurationParserTest extends TestCase
 {
-    const TEST_CONFIG_FILE = __DIR__ . '/example_configuration.cfg';
+    const TEST_CONFIG_FILE = __DIR__.'/example_configuration.cfg';
 
     protected function setUp(): void
     {
-        file_put_contents(self::TEST_CONFIG_FILE,
-            '[TEST1]' . "\n"
-            . 'test = \'test\'' . "\n"
-            . 'test2 = \'test2\'' . "\n"
-            . "\n"
-            . '[TEST3]' . "\n"
-            . 'test4 = \'test4\'' . "\n"
+        file_put_contents(
+            self::TEST_CONFIG_FILE,
+            '[TEST1]'."\n"
+            .'test = \'test\''."\n"
+            .'test2 = \'test2\''."\n"
+            ."\n"
+            .'[TEST3]'."\n"
+            .'test4 = \'test4\''."\n"
         );
     }
 
@@ -72,5 +73,4 @@ class ConfigurationParserTest extends TestCase
     {
         unlink(self::TEST_CONFIG_FILE);
     }
-
 }

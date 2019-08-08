@@ -7,5 +7,4 @@ namespace LoxBerry\Exceptions;
  */
 class PathProviderException extends \InvalidArgumentException
 {
-
 }

@@ -21,7 +21,7 @@ class LogFileDatabaseFactory
     /**
      * LogFileDatabaseFactory constructor.
      *
-     * @param PathProvider $pathProvider
+     * @param PathProvider     $pathProvider
      * @param LowLevelExecutor $lowLevel
      */
     public function __construct(PathProvider $pathProvider, LowLevelExecutor $lowLevel)

@@ -32,6 +32,7 @@ class PathProvider
 
     /**
      * @param string $pathName
+     *
      * @return string
      */
     public function getPath(string $pathName): string
@@ -56,8 +57,8 @@ class PathProvider
      */
     private function getLoxBerryHomePath(): string
     {
-        $environmentPath = $this->lowLevel->getEnvironmentVariable("LBHOMEDIR");
-        if(is_string($environmentPath)) {
+        $environmentPath = $this->lowLevel->getEnvironmentVariable('LBHOMEDIR');
+        if (is_string($environmentPath)) {
             return $environmentPath;
         }
 
@@ -79,6 +80,6 @@ class PathProvider
      */
     private function getCombined(string $path, string $fileName): string
     {
-        return rtrim($path,'/').$fileName;
+        return rtrim($path, '/').$fileName;
     }
 }

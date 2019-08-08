@@ -51,7 +51,6 @@ class LowLevelExecutorTest extends TestCase
         $this->assertEquals(false, $lowLevel->errorLog('test'));
     }
 
-
     public function testFileOwnerIsProperlyRead()
     {
         $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);

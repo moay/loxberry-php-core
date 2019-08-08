@@ -29,7 +29,7 @@ class LogFileDatabaseTest extends TestCase
                 'FILENAME' => ['VARCHAR(255)', 'NOT NULL'],
                 'LOGSTART' => ['DATETIME'],
                 'LOGEND' => ['DATETIME'],
-                'LASTMODIFIED' => ['DATETIME', 'NOT NULL']
+                'LASTMODIFIED' => ['DATETIME', 'NOT NULL'],
             ])
             ->willReturn(true);
         $medooMock->expects($this->at(2))
@@ -38,7 +38,7 @@ class LogFileDatabaseTest extends TestCase
                 'keyref' => ['INT', 'NOT NULL'],
                 'attrib' => ['VARCHAR(255)', 'NOT NULL'],
                 'value' => ['VARCHAR(255)'],
-                'PRIMARY KEY (<keyref>, <attrib>)'
+                'PRIMARY KEY (<keyref>, <attrib>)',
             ])
             ->willReturn(true);
 

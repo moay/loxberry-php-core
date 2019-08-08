@@ -26,12 +26,12 @@
       ->setRiskyAllowed(true)
 
       ->setFinder(
-        PhpCsFixer\Finder::create()
+          PhpCsFixer\Finder::create()
           ->in([
             __DIR__.'/src',
             __DIR__.'/tests',
           ])
         ->append([
-          __FILE__
+          __FILE__,
         ])
       );
