@@ -87,24 +87,4 @@ class LowLevelExecutor
 
         return call_user_func_array($functionName, $arguments);
     }
-
-    /**
-     * Enables static access to low level methods. Use only if injection is not possible.
-     *
-     * @param string $name
-     * @param $arguments
-     *
-     * @return mixed
-     */
-    public static function __callStatic(string $name, $arguments)
-    {
-        $instance = new self();
-        if (method_exists($instance, $name)) {
-            if (!is_array($arguments)) {
-                return call_user_func([$instance, $name], $arguments);
-            }
-
-            return call_user_func_array([$instance, $name], $arguments);
-        }
-    }
 }

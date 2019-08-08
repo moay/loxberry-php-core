@@ -49,7 +49,7 @@ class LogFileDatabaseFactory
 
         $database = new Medoo([
             'database_type' => 'sqlite',
-            'database_file' => $this->pathProvider->getPath(Paths::PATH_LOG_DATABASE_FILE),
+            'database_file' => $databaseFilePath,
         ]);
 
         return new LogFileDatabase($database);
