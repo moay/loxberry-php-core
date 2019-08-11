@@ -1,6 +1,6 @@
 <?php
 
-namespace LoxBerry\Logging;
+namespace LoxBerry\Logging\Database;
 
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\Paths;

@@ -1,9 +1,9 @@
 <?php
 
-namespace LoxBerry\Tests\Logging;
+namespace LoxBerry\Tests\Logging\Database;
 
-use LoxBerry\Logging\LogFileDatabase;
-use LoxBerry\Logging\LogFileDatabaseFactory;
+use LoxBerry\Logging\Database\LogFileDatabase;
+use LoxBerry\Logging\Database\LogFileDatabaseFactory;
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\Paths;
 use LoxBerry\Utility\LowLevelExecutor;

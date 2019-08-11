@@ -5,4 +5,4 @@
 # loxberry-system-php
 The LoxBerry system library for PHP interactions.
 
-Work in progress.
+Work in progress. Currently porting functionality to the library. Not ready for anything.

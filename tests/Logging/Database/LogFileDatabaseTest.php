@@ -1,8 +1,8 @@
 <?php
 
-namespace LoxBerry\Tests\Logging;
+namespace LoxBerry\Tests\Logging\Database;
 
-use LoxBerry\Logging\LogFileDatabase;
+use LoxBerry\Logging\Database\LogFileDatabase;
 use Medoo\Medoo;
 use PHPUnit\Framework\TestCase;
 

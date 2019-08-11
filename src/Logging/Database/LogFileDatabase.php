@@ -1,6 +1,6 @@
 <?php
 
-namespace LoxBerry\Logging;
+namespace LoxBerry\Logging\Database;
 
 use Medoo\Medoo;
 
@@ -41,5 +41,15 @@ class LogFileDatabase
             'value' => ['VARCHAR(255)'],
             'PRIMARY KEY (<keyref>, <attrib>)',
         ]);
+    }
+
+    public function logStart()
+    {
+        // Todo: Test & Implement start of logging with attributes, register shutdown to logEnd
+    }
+
+    public function logEnd()
+    {
+        // Todo: Test & Implement start of logging with attributes
     }
 }

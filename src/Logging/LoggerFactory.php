@@ -1,0 +1,57 @@
+<?php
+
+namespace LoxBerry\Logging;
+
+use LoxBerry\Logging\Database\LogFileDatabaseFactory;
+use LoxBerry\Logging\Writer\LogSystemWriter;
+use LoxBerry\System\PathProvider;
+
+/**
+ * Class LoggerFactory.
+ */
+class LoggerFactory
+{
+    /** @var LogFileDatabaseFactory */
+    private $databaseFactory;
+
+    /** @var LogSystemWriter */
+    private $systemWriter;
+
+    /** @var PathProvider */
+    private $pathProvider;
+
+    /**
+     * LoggerFactory constructor.
+     *
+     * @param LogFileDatabaseFactory $databaseFactory
+     * @param LogSystemWriter        $systemWriter
+     * @param PathProvider           $pathProvider
+     */
+    public function __construct(
+        LogFileDatabaseFactory $databaseFactory,
+        LogSystemWriter $systemWriter,
+        PathProvider $pathProvider
+    ) {
+        $this->databaseFactory = $databaseFactory;
+        $this->systemWriter = $systemWriter;
+        $this->pathProvider = $pathProvider;
+    }
+
+    /**
+     * @param string $packageName
+     * @param bool   $writeToFile
+     * @param bool   $writeToStdErr
+     * @param bool   $writeToStdOut
+     *
+     * @return Logger
+     */
+    public function create(
+        string $logName,
+        string $packageName,
+        bool $writeToFile = true,
+        bool $writeToStdErr = false,
+        bool $writeToStdOut = false
+    ): Logger {
+        // Todo: Test, Initialize Logger with database, if needed initialize with fileInitializer, pass filewriter and system writer
+    }
+}
