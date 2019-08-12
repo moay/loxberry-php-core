@@ -2,6 +2,7 @@
 
 namespace LoxBerry\Tests\Logging\Database;
 
+use LoxBerry\Exceptions\LogFileDatabaseException;
 use LoxBerry\Logging\Database\LogFileDatabase;
 use Medoo\Medoo;
 use PHPUnit\Framework\TestCase;
@@ -43,5 +44,61 @@ class LogFileDatabaseTest extends TestCase
             ->willReturn(true);
 
         $database = new LogFileDatabase($medooMock);
+    }
+
+    public function testGetsUnclosedSessionsProperly()
+    {
+        $medooMock = $this->getMockBuilder(Medoo::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $medooMock->expects($this->once())
+            ->method('select')
+            ->with('PACKAGE', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
+            ->willReturn([[
+                'PACKAGE' => 'test',
+                'NAME' => 'test',
+                'FILENAME' => 'test',
+                'LOGSTART' => '2000-01-01 00:00:00',
+            ]]);
+
+        $logFileDatabase = $this->getMockBuilder(LogFileDatabase::class)
+            ->setConstructorArgs([$medooMock])
+            ->onlyMethods(['initializeDatabase'])
+            ->getMock();
+
+        $reflection = new \ReflectionClass(LogFileDatabase::class);
+        $reflection_property = $reflection->getProperty('database');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($logFileDatabase, $medooMock);
+
+        $session = $logFileDatabase->getUnclosedLogSessionByKey('test');
+        $this->assertEquals('test', $session['FILENAME']);
+        $this->assertEquals('2000-01-01 00:00:00', $session['LOGSTART']);
+    }
+
+    public function testThrowsExceptionIfSessionWasNotRecreatable()
+    {
+        $medooMock = $this->getMockBuilder(Medoo::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $medooMock->expects($this->once())
+            ->method('select')
+            ->with('PACKAGE', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
+            ->willReturn([]);
+
+        $logFileDatabase = $this->getMockBuilder(LogFileDatabase::class)
+            ->setConstructorArgs([$medooMock])
+            ->onlyMethods(['initializeDatabase'])
+            ->getMock();
+
+        $reflection = new \ReflectionClass(LogFileDatabase::class);
+        $reflection_property = $reflection->getProperty('database');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($logFileDatabase, $medooMock);
+
+        $this->expectException(LogFileDatabaseException::class);
+        $logFileDatabase->getUnclosedLogSessionByKey('test');
     }
 }

@@ -52,6 +52,18 @@ class LoggerFactory
         bool $writeToStdErr = false,
         bool $writeToStdOut = false
     ): Logger {
+        // Writing to file and database only if writeToFile. If so, logstart and logend to database, rest to file only
+
         // Todo: Test, Initialize Logger with database, if needed initialize with fileInitializer, pass filewriter and system writer
+    }
+
+    /**
+     * @param string $logKey
+     *
+     * @return Logger
+     */
+    public function createFromExistingLogSession(string $logKey): Logger
+    {
+        // Todo: Test & implement, should return self::create from existing session if exists.
     }
 }

@@ -2,9 +2,8 @@
 
 namespace LoxBerry\Logging;
 
-use LoxBerry\Logging\Database\LogFileDatabase;
-use LoxBerry\Logging\Writer\LogFileWriter;
-use LoxBerry\Logging\Writer\LogSystemWriter;
+use LoxBerry\Logging\Logger\AttributeLogger;
+use LoxBerry\Logging\Logger\EventLogger;
 
 /**
  * Class Logger.
@@ -49,25 +48,33 @@ class Logger
     /** @var bool */
     private $deletePreviousLogFiles = true;
 
-    /** @var LogFileDatabase|null */
-    private $database;
+    /** @var array */
+    private $logAttributes = [];
 
-    /** @var LogFileWriter|null */
-    private $fileWriter;
+    /** @var EventLogger */
+    private $eventLogger;
 
-    /** @var LogSystemWriter|null */
-    private $systemWriter;
+    /** @var AttributeLogger */
+    private $attributeLogger;
 
     /**
      * Logger constructor.
      *
-     * @param string $logName
-     * @param string $packageName
+     * @param string          $logName
+     * @param string          $packageName
+     * @param EventLogger     $eventLogger
+     * @param AttributeLogger $attributeLogger
      */
-    public function __construct(string $logName, string $packageName)
-    {
+    public function __construct(
+        string $logName,
+        string $packageName,
+        EventLogger $eventLogger,
+        AttributeLogger $attributeLogger
+    ) {
         $this->logName = $logName;
         $this->logPackage = $packageName;
+        $this->eventLogger = $eventLogger;
+        $this->attributeLogger = $attributeLogger;
     }
 
     public function log(string $message, int $level = self::LOGLEVEL_DEBUG)
@@ -159,26 +166,21 @@ class Logger
     }
 
     /**
-     * @param LogFileDatabase $database
+     * @param string $key
+     * @param $value
      */
-    public function setDatabase(LogFileDatabase $database): void
+    public function setLogAttribute(string $key, $value)
     {
-        $this->database = $database;
+        $this->logAttributes[$key] = $value;
     }
 
     /**
-     * @param LogFileWriter $fileWriter
+     * @param string $key
+     *
+     * @return mixed|null
      */
-    public function setFileWriter(LogFileWriter $fileWriter): void
+    public function getLogAttribute(string $key)
     {
-        $this->fileWriter = $fileWriter;
-    }
-
-    /**
-     * @param LogSystemWriter $systemWriter
-     */
-    public function setSystemWriter(LogSystemWriter $systemWriter): void
-    {
-        $this->systemWriter = $systemWriter;
+        return $this->logAttributes[$key] ?? null;
     }
 }
