@@ -52,7 +52,7 @@ class LogFileDatabase
     public function getUnclosedLogSessionByKey(string $logKey): ?array
     {
         $sessions = $this->database->select(
-            'PACKAGE',
+            'logs',
             ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'],
             ['LOGKEY' => $logKey, 'LOGEND[!]' => null]
         );
@@ -81,16 +81,54 @@ class LogFileDatabase
      */
     public function logAttribute(string $logKey, string $attributeKey, $value)
     {
-        // Todo: Test & implement
+        $this->database->query(
+            'INSERT OR REPLACE INTO <logs_attr> (<keyref>, <attrib>, <value>) VALUES (:keyref, :attrib, :value)',
+            [
+                ':keyref' => $logKey,
+                ':attrib' => $attributeKey,
+                ':value' => $value,
+            ]
+        );
     }
 
+    /**
+     * @param string $logKey
+     * @param string $attributeKey
+     *
+     * @return mixed|null
+     */
     public function getAttribute(string $logKey, string $attributeKey)
     {
-        // Todo: Test & implement
+        $attributes = $this->database->select(
+            'logs_attr',
+            'value',
+            [
+                'keyref' => $logKey,
+                'attrib' => $attributeKey,
+            ]
+        );
+
+        return $attributes[0] ?? null;
     }
 
-    public function getAllAttributes(string $logKey)
+    /**
+     * @param string $logKey
+     *
+     * @return array
+     */
+    public function getAllAttributes(string $logKey): array
     {
-        // Todo: Test & implement
+        $attributes = $this->database->select(
+            'logs_attr',
+            ['attrib', 'value'],
+            ['keyref' => $logKey]
+        );
+        $mappedAttributes = [];
+
+        foreach ($attributes as $attribute) {
+            $mappedAttributes[$attribute['attrib']] = $attribute['value'];
+        }
+
+        return $mappedAttributes;
     }
 }

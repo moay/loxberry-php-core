@@ -12,16 +12,30 @@ use PHPUnit\Framework\TestCase;
  */
 class LogFileDatabaseTest extends TestCase
 {
+    const TEST_DB_FILE = __DIR__.'/test.dat';
+
+    /** @var Medoo|\PHPUnit\Framework\MockObject\MockObject */
+    private $databaseMock;
+
+    protected function setUp(): void
+    {
+        $this->removeTestDbFile();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->removeTestDbFile();
+    }
+
     public function testDatabaseIsInitializedProperly()
     {
-        $medooMock = $this->getMockBuilder(Medoo::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $medooMock->expects($this->at(0))
+        $this->setupDatabaseMock(['query', 'create']);
+
+        $this->databaseMock->expects($this->at(0))
             ->method('query')
             ->with('PRAGMA journal_mode = wal;')
             ->willReturn(true);
-        $medooMock->expects($this->at(1))
+        $this->databaseMock->expects($this->at(1))
             ->method('create')
             ->with('logs', [
                 'LOGKEY' => ['INT', 'NOT NULL', 'PRIMARY KEY'],
@@ -33,7 +47,7 @@ class LogFileDatabaseTest extends TestCase
                 'LASTMODIFIED' => ['DATETIME', 'NOT NULL'],
             ])
             ->willReturn(true);
-        $medooMock->expects($this->at(2))
+        $this->databaseMock->expects($this->at(2))
             ->method('create')
             ->with('logs_attr', [
                 'keyref' => ['INT', 'NOT NULL'],
@@ -43,18 +57,15 @@ class LogFileDatabaseTest extends TestCase
             ])
             ->willReturn(true);
 
-        $database = new LogFileDatabase($medooMock);
+        $database = new LogFileDatabase($this->databaseMock);
     }
 
     public function testGetsUnclosedSessionsProperly()
     {
-        $medooMock = $this->getMockBuilder(Medoo::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $medooMock->expects($this->once())
+        $this->setupDatabaseMock(['select']);
+        $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('PACKAGE', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
+            ->with('logs', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
             ->willReturn([[
                 'PACKAGE' => 'test',
                 'NAME' => 'test',
@@ -62,15 +73,7 @@ class LogFileDatabaseTest extends TestCase
                 'LOGSTART' => '2000-01-01 00:00:00',
             ]]);
 
-        $logFileDatabase = $this->getMockBuilder(LogFileDatabase::class)
-            ->setConstructorArgs([$medooMock])
-            ->onlyMethods(['initializeDatabase'])
-            ->getMock();
-
-        $reflection = new \ReflectionClass(LogFileDatabase::class);
-        $reflection_property = $reflection->getProperty('database');
-        $reflection_property->setAccessible(true);
-        $reflection_property->setValue($logFileDatabase, $medooMock);
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
         $session = $logFileDatabase->getUnclosedLogSessionByKey('test');
         $this->assertEquals('test', $session['FILENAME']);
@@ -79,26 +82,95 @@ class LogFileDatabaseTest extends TestCase
 
     public function testThrowsExceptionIfSessionWasNotRecreatable()
     {
-        $medooMock = $this->getMockBuilder(Medoo::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $medooMock->expects($this->once())
+        $this->setupDatabaseMock(['select']);
+        $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('PACKAGE', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
+            ->with('logs', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
             ->willReturn([]);
 
-        $logFileDatabase = $this->getMockBuilder(LogFileDatabase::class)
-            ->setConstructorArgs([$medooMock])
-            ->onlyMethods(['initializeDatabase'])
-            ->getMock();
-
-        $reflection = new \ReflectionClass(LogFileDatabase::class);
-        $reflection_property = $reflection->getProperty('database');
-        $reflection_property->setAccessible(true);
-        $reflection_property->setValue($logFileDatabase, $medooMock);
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
         $this->expectException(LogFileDatabaseException::class);
         $logFileDatabase->getUnclosedLogSessionByKey('test');
+    }
+
+    public function testReturnsAllLogAttributesProperly()
+    {
+        $this->setupDatabaseMock(['select']);
+        $this->databaseMock->expects($this->once())
+            ->method('select')
+            ->with('logs_attr', ['attrib', 'value'], ['keyref' => 'test'])
+            ->willReturn([['attrib' => 'test1', 'value' => 'testy'], ['attrib' => 'test2', 'value' => 'testy2']]);
+
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+
+        $this->assertEquals(['test1' => 'testy', 'test2' => 'testy2'], $logFileDatabase->getAllAttributes('test'));
+    }
+
+    public function testReturnsASingleLogAttributeProperly()
+    {
+        $this->setupDatabaseMock(['select']);
+        $this->databaseMock->expects($this->once())
+            ->method('select')
+            ->with('logs_attr', 'value', ['keyref' => 'test', 'attrib' => 'test2'])
+            ->willReturn(['testy2']);
+
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+
+        $this->assertEquals('testy2', $logFileDatabase->getAttribute('test', 'test2'));
+    }
+
+    public function testReturnsNullForNonExistantAttributes()
+    {
+        $this->setupDatabaseMock(['select']);
+        $this->databaseMock->expects($this->once())
+            ->method('select')
+            ->with('logs_attr', 'value', ['keyref' => 'test', 'attrib' => 'test2'])
+            ->willReturn([]);
+
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+
+        $this->assertEquals(null, $logFileDatabase->getAttribute('test', 'test2'));
+    }
+
+    public function testAttributesAreInsertedProperly()
+    {
+        $this->setupDatabaseMock(['query']);
+        $this->databaseMock->expects($this->at(1))
+            ->method('query')
+            ->with('INSERT OR REPLACE INTO <logs_attr> (<keyref>, <attrib>, <value>) VALUES (:keyref, :attrib, :value)', [
+                ':keyref' => 'test',
+                ':attrib' => 'testAttrib',
+                ':value' => 'testValue',
+            ]);
+
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+        $logFileDatabase->logAttribute('test', 'testAttrib', 'testValue');
+    }
+
+    public function testWritingAndReadingActuallyWork()
+    {
+        $this->setupDatabaseMock();
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+        $logFileDatabase->logAttribute('test', 'testAttrib', 'testValue123');
+        $this->assertEquals('testValue123', $logFileDatabase->getAttribute('test', 'testAttrib'));
+    }
+
+    private function setupDatabaseMock($methods = [])
+    {
+        $this->databaseMock = $this->getMockBuilder(Medoo::class)
+            ->onlyMethods($methods)
+            ->setConstructorArgs([[
+                'database_type' => 'sqlite',
+                'database_file' => self::TEST_DB_FILE,
+            ]])
+            ->getMock();
+    }
+
+    private function removeTestDbFile()
+    {
+        if (file_exists(self::TEST_DB_FILE)) {
+            unlink(self::TEST_DB_FILE);
+        }
     }
 }

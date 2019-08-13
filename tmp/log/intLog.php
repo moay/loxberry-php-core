@@ -759,7 +759,7 @@ class intLog
                     return;
                 }
 
-                $dbh->exec('INSERT OR REPLACE INTO logs_attr (keyref, attrib, value) VALUES ('.$this->params['dbkey'].", 'STATUS', '".$this->params['STATUS']."');");
+                $dbh->exec('INSERT OR REPLACE INTO logs_attr (keyref, attrib, value) VALUES ('$this->params['dbkey']', 'STATUS', '$this->params['STATUS']'););
                 $dbh->close();
             }
         }
