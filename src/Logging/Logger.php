@@ -117,6 +117,16 @@ class Logger
         // Todo: test & implement
     }
 
+    public function start()
+    {
+        // Todo: test & implement
+    }
+
+    public function end()
+    {
+        // Todo: test & implement
+    }
+
     /**
      * @return string
      */

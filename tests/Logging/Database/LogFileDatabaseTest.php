@@ -38,7 +38,7 @@ class LogFileDatabaseTest extends TestCase
         $this->databaseMock->expects($this->at(1))
             ->method('create')
             ->with('logs', [
-                'LOGKEY' => ['INT', 'NOT NULL', 'PRIMARY KEY'],
+                'LOGKEY' => ['INTEGER', 'NOT NULL', 'PRIMARY KEY'],
                 'PACKAGE' => ['VARCHAR(255)', 'NOT NULL'],
                 'NAME' => ['VARCHAR(255)', 'NOT NULL'],
                 'FILENAME' => ['VARCHAR(255)', 'NOT NULL'],
@@ -154,6 +154,41 @@ class LogFileDatabaseTest extends TestCase
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
         $logFileDatabase->logAttribute('test', 'testAttrib', 'testValue123');
         $this->assertEquals('testValue123', $logFileDatabase->getAttribute('test', 'testAttrib'));
+    }
+
+    public function testLogStartIsWrittenProperly()
+    {
+        $now = new \DateTime();
+
+        $this->setupDatabaseMock(['insert', 'id']);
+        $this->databaseMock->expects($this->once())
+            ->method('insert')
+            ->with('logs', [
+                'PACKAGE' => 'test',
+                'NAME' => 'testName',
+                'FILENAME' => 'testFile',
+                'LOGSTART' => $now->format('Y-m-d H:i:s'),
+                'LASTMODIFIED' => $now->format('Y-m-d H:i:s'),
+            ]);
+        $this->databaseMock->expects($this->once())
+            ->method('id')
+            ->willReturn(123);
+
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+        $this->assertEquals(123, $logFileDatabase->logStart('test', 'testName', 'testFile', $now));
+    }
+
+    public function testLogStartUsesCurrentDateAsDefaultIfNotProvided()
+    {
+        $now = new \DateTime();
+        $this->setupDatabaseMock();
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+        $id = $logFileDatabase->logStart('test', 'testName', 'testFile');
+
+        $this->assertIsInt($id);
+        $databaseRecord = $this->databaseMock->select('logs', ['LOGSTART'], ['LOGKEY' => $id])[0];
+        $this->assertIsArray($databaseRecord);
+        $this->assertEquals($now->format('Y-m-d H:i:s'), $databaseRecord['LOGSTART']);
     }
 
     private function setupDatabaseMock($methods = [])

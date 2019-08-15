@@ -28,7 +28,7 @@ class LogFileDatabase
     {
         $this->database->query('PRAGMA journal_mode = wal;');
         $this->database->create('logs', [
-            'LOGKEY' => ['INT', 'NOT NULL', 'PRIMARY KEY'],
+            'LOGKEY' => ['INTEGER', 'NOT NULL', 'PRIMARY KEY'],
             'PACKAGE' => ['VARCHAR(255)', 'NOT NULL'],
             'NAME' => ['VARCHAR(255)', 'NOT NULL'],
             'FILENAME' => ['VARCHAR(255)', 'NOT NULL'],
@@ -64,9 +64,26 @@ class LogFileDatabase
         return $sessions[0];
     }
 
-    public function logStart()
+    /**
+     * @param string $packageName
+     * @param string $logName
+     * @param string $fileName
+     *
+     * @return int
+     */
+    public function logStart(string $packageName, string $logName, string $fileName, ?\DateTime $logStart = null): int
     {
-        // Todo: Test & Implement start of logging, register shutdown to logEnd
+        $logStart = ($logStart ?? new \DateTime())->format('Y-m-d H:i:s');
+
+        $this->database->insert('logs', [
+            'PACKAGE' => $packageName,
+            'NAME' => $logName,
+            'FILENAME' => $fileName,
+            'LOGSTART' => $logStart,
+            'LASTMODIFIED' => $logStart,
+        ]);
+
+        return $this->database->id();
     }
 
     public function logEnd()
