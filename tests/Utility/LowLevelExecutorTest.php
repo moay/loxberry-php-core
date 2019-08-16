@@ -80,6 +80,17 @@ class LowLevelExecutorTest extends TestCase
         $this->assertEquals(true, $lowLevel->setFileOwner('test', 'owner'));
     }
 
+    public function testFwriteIsCalledProperly()
+    {
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
+        $lowLevel->expects($this->once())
+            ->method('execLowLevelFunction')
+            ->with('fwrite', [STDERR, 'testmessage', null])
+            ->willReturn(true);
+
+        $lowLevel->fwrite(STDERR, 'testmessage');
+    }
+
     public function testLowLevelExecutionRunsNativeFunctions()
     {
         $lowLevel = new LowLevelExecutor();

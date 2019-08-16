@@ -67,6 +67,18 @@ class LowLevelExecutor
     }
 
     /**
+     * @param resource $handle
+     * @param string   $message
+     * @param int|null $length
+     *
+     * @return int|bool
+     */
+    public function fwrite($handle, string $message, ?int $length = null)
+    {
+        return $this->execLowLevelFunction('fwrite', [$handle, $message, $length]);
+    }
+
+    /**
      * @param string $functionName
      * @param $arguments
      *
