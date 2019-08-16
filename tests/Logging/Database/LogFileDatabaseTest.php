@@ -191,6 +191,34 @@ class LogFileDatabaseTest extends TestCase
         $this->assertEquals($now->format('Y-m-d H:i:s'), $databaseRecord['LOGSTART']);
     }
 
+    public function testLogEndChangesExistingRecordProperly()
+    {
+        $now = new \DateTime();
+        $this->setupDatabaseMock(['select', 'update']);
+        $this->databaseMock->method('select')
+            ->willReturn([['test']]);
+        $this->databaseMock->expects($this->once())
+            ->method('update')
+            ->with('logs', [
+                'LASTMODIFIED' => $now->format('Y-m-d H:i:s'),
+                'LOGEND' => $now->format('Y-m-d H:i:s'),
+            ], [
+                'LOGKEY' => 'test',
+            ]);
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+        $logFileDatabase->logEnd('test');
+    }
+
+    public function testLogEndWillThrowExceptionIfDatabaseRecordNotFound()
+    {
+        $this->setupDatabaseMock();
+        $logFileDatabase = new LogFileDatabase($this->databaseMock);
+
+        $this->expectException(LogFileDatabaseException::class);
+        $this->expectExceptionMessage('Cannot find log session to close');
+        $logFileDatabase->logEnd('something');
+    }
+
     private function setupDatabaseMock($methods = [])
     {
         $this->databaseMock = $this->getMockBuilder(Medoo::class)

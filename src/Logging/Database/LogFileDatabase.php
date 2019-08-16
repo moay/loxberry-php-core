@@ -86,9 +86,23 @@ class LogFileDatabase
         return $this->database->id();
     }
 
-    public function logEnd()
+    /**
+     * @param string $packageName
+     *
+     * @throws \Exception
+     */
+    public function logEnd(string $packageName)
     {
-        // Todo: Test & Implement end of logging (with attributes ?)
+        $record = $this->database->select('logs', ['LOGKEY' => $packageName])[0] ?? null;
+        if (null === $record) {
+            throw new LogFileDatabaseException('Cannot find log session to close');
+        }
+
+        $logEnd = (new \DateTime())->format('Y-m-d H:i:s');
+        $this->database->update('logs', [
+            'LOGEND' => $logEnd,
+            'LASTMODIFIED' => $logEnd,
+        ], ['LOGKEY' => $packageName]);
     }
 
     /**
