@@ -30,6 +30,10 @@ class EventLogger
         $this->fileWriter->logEvent($event);
     }
 
+    /**
+     * @param int      $target
+     * @param LogEvent $event
+     */
     public function logToSystem(int $target, LogEvent $event)
     {
         if (!$this->systemWriter instanceof LogSystemWriter) {
