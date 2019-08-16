@@ -2,8 +2,10 @@
 
 namespace LoxBerry\Logging;
 
+use LoxBerry\Logging\Event\LogEvent;
 use LoxBerry\Logging\Logger\AttributeLogger;
 use LoxBerry\Logging\Logger\EventLogger;
+use LoxBerry\Logging\Writer\LogSystemWriter;
 
 /**
  * Class Logger.
@@ -45,9 +47,6 @@ class Logger
     /** @var bool */
     private $writeToFile = true;
 
-    /** @var bool */
-    private $deletePreviousLogFiles = true;
-
     /** @var array */
     private $logAttributes = [];
 
@@ -56,6 +55,9 @@ class Logger
 
     /** @var AttributeLogger */
     private $attributeLogger;
+
+    /** @var int */
+    private $minimumLogLevel = self::LOGLEVEL_DEBUG;
 
     /**
      * Logger constructor.
@@ -77,44 +79,69 @@ class Logger
         $this->attributeLogger = $attributeLogger;
     }
 
+    /**
+     * @param string $message
+     * @param int    $level
+     *
+     * @throws \Exception
+     */
     public function log(string $message, int $level = self::LOGLEVEL_DEBUG)
     {
-        // Todo: test & implement
+        if ($level > $this->minimumLogLevel) {
+            return;
+        }
+
+        $logEvent = new LogEvent($message, $level);
+
+        if ($this->writeToStdErr) {
+            $this->eventLogger->logToSystem(LogSystemWriter::TARGET_STDERR, $logEvent);
+        }
+        if ($this->writeToStdOut) {
+            $this->eventLogger->logToSystem(LogSystemWriter::TARGET_STDOUT, $logEvent);
+        }
+        if ($this->writeToFile) {
+            $this->eventLogger->logToFile($logEvent);
+        }
     }
 
     public function debug(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_DEBUG);
     }
 
     public function info(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_INFO);
     }
 
     public function success(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_OK);
     }
 
     public function warn(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_WARNING);
     }
 
     public function error(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_ERROR);
     }
 
     public function alert(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_ALERT);
+    }
+
+    public function critical(string $message)
+    {
+        $this->log($message, self::LOGLEVEL_CRITICAL_ERROR);
     }
 
     public function fatal(string $message)
     {
-        // Todo: test & implement
+        $this->log($message, self::LOGLEVEL_FATAL_ERROR);
     }
 
     public function start()
@@ -168,14 +195,6 @@ class Logger
     }
 
     /**
-     * @param bool $deletePreviousLogFiles
-     */
-    public function setDeletePreviousLogFiles(bool $deletePreviousLogFiles): void
-    {
-        $this->deletePreviousLogFiles = $deletePreviousLogFiles;
-    }
-
-    /**
      * @param string $key
      * @param $value
      */
@@ -192,5 +211,25 @@ class Logger
     public function getLogAttribute(string $key)
     {
         return $this->logAttributes[$key] ?? null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinimumLogLevel(): int
+    {
+        return $this->minimumLogLevel;
+    }
+
+    /**
+     * @param int $minimumLogLevel
+     */
+    public function setMinimumLogLevel(int $minimumLogLevel): void
+    {
+        if (!in_array($minimumLogLevel, self::KNOWN_LOGLEVELS)) {
+            throw new \InvalidArgumentException('Unknown loglevel');
+        }
+
+        $this->minimumLogLevel = $minimumLogLevel;
     }
 }

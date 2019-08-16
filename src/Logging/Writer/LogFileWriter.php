@@ -145,7 +145,7 @@ class LogFileWriter
      */
     private function getLogEventMessage(LogEvent $event): string
     {
-        if (null !== $event->getLineNumber()) {
+        if (null !== $event->getFileName() && null !== $event->getLineNumber()) {
             return sprintf(
                 '%s (%s, L%s)',
                 $event->getMessage(),
@@ -155,9 +155,8 @@ class LogFileWriter
         }
 
         return sprintf(
-            '%s (%s)',
-            $event->getMessage(),
-            $event->getFileName()
+            '%s',
+            $event->getMessage()
         );
     }
 }

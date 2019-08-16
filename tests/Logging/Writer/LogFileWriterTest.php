@@ -71,6 +71,18 @@ class LogFileWriterTest extends TestCase
         $this->assertStringContainsString('<CRITICAL> testerror2 (testfile2, L23)'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
     }
 
+    public function testMessageIsWrittenWithoutLineNumberAndFile()
+    {
+        $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR);
+
+        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter->logEvent($logEvent);
+        $time = new \DateTime();
+        $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
+        $this->assertStringContainsString('<ERROR> testerror'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
+        $this->assertStringContainsString($time->format('Y-m-d H:i'), file_get_contents(__DIR__.'/'.self::TEST_FILE));
+    }
+
     public function testExistingLogWillNotBeOverwrittenWhenAppending()
     {
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);

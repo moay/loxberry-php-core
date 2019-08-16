@@ -7,7 +7,7 @@ namespace LoxBerry\Logging\Event;
  */
 class LogEvent
 {
-    /** @var string */
+    /** @var string|null */
     private $fileName;
 
     /** @var int|null */
@@ -32,7 +32,7 @@ class LogEvent
      *
      * @throws \Exception
      */
-    public function __construct(string $message, int $level, string $fileName, ?string $lineNumber = null)
+    public function __construct(string $message, int $level, ?string $fileName = null, ?string $lineNumber = null)
     {
         $this->message = $message;
         $this->level = $level;
@@ -44,17 +44,17 @@ class LogEvent
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFileName(): string
+    public function getFileName(): ?string
     {
         return $this->fileName;
     }
 
     /**
-     * @param string $fileName
+     * @param string|null $fileName
      */
-    public function setFileName(string $fileName): void
+    public function setFileName(?string $fileName = null): void
     {
         $this->fileName = $fileName;
     }
