@@ -35,7 +35,6 @@ class LogEvent
     public function __construct(string $message, int $level, string $fileName, ?string $lineNumber = null)
     {
         $this->message = $message;
-        // Todo: Check if level is allowed
         $this->level = $level;
         $this->fileName = $fileName;
         $this->lineNumber = $lineNumber;
