@@ -12,28 +12,23 @@ class AttributeLogger
     /** @var LogFileDatabase */
     private $database;
 
-    /** @var string */
-    private $package;
-
-    /** @var string */
-    private $name;
-
     /**
      * AttributeLogger constructor.
      *
      * @param LogFileDatabase $database
-     * @param string          $package
-     * @param string          $name
      */
-    public function __construct(LogFileDatabase $database, string $package, string $name)
+    public function __construct(LogFileDatabase $database)
     {
         $this->database = $database;
-        $this->package = $package;
-        $this->name = $name;
     }
 
-    public function logAttribute(string $key, $value)
+    /**
+     * @param string $logKey
+     * @param string $key
+     * @param $value
+     */
+    public function logAttribute(string $logKey, string $key, $value)
     {
-        // Todo: Test & implement
+        $this->database->logAttribute($logKey, $key, $value);
     }
 }
