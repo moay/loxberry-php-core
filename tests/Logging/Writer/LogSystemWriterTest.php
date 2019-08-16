@@ -20,7 +20,7 @@ class LogSystemWriterTest extends TestCase
         $logSystemWriter = new LogSystemWriter($lowLevelExecutorMock);
 
         $this->expectException(\InvalidArgumentException::class);
-        $logSystemWriter->writeTo(3, $logEventMock);
+        $logSystemWriter->logEventTo(3, $logEventMock);
     }
 
     /**
@@ -42,7 +42,7 @@ class LogSystemWriterTest extends TestCase
 
         $logSystemWriter = new LogSystemWriter($lowLevelExecutorMock);
 
-        $logSystemWriter->writeTo($target, $event);
+        $logSystemWriter->logEventTo($target, $event);
     }
 
     public function logEventProvider()

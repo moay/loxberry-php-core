@@ -1,5 +1,6 @@
 /vendor/
 /build/
 .phpunit.result.cache
-
-\.php_cs\.cache
+.php_cs.cache
+/tests/Logging/Database/test.dat-wal
+/tests/Logging/Database/test.dat-shm

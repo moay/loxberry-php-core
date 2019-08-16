@@ -35,7 +35,7 @@ class LogSystemWriter
      * @param int      $target
      * @param LogEvent $event
      */
-    public function writeTo(int $target, LogEvent $event)
+    public function logEventTo(int $target, LogEvent $event)
     {
         if (!in_array($target, self::KNOWN_TARGETS)) {
             throw new \InvalidArgumentException('Cannot write to provided target.');

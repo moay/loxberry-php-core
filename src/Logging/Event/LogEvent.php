@@ -39,7 +39,9 @@ class LogEvent
         $this->level = $level;
         $this->fileName = $fileName;
         $this->lineNumber = $lineNumber;
-        $this->eventTime = new \DateTimeImmutable();
+
+        [$timestamp, $microseconds] = explode('.', microtime(true));
+        $this->eventTime = new \DateTimeImmutable(date('Y-m-d H:i:s.', $timestamp).$microseconds);
     }
 
     /**

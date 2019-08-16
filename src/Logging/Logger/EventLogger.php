@@ -2,6 +2,7 @@
 
 namespace LoxBerry\Logging\Logger;
 
+use LoxBerry\Exceptions\LogWriterException;
 use LoxBerry\Logging\Event\LogEvent;
 use LoxBerry\Logging\Writer\LogFileWriter;
 use LoxBerry\Logging\Writer\LogSystemWriter;
@@ -18,24 +19,59 @@ class EventLogger
     private $systemWriter;
 
     /**
-     * EventLogger constructor.
-     *
-     * @param LogFileWriter   $fileWriter
-     * @param LogSystemWriter $systemWriter
+     * @param LogEvent $event
      */
-    public function __construct(LogFileWriter $fileWriter, LogSystemWriter $systemWriter)
-    {
-        $this->fileWriter = $fileWriter;
-        $this->systemWriter = $systemWriter;
-    }
-
     public function logToFile(LogEvent $event)
     {
-        // Todo: Test & implement
+        if (!$this->fileWriter instanceof LogFileWriter) {
+            throw new LogWriterException('Cannot write to file without file writer');
+        }
+
+        $this->fileWriter->logEvent($event);
     }
 
-    public function logToSystem(LogEvent $event)
+    public function logToSystem(int $target, LogEvent $event)
     {
-        // Todo: Test & implement
+        if (!$this->systemWriter instanceof LogSystemWriter) {
+            throw new LogWriterException('Cannot write to system without system writer');
+        }
+
+        if (!in_array($target, LogSystemWriter::KNOWN_TARGETS)) {
+            throw new LogWriterException('Cannot write to unkown system target');
+        }
+
+        $this->systemWriter->logEventTo($target, $event);
+    }
+
+    /**
+     * @return LogFileWriter
+     */
+    public function getFileWriter(): LogFileWriter
+    {
+        return $this->fileWriter;
+    }
+
+    /**
+     * @param LogFileWriter $fileWriter
+     */
+    public function setFileWriter(LogFileWriter $fileWriter): void
+    {
+        $this->fileWriter = $fileWriter;
+    }
+
+    /**
+     * @return LogSystemWriter
+     */
+    public function getSystemWriter(): LogSystemWriter
+    {
+        return $this->systemWriter;
+    }
+
+    /**
+     * @param LogSystemWriter $systemWriter
+     */
+    public function setSystemWriter(LogSystemWriter $systemWriter): void
+    {
+        $this->systemWriter = $systemWriter;
     }
 }
