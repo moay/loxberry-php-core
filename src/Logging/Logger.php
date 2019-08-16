@@ -104,41 +104,81 @@ class Logger
         }
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function debug(string $message)
     {
         $this->log($message, self::LOGLEVEL_DEBUG);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function info(string $message)
     {
         $this->log($message, self::LOGLEVEL_INFO);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function success(string $message)
     {
         $this->log($message, self::LOGLEVEL_OK);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function warn(string $message)
     {
         $this->log($message, self::LOGLEVEL_WARNING);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function error(string $message)
     {
         $this->log($message, self::LOGLEVEL_ERROR);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function alert(string $message)
     {
         $this->log($message, self::LOGLEVEL_ALERT);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function critical(string $message)
     {
         $this->log($message, self::LOGLEVEL_CRITICAL_ERROR);
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function fatal(string $message)
     {
         $this->log($message, self::LOGLEVEL_FATAL_ERROR);
