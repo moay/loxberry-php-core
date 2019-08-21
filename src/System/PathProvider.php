@@ -14,6 +14,7 @@ class PathProvider
     const KNOWN_PATHS = [
         Paths::PATH_LB_HOME,
         Paths::PATH_LOG_DATABASE_FILE,
+        Paths::PATH_PLUGIN_DATABASE_FILE,
     ];
 
     /** @var LowLevelExecutor */
@@ -48,6 +49,8 @@ class PathProvider
                 return $this->getLoxBerryHomePath();
             case Paths::PATH_LOG_DATABASE_FILE:
                 return $this->getCombined($this->getLoxBerryHomePath(), Filenames::LOG_DATABASE_FILENAME);
+            case Paths::PATH_PLUGIN_DATABASE_FILE:
+                return $this->getCombined($this->getLoxBerryHomePath(), Filenames::PLUGIN_DATABASE_FILENAME);
         }
     }
 

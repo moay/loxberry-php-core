@@ -33,6 +33,7 @@ class PathProviderTest extends TestCase
         return [
             ['LBHOMEDIR', '/opt/loxberry'],
             ['LOG_DATABASE_FILE', '/opt/loxberry/log/system_tmpfs/logs_sqlite.dat'],
+            ['PLUGIN_DATABASE_FILE', '/opt/loxberry/data/system/plugindatabase.dat']
         ];
     }
 
