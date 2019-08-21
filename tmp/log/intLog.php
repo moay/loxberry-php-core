@@ -13,7 +13,6 @@ class intLog
     {
         global $lbpplugindir;
         global $lbplogdir;
-        global $lbhomedir;
 
         // echo "CONSTRUCTOR\n";
 
@@ -32,14 +31,17 @@ class intLog
         if (!isset($this->params['package'])) {
             $this->params['package'] = $lbpplugindir;
         }
-        if (!isset($this->params['package']) && !isset($this->params['nofile'])) {
-            echo "Could not determine your plugin name. If you are not inside a plugin, package must be defined.\n";
-            exit(1);
+        if(!isset($this->params['nofile'])) {
+            if (!isset($this->params['package'])) {
+                echo "Could not determine your plugin name. If you are not inside a plugin, package must be defined.\n";
+                exit(1);
+            }
+            if (!isset($this->params['name'])) {
+                echo "The name parameter must be defined.\n";
+                exit(1);
+            }
         }
-        if (!isset($this->params['name']) && !isset($this->params['nofile'])) {
-            echo "The name parameter must be defined.\n";
-            exit(1);
-        }
+
 
         if (!isset($this->params['loglevel']) && isset($this->params['package'])) {
             $this->params['loglevel'] = LBSystem::pluginloglevel($this->params['package']);
@@ -52,6 +54,11 @@ class intLog
             $this->params['loglevel'] = 7;
             $this->params['loglevel_is_static'] = 1;
         }
+
+        # Generating filename
+//        if (!isset($this->params["logdir"]) && !isset($this->params["filename"]) && is_dir($lbplogdir)) {
+//            $this->params["logdir"] = $lbplogdir;
+//        }
 
         if (!isset($this->params['nofile'])) {
             if (!isset($this->params['filename'])) {
@@ -87,11 +94,6 @@ class intLog
         }
 
         return null;
-    }
-
-    public function __set($name, $value)
-    {
-        // ignore, Variables are read-only
     }
 
     public function LOGSTART($msg = '')

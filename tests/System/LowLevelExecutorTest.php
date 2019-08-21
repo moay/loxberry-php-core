@@ -1,8 +1,8 @@
 <?php
 
-namespace LoxBerry\Tests\Utility;
+namespace LoxBerry\Tests\System;
 
-use LoxBerry\Utility\LowLevelExecutor;
+use LoxBerry\System\LowLevelExecutor;
 use PHPUnit\Framework\TestCase;
 
 /**

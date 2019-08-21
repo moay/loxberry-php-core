@@ -5,7 +5,7 @@ namespace LoxBerry\Tests\Logging\Writer;
 use LoxBerry\Logging\Event\LogEvent;
 use LoxBerry\Logging\Logger;
 use LoxBerry\Logging\Writer\LogSystemWriter;
-use LoxBerry\Utility\LowLevelExecutor;
+use LoxBerry\System\LowLevelExecutor;
 use PHPUnit\Framework\TestCase;
 
 /**

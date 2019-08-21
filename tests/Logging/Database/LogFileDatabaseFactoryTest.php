@@ -6,7 +6,7 @@ use LoxBerry\Logging\Database\LogFileDatabase;
 use LoxBerry\Logging\Database\LogFileDatabaseFactory;
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\Paths;
-use LoxBerry\Utility\LowLevelExecutor;
+use LoxBerry\System\LowLevelExecutor;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -2,9 +2,10 @@
 
 namespace LoxBerry\Logging;
 
+use LoxBerry\ConfigurationParser\SystemConfigurationParser;
 use LoxBerry\Logging\Database\LogFileDatabaseFactory;
-use LoxBerry\Logging\Writer\LogSystemWriter;
 use LoxBerry\System\PathProvider;
+use LoxBerry\System\LowLevelExecutor;
 
 /**
  * Class LoggerFactory.
@@ -14,27 +15,33 @@ class LoggerFactory
     /** @var LogFileDatabaseFactory */
     private $databaseFactory;
 
-    /** @var LogSystemWriter */
-    private $systemWriter;
-
     /** @var PathProvider */
     private $pathProvider;
+
+    /** @var LowLevelExecutor */
+    private $lowLevelExecutor;
+
+    /** @var SystemConfigurationParser */
+    private $systemConfiguration;
 
     /**
      * LoggerFactory constructor.
      *
-     * @param LogFileDatabaseFactory $databaseFactory
-     * @param LogSystemWriter        $systemWriter
-     * @param PathProvider           $pathProvider
+     * @param LogFileDatabaseFactory    $databaseFactory
+     * @param LowLevelExecutor          $lowLevelExecutor
+     * @param PathProvider              $pathProvider
+     * @param SystemConfigurationParser $systemConfiguration
      */
     public function __construct(
         LogFileDatabaseFactory $databaseFactory,
-        LogSystemWriter $systemWriter,
-        PathProvider $pathProvider
+        LowLevelExecutor $lowLevelExecutor,
+        PathProvider $pathProvider,
+        SystemConfigurationParser $systemConfiguration
     ) {
         $this->databaseFactory = $databaseFactory;
-        $this->systemWriter = $systemWriter;
         $this->pathProvider = $pathProvider;
+        $this->lowLevelExecutor = $lowLevelExecutor;
+        $this->systemConfiguration = $systemConfiguration;
     }
 
     /**
@@ -48,12 +55,11 @@ class LoggerFactory
     public function create(
         string $logName,
         string $packageName,
+        ?string $fileName = null,
         bool $writeToFile = true,
         bool $writeToStdErr = false,
         bool $writeToStdOut = false
     ): Logger {
-        // Writing to file and database only if writeToFile. If so, logstart and logend to database, rest to file only
-
         // Todo: Test, Initialize Logger with database, if needed initialize with fileInitializer, pass filewriter and system writer
     }
 
@@ -64,6 +70,6 @@ class LoggerFactory
      */
     public function createFromExistingLogSession(string $logKey): Logger
     {
-        // Todo: Test & implement, should return self::create from existing session if exists.
+        // Todo: Test & implement, should also set all params from existing session if exists.
     }
 }

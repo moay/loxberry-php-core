@@ -2,12 +2,23 @@
 
 namespace LoxBerry\ConfigurationParser;
 
+use LoxBerry\System\PathProvider;
+
 /**
  * Class SystemConfigurationParser.
  */
 class SystemConfigurationParser
 {
-    public function __construct()
+    /** @var PathProvider */
+    private $pathProvider;
+
+    /**
+     * SystemConfigurationParser constructor.
+     *
+     * @param PathProvider $pathProvider
+     */
+    public function __construct(PathProvider $pathProvider)
     {
+        $this->pathProvider = $pathProvider;
     }
 }

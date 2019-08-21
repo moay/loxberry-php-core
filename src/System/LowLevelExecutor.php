@@ -1,6 +1,6 @@
 <?php
 
-namespace LoxBerry\Utility;
+namespace LoxBerry\System;
 
 /**
  * Class class LowLevelExecutor.

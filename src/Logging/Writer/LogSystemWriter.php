@@ -3,7 +3,7 @@
 namespace LoxBerry\Logging\Writer;
 
 use LoxBerry\Logging\Event\LogEvent;
-use LoxBerry\Utility\LowLevelExecutor;
+use LoxBerry\System\LowLevelExecutor;
 
 /**
  * Class LogSystemWriter.

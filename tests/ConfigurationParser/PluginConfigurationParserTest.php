@@ -5,11 +5,11 @@ namespace LoxBerry\Tests\ConfigurationParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SystemConfigurationParserTest.
+ * Class PluginConfigurationParserTest.
  */
-class SystemConfigurationParserTest extends TestCase
+class PluginConfigurationParserTest extends TestCase
 {
-    public function testProvidesLoxBerryVersion()
+    public function testProvidesLogLevel()
     {
         $this->markTestIncomplete();
     }

@@ -3,7 +3,6 @@
 namespace LoxBerry\System;
 
 use LoxBerry\Exceptions\PathProviderException;
-use LoxBerry\Utility\LowLevelExecutor;
 
 /**
  * Class PathProvider.

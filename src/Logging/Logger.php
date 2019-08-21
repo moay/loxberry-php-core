@@ -59,6 +59,12 @@ class Logger
     /** @var int */
     private $minimumLogLevel = self::LOGLEVEL_DEBUG;
 
+    /** @var LogEvent[]|array */
+    private $severeLogEvents = [];
+
+    /** @var int */
+    private $maximumSeverityEncountered = self::LOGLEVEL_DEBUG;
+
     /**
      * Logger constructor.
      *
@@ -80,18 +86,33 @@ class Logger
     }
 
     /**
-     * @param string $message
-     * @param int    $level
-     *
-     * @throws \Exception
+     * @param string|LogEvent $message
+     * @param int             $level
      */
-    public function log(string $message, int $level = self::LOGLEVEL_DEBUG)
+    public function log($messageOrEvent, int $level = self::LOGLEVEL_DEBUG)
     {
+        if ($messageOrEvent instanceof LogEvent) {
+            $level = $messageOrEvent->getLevel();
+            $logEvent = $messageOrEvent;
+        } elseif (is_string($messageOrEvent)) {
+            $logEvent = new LogEvent($messageOrEvent, $level);
+        }
+
+        if (!isset($logEvent) || !$logEvent instanceof LogEvent) {
+            throw new \InvalidArgumentException('Logger can only handle LogEvents or Strings');
+        }
+
         if ($level > $this->minimumLogLevel) {
             return;
         }
 
-        $logEvent = new LogEvent($message, $level);
+        if ($level <= self::LOGLEVEL_WARNING) {
+            $this->severeLogEvents[] = $logEvent;
+        }
+
+        if ($level < $this->maximumSeverityEncountered) {
+            $this->maximumSeverityEncountered = $level;
+        }
 
         if ($this->writeToStdErr) {
             $this->eventLogger->logToSystem(LogSystemWriter::TARGET_STDERR, $logEvent);
@@ -106,18 +127,14 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function debug(string $message)
     {
-        $this->log($message, self::LOGLEVEL_DEBUG);
+        $this->log($message);
     }
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function info(string $message)
     {
@@ -126,8 +143,6 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function success(string $message)
     {
@@ -136,8 +151,6 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function warn(string $message)
     {
@@ -146,8 +159,6 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function error(string $message)
     {
@@ -156,8 +167,6 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function alert(string $message)
     {
@@ -166,8 +175,6 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function critical(string $message)
     {
@@ -176,22 +183,24 @@ class Logger
 
     /**
      * @param string $message
-     *
-     * @throws \Exception
      */
     public function fatal(string $message)
     {
         $this->log($message, self::LOGLEVEL_FATAL_ERROR);
     }
 
-    public function start()
+    /**
+     * @param LogEvent[]|array $logEvents
+     */
+    public function logEvents(array $logEvents)
     {
-        // Todo: test & implement
-    }
+        foreach ($logEvents as $logEvent) {
+            if (!$logEvent instanceof LogEvent) {
+                throw new \InvalidArgumentException('Method can only handle objects of type LogEvent');
+            }
+        }
 
-    public function end()
-    {
-        // Todo: test & implement
+        array_map([$this, 'log'], $logEvents);
     }
 
     /**
@@ -271,5 +280,21 @@ class Logger
         }
 
         $this->minimumLogLevel = $minimumLogLevel;
+    }
+
+    /**
+     * @return array|LogEvent[]
+     */
+    public function getSevereLogEvents()
+    {
+        return $this->severeLogEvents;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaximumSeverityEncountered(): int
+    {
+        return $this->maximumSeverityEncountered;
     }
 }

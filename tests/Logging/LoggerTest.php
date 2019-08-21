@@ -1,6 +1,6 @@
 <?php
 
-namespace LoxBerry\Tests\Logging\Logger;
+namespace LoxBerry\Tests\Logging;
 
 use LoxBerry\Logging\Event\LogEvent;
 use LoxBerry\Logging\Logger;
@@ -26,8 +26,6 @@ class LoggerTest extends TestCase
     {
         $eventLoggerMock = $this->createMock(Logger\EventLogger::class);
         $attributeLoggerMock = $this->createMock(Logger\AttributeLogger::class);
-
-        $logEvent = new LogEvent('test', Logger::LOGLEVEL_ERROR, 'testFile', 22);
 
         if ($minimumLogLevel >= Logger::LOGLEVEL_ERROR) {
             if ($logToStdErr) {
@@ -79,6 +77,70 @@ class LoggerTest extends TestCase
             ->with('testmessage', $level);
 
         $logger->{$method}('testmessage');
+    }
+
+    public function testSeverityIsProperlyProtocolled()
+    {
+        $eventLoggerMock = $this->createMock(Logger\EventLogger::class);
+        $attributeLoggerMock = $this->createMock(Logger\AttributeLogger::class);
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+        $logger->setWriteToFile(false);
+        $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
+
+        $this->assertCount(0, $logger->getSevereLogEvents());
+        $this->assertEquals(Logger::LOGLEVEL_DEBUG, $logger->getMaximumSeverityEncountered());
+
+        $logger->info('test');
+        $this->assertCount(0, $logger->getSevereLogEvents());
+        $this->assertEquals(Logger::LOGLEVEL_DEBUG, $logger->getMaximumSeverityEncountered());
+
+        $logger->success('test');
+        $this->assertCount(0, $logger->getSevereLogEvents());
+        $this->assertEquals(Logger::LOGLEVEL_OK, $logger->getMaximumSeverityEncountered());
+
+        $logger->error('test');
+        $this->assertCount(1, $logger->getSevereLogEvents());
+        $this->assertEquals(Logger::LOGLEVEL_ERROR, $logger->getMaximumSeverityEncountered());
+
+        $logger->error('test');
+        $this->assertCount(2, $logger->getSevereLogEvents());
+        $this->assertEquals(Logger::LOGLEVEL_ERROR, $logger->getMaximumSeverityEncountered());
+
+        $logger->critical('test');
+        $this->assertCount(3, $logger->getSevereLogEvents());
+        $this->assertEquals(Logger::LOGLEVEL_CRITICAL_ERROR, $logger->getMaximumSeverityEncountered());
+    }
+
+    public function testCanLogEvent()
+    {
+        $eventLoggerMock = $this->createMock(Logger\EventLogger::class);
+        $attributeLoggerMock = $this->createMock(Logger\AttributeLogger::class);
+        $logEvent = new LogEvent('test', Logger::LOGLEVEL_ERROR, 'testFile', 22);
+
+        $eventLoggerMock->expects($this->once())
+            ->method('logToFile')
+            ->with($logEvent);
+
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+        $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
+        $logger->log($logEvent);
+    }
+
+    public function testMultipleEventsAreLoggedProperly()
+    {
+        $eventLoggerMock = $this->createMock(Logger\EventLogger::class);
+        $attributeLoggerMock = $this->createMock(Logger\AttributeLogger::class);
+        $logEvent = new LogEvent('test', Logger::LOGLEVEL_ERROR, 'testFile', 22);
+
+        $eventLoggerMock->expects($this->exactly(2))
+            ->method('logToFile')
+            ->with($logEvent);
+
+        $logEvents = [$logEvent, $logEvent];
+
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+        $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
+        $logger->logEvents($logEvents);
     }
 
     public function logConfigurationTestDataProvider()

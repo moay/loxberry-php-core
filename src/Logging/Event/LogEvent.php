@@ -29,8 +29,6 @@ class LogEvent
      * @param int         $level
      * @param string      $fileName
      * @param string|null $lineNumber
-     *
-     * @throws \Exception
      */
     public function __construct(string $message, int $level, ?string $fileName = null, ?string $lineNumber = null)
     {

@@ -4,7 +4,7 @@ namespace LoxBerry\Logging\Database;
 
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\Paths;
-use LoxBerry\Utility\LowLevelExecutor;
+use LoxBerry\System\LowLevelExecutor;
 use Medoo\Medoo;
 
 /**
