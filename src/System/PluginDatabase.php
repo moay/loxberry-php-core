@@ -12,6 +12,7 @@ class PluginDatabase
 
     /**
      * PluginDatabase constructor.
+     *
      * @param PathProvider $pathProvider
      */
     public function __construct(PathProvider $pathProvider)
