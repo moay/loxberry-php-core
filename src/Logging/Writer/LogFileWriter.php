@@ -22,9 +22,6 @@ class LogFileWriter
     ];
 
     /** @var string */
-    private $directory;
-
-    /** @var string */
     private $fileName;
 
     /** @var bool */
@@ -39,25 +36,21 @@ class LogFileWriter
     /**
      * LogFileWriter constructor.
      *
-     * @param string $directory
      * @param string $fileName
      * @param bool   $removeExisting
      */
-    public function __construct(string $directory, string $fileName, bool $removeExisting = true)
+    public function __construct(string $fileName, bool $removeExisting = true)
     {
-        $this->directory = $directory;
         $this->fileName = $fileName;
         $this->removeExisting = $removeExisting;
     }
 
     public function initialize()
     {
-        $logFilePath = $this->getLogFilePath();
-
-        if (file_exists($logFilePath) && $this->removeExisting) {
-            unlink($logFilePath);
+        if (file_exists($this->fileName) && $this->removeExisting) {
+            unlink($this->fileName);
         }
-        touch($logFilePath);
+        touch($this->fileName);
         $this->initialized = true;
     }
 
@@ -127,15 +120,7 @@ class LogFileWriter
      */
     private function writeLine(string $content)
     {
-        file_put_contents($this->getLogFilePath(), $content.PHP_EOL, FILE_APPEND);
-    }
-
-    /**
-     * @return string
-     */
-    private function getLogFilePath(): string
-    {
-        return $this->directory.DIRECTORY_SEPARATOR.$this->fileName;
+        file_put_contents($this->fileName, $content.PHP_EOL, FILE_APPEND);
     }
 
     /**

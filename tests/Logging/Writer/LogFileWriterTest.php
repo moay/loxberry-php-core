@@ -17,7 +17,7 @@ class LogFileWriterTest extends TestCase
     public function testLogFileIsCreated()
     {
         $this->assertFileNotExists(__DIR__.'/'.self::TEST_FILE);
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->initialize();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
     }
@@ -27,7 +27,7 @@ class LogFileWriterTest extends TestCase
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test');
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->initialize();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringNotContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
@@ -38,7 +38,7 @@ class LogFileWriterTest extends TestCase
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test');
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE, false);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE, false);
         $logWriter->initialize();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
@@ -48,7 +48,7 @@ class LogFileWriterTest extends TestCase
     {
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);
 
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logEvent($logEvent);
         $time = new \DateTime();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
@@ -61,7 +61,7 @@ class LogFileWriterTest extends TestCase
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);
         $logEvent2 = new LogEvent('testerror2', Logger::LOGLEVEL_CRITICAL_ERROR, 'testfile2', 23);
 
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logEvent($logEvent);
         $logWriter->logEvent($logEvent2);
         $time = new \DateTime();
@@ -75,7 +75,7 @@ class LogFileWriterTest extends TestCase
     {
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR);
 
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logEvent($logEvent);
         $time = new \DateTime();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
@@ -88,7 +88,7 @@ class LogFileWriterTest extends TestCase
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);
 
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test'.PHP_EOL);
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE, false);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE, false);
         $logWriter->logEvent($logEvent);
         $this->assertStringContainsString('This is a test'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
     }
@@ -98,14 +98,14 @@ class LogFileWriterTest extends TestCase
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);
 
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test'.PHP_EOL);
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logEvent($logEvent);
         $this->assertStringNotContainsString('This is a test'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
     }
 
     public function testLogStartIsWrittenProperly()
     {
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logStart();
         $this->assertStringContainsString('================================================================================'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
         $date = date('Y-m-d H:i:');
@@ -116,7 +116,7 @@ class LogFileWriterTest extends TestCase
 
     public function testLogEndIsWrittenProperly()
     {
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logStart();
         $logWriter->logEnd();
         $date = date('Y-m-d H:i:');
@@ -126,7 +126,7 @@ class LogFileWriterTest extends TestCase
 
     public function testLogEndWontWriteAnythingIfNotStarted()
     {
-        $logWriter = new LogFileWriter(__DIR__, self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logEnd();
         $date = date('Y-m-d H:i:');
         $this->assertFileNotExists(__DIR__.'/'.self::TEST_FILE);

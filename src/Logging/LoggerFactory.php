@@ -4,6 +4,10 @@ namespace LoxBerry\Logging;
 
 use LoxBerry\ConfigurationParser\SystemConfigurationParser;
 use LoxBerry\Logging\Database\LogFileDatabaseFactory;
+use LoxBerry\Logging\Logger\AttributeLogger;
+use LoxBerry\Logging\Logger\EventLogger;
+use LoxBerry\Logging\Writer\LogFileWriter;
+use LoxBerry\Logging\Writer\LogSystemWriter;
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\LowLevelExecutor;
 
@@ -60,7 +64,25 @@ class LoggerFactory
         bool $writeToStdErr = false,
         bool $writeToStdOut = false
     ): Logger {
-        // Todo: Test, Initialize Logger with database, if needed initialize with fileInitializer, pass filewriter and system writer
+        $eventLogger = new EventLogger();
+        if ($writeToFile) {
+            if (!is_string($fileName)) {
+                throw new \InvalidArgumentException('Cannot enable file writing without logFile');
+            }
+            $eventLogger->setFileWriter(new LogFileWriter($fileName));
+        }
+        if ($writeToStdOut || $writeToStdErr) {
+            $eventLogger->setSystemWriter(new LogSystemWriter($this->lowLevelExecutor));
+        }
+
+        $logger = new Logger(
+            $logName,
+            $packageName,
+            $eventLogger,
+            new AttributeLogger($this->databaseFactory->create())
+        );
+
+        return $logger;
     }
 
     /**
