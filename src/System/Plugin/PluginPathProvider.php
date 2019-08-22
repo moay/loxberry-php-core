@@ -1,6 +1,6 @@
 <?php
 
-namespace LoxBerry\System;
+namespace LoxBerry\System\Plugin;
 
 /**
  * Class PluginPathProvider.

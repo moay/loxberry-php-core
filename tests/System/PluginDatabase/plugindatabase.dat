@@ -1,0 +1,20 @@
+#
+# Database for installed Plugins
+#
+#  0: MD5 Checksum of AUTHORNAME,AUTHOREMAIL,NAME,FOLDER (without commas!) from plugin.cfg
+#  1: AUTHOR NAME
+#  2: AUTHOR EMAIL
+#  3: VERSION
+#  4: NAME
+#  5: FOLDER
+#  6: TITLE
+#  7: INTERFACE
+#  8: AUTOMATIC UPDATES (0:n/a 1:disabled 2:notify 3:release install 4:prerelease/release install)
+#  9: RELEASECFG
+# 10: PRERELEASECFG
+# 11: LOGLEVEL (0-7)
+#
+# Delimiter: | (Pipe)
+#
+9489b114c85717a2122c27bc80b0b9cf|Michael Schlenstedt|Michael@loxberry.de|4.6.0.2|weather4lox|weather4lox|Weather 4 Loxone|2.0|3|https://raw.githubusercontent.com/mschlenstedt/LoxBerry-Plugin-Weather4Lox/master/release.cfg|https://raw.githubusercontent.com/mschlenstedt/LoxBerry-Plugin-Weather4Lox/master/prerelease.cfg|3
+b30af7534dc5f3ac8fc1abb6a1aaa23e|moay|mv@moay.de|1.0|sensebox|sensebox|senseBox|2.0|0|||-1
