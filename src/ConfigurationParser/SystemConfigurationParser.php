@@ -24,9 +24,6 @@ class SystemConfigurationParser extends ConfigurationParser
     /** @var PathProvider */
     private $pathProvider;
 
-    /** @var array */
-    private $configuration;
-
     /** @var MiniserverInformation[] */
     private $miniservers = [];
 
@@ -47,8 +44,11 @@ class SystemConfigurationParser extends ConfigurationParser
         parent::__construct($configurationFile);
         $this->config->setQuoteStrings(false);
 
-        while ($this->has($identifier = self::SECTION_PREFIX_MINISERVER.(count($this->miniservers) + 1))) {
-            $this->parseMiniserverInformation($identifier);
+        for ($i = -1; $i <= count($this->miniservers); ++$i) {
+            $identifier = self::SECTION_PREFIX_MINISERVER.($i + 2);
+            if ($this->has($identifier)) {
+                $this->parseMiniserverInformation($identifier);
+            }
         }
     }
 
@@ -117,13 +117,59 @@ class SystemConfigurationParser extends ConfigurationParser
     }
 
     /**
+     * @return MiniserverInformation[]
+     */
+    public function getMiniservers(): array
+    {
+        return $this->miniservers;
+    }
+
+    /**
+     * @param $numberOrName
+     *
+     * @return MiniserverInformation|null
+     */
+    public function getMiniserver($ipOrName): ?MiniserverInformation
+    {
+        foreach ($this->miniservers as $miniserver) {
+            if ($miniserver->getIpAddress() === $ipOrName || $miniserver->getName() === $ipOrName) {
+                return $miniserver;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws ConfigurationException
+     */
+    public function set(string $section, string $key, $value)
+    {
+        throw new ConfigurationException('System variables are read only and not to be set via PHP library');
+    }
+
+    /**
      * @param string $identifier
      */
     private function parseMiniserverInformation(string $identifier)
     {
-        $data = $this->configuration[$identifier];
+        $data = $this->config->get($identifier) ?? [];
+        if (!count($data)) {
+            return;
+        }
 
         $miniserverInformation = new MiniserverInformation();
+        $miniserverInformation->setName($data['NAME']);
+        $miniserverInformation->setIpAddress($data['IPADDRESS']);
+        $miniserverInformation->setPort((int) $data['PORT']);
+        $miniserverInformation->setNote($data['NOTE']);
+        $miniserverInformation->setAdminUsername($data['ADMIN']);
+        $miniserverInformation->setAdminPassword($data['PASS'] ?? '');
+        $miniserverInformation->setCloudUrl($data['CLOUDURL'] ?? null);
+        $miniserverInformation->setCloudUrlFftPort($data['CLOUDURL'] ? (int) $data['CLOUDURL'] : null);
+        $miniserverInformation->setUseCloudDns(ConfigurationParser::isEnabled($data['USECLOUDDNS'] ?? null));
+        $miniserverInformation->setSecureGateway(ConfigurationParser::isEnabled($data['SECUREGATEWAY'] ?? null));
+        $miniserverInformation->setEncryptResponse(ConfigurationParser::isEnabled($data['ENCRYPTRESPONSE'] ?? null));
 
         $this->miniservers[] = $miniserverInformation;
     }

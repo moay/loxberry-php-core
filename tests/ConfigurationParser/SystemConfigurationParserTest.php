@@ -2,6 +2,7 @@
 
 namespace LoxBerry\Tests\ConfigurationParser;
 
+use LoxBerry\ConfigurationParser\MiniserverInformation;
 use LoxBerry\ConfigurationParser\SystemConfigurationParser;
 use LoxBerry\System\PathProvider;
 use PHPUnit\Framework\TestCase;
@@ -158,26 +159,43 @@ class SystemConfigurationParserTest extends TestCase
         $this->assertFalse($parser->has('something', 'unknown'));
     }
 
-    public function testWritesValuesProperly()
+    public function testThrowsExceptionWhenTryingToWriteSystemVariable()
     {
-        copy(self::TEST_FILE, self::TEST_FILE_FOR_EDITING);
-
         $pathProviderMock = $this->createMock(PathProvider::class);
         $pathProviderMock->expects($this->once())
             ->method('getPath')
-            ->willReturn(self::TEST_FILE_FOR_EDITING);
+            ->willReturn(self::TEST_FILE);
 
         $parser = new SystemConfigurationParser($pathProviderMock);
-        $this->assertNull($parser->get('testsection', 'testkey'));
-        $parser->set('testsection', 'testkey', 'testvalue');
-        $this->assertSame('testvalue', $parser->get('testsection', 'testkey'));
-        $this->assertStringContainsString('testkey = testvalue', file_get_contents(self::TEST_FILE_FOR_EDITING));
-        $this->assertStringContainsString('[testsection]', file_get_contents(self::TEST_FILE_FOR_EDITING));
+        $this->expectException(\RuntimeException::class);
+        $parser->set(SystemConfigurationParser::SECTION_BASE, 'VERSION', '12.3.4');
     }
 
     public function testLoadsMiniserverInformation()
     {
-        $this->markTestIncomplete();
+        $pathProviderMock = $this->createMock(PathProvider::class);
+        $pathProviderMock->expects($this->once())
+            ->method('getPath')
+            ->willReturn(self::TEST_FILE);
+
+        $parser = new SystemConfigurationParser($pathProviderMock);
+        $this->assertCount(1, $parser->getMiniservers());
+        $miniserverByIp = $parser->getMiniserver('192.168.0.0');
+        $miniserverByName = $parser->getMiniserver('Miniserver');
+        $this->assertSame($miniserverByName, $miniserverByIp);
+        $this->assertInstanceOf(MiniserverInformation::class, $miniserverByName);
+
+        $this->assertFalse($miniserverByName->isEncryptResponse());
+        $this->assertFalse($miniserverByName->isSecureGateway());
+        $this->assertFalse($miniserverByName->isUseCloudDns());
+        $this->assertSame('Admin', $miniserverByName->getAdminUsername());
+        $this->assertSame('test12345', $miniserverByName->getAdminPassword());
+        $this->assertSame('Admin:test12345', $miniserverByName->getCredentials());
+        $this->assertSame('Admin', $miniserverByName->getAdminUsername(true));
+        $this->assertSame('test12345', $miniserverByName->getAdminPassword(true));
+        $this->assertSame('Admin:test12345', $miniserverByName->getCredentials(true));
+        $this->assertSame('', $miniserverByName->getCloudUrl());
+        $this->assertEquals(80, $miniserverByName->getPort());
     }
 
     protected function setUp(): void

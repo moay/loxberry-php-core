@@ -76,4 +76,31 @@ class ConfigurationParser implements ConfigurationParserInterface
 
         return $this->config->has($section, $key);
     }
+
+    /**
+     * @param $value
+     *
+     * @return bool
+     */
+    public static function isEnabled($value): bool
+    {
+        if (is_string($value)) {
+            $value = strtolower($value);
+        }
+
+        return in_array(trim($value), [
+            true,
+            'true',
+            1,
+            '1',
+            'on',
+            'yes',
+            'enabled',
+            'enable',
+            'checked',
+            'check',
+            'selected',
+            'select',
+        ]);
+    }
 }
