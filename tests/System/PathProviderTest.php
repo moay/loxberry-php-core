@@ -44,6 +44,7 @@ class PathProviderTest extends TestCase
             ['LOG_DATABASE_FILE', '/opt/loxberry/log/system_tmpfs/logs_sqlite.dat'],
             ['PLUGIN_DATABASE_FILE', '/opt/loxberry/data/system/plugindatabase.dat'],
             ['REBOOT_REQUIRED_FILE', '/opt/loxberry/log/system_tmpfs/reboot.required'],
+            ['CENTRAL_CONFIG_FILE', '/opt/loxberry/config/system/general.cfg'],
         ];
     }
 

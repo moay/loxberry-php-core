@@ -25,6 +25,7 @@ class PathProvider
         Paths::PATH_LOG_DATABASE_FILE,
         Paths::PATH_PLUGIN_DATABASE_FILE,
         Paths::PATH_REBOOT_REQUIRED_FILE,
+        Paths::PATH_CENTRAL_CONFIG_FILE,
     ];
 
     /** @var LowLevelExecutor */
@@ -89,9 +90,6 @@ class PathProvider
     private function resolveCombinedPath(string $pathToResolve): string
     {
         $pathMap = [
-            Paths::PATH_LOG_DATABASE_FILE => FileNames::LOG_DATABASE_FILENAME,
-            Paths::PATH_PLUGIN_DATABASE_FILE => FileNames::PLUGIN_DATABASE_FILENAME,
-            Paths::PATH_REBOOT_REQUIRED_FILE => FileNames::REBOOT_REQUIRED_FILENAME,
             Paths::PATH_SYSTEM_HTMLAUTH => DirectoryNames::SYSTEM_HTMLAUTH,
             Paths::PATH_SYSTEM_HTML => DirectoryNames::SYSTEM_HTML,
             Paths::PATH_SYSTEM_TEMPLATE => DirectoryNames::SYSTEM_TEMPLATE,
@@ -101,6 +99,10 @@ class PathProvider
             Paths::PATH_SYSTEM_CONFIG => DirectoryNames::SYSTEM_CONFIG,
             Paths::PATH_SYSTEM_SBIN => DirectoryNames::SYSTEM_SBIN,
             Paths::PATH_SYSTEM_BIN => DirectoryNames::SYSTEM_BIN,
+            Paths::PATH_LOG_DATABASE_FILE => FileNames::LOG_DATABASE_FILENAME,
+            Paths::PATH_PLUGIN_DATABASE_FILE => FileNames::PLUGIN_DATABASE_FILENAME,
+            Paths::PATH_REBOOT_REQUIRED_FILE => FileNames::REBOOT_REQUIRED_FILENAME,
+            Paths::PATH_CENTRAL_CONFIG_FILE => FileNames::CENTRAL_CONFIGURATION_FILENAME,
         ];
 
         return $this->getLoxBerryHomePath().DIRECTORY_SEPARATOR.$pathMap[$pathToResolve];

@@ -7,10 +7,10 @@ use LoxBerry\Exceptions\ConfigurationException;
 /**
  * Class ConfigurationParser.
  */
-class ConfigurationParser
+class ConfigurationParser implements ConfigurationParserInterface
 {
     /** @var \Config_Lite */
-    private $config;
+    protected $config;
 
     /**
      * ConfigurationParser constructor.
@@ -38,6 +38,10 @@ class ConfigurationParser
      */
     public function get(string $section, string $key, $fallback = null)
     {
+        if (!$this->has($section, $key) && null === $fallback) {
+            return null;
+        }
+
         return $this->config->get($section, $key, $fallback);
     }
 
@@ -50,6 +54,10 @@ class ConfigurationParser
      */
     public function set(string $section, string $key, $value)
     {
+        if (is_bool($value)) {
+            $value = $value ? 1 : 0;
+        }
+
         $this->config->set($section, $key, $value);
         $this->config->save();
     }
