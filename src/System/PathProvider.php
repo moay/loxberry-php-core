@@ -56,32 +56,47 @@ class PathProvider
 
         switch ($pathName) {
             case Paths::PATH_LB_HOME:
-                return $this->getLoxBerryHomePath();
+                $resolvedPath = $this->getLoxBerryHomePath();
+                break;
             case Paths::PATH_LOG_DATABASE_FILE:
-                return $this->getCombined($this->getLoxBerryHomePath(), FileNames::LOG_DATABASE_FILENAME);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), FileNames::LOG_DATABASE_FILENAME);
+                break;
             case Paths::PATH_PLUGIN_DATABASE_FILE:
-                return $this->getCombined($this->getLoxBerryHomePath(), FileNames::PLUGIN_DATABASE_FILENAME);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), FileNames::PLUGIN_DATABASE_FILENAME);
+                break;
             case Paths::PATH_REBOOT_REQUIRED_FILE:
-                return $this->getCombined($this->getLoxBerryHomePath(), FileNames::REBOOT_REQUIRED_FILENAME);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), FileNames::REBOOT_REQUIRED_FILENAME);
+                break;
             case Paths::PATH_SYSTEM_HTMLAUTH:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_HTMLAUTH);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_HTMLAUTH);
+                break;
             case Paths::PATH_SYSTEM_HTML:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_HTML);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_HTML);
+                break;
             case Paths::PATH_SYSTEM_TEMPLATE:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_TEMPLATE);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_TEMPLATE);
+                break;
             case Paths::PATH_SYSTEM_DATA:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_DATA);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_DATA);
+                break;
             case Paths::PATH_SYSTEM_LOG:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_LOG);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_LOG);
+                break;
             case Paths::PATH_SYSTEM_TMPFSLOG:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_TMPFSLOG);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_TMPFSLOG);
+                break;
             case Paths::PATH_SYSTEM_CONFIG:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_CONFIG);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_CONFIG);
+                break;
             case Paths::PATH_SYSTEM_SBIN:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_SBIN);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_SBIN);
+                break;
             case Paths::PATH_SYSTEM_BIN:
-                return $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_BIN);
+                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_BIN);
+                break;
         }
+
+        return $resolvedPath;
     }
 
     /**
