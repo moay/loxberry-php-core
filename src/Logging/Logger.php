@@ -91,26 +91,17 @@ class Logger
      */
     public function log($messageOrEvent, int $level = self::LOGLEVEL_DEBUG)
     {
-        if ($messageOrEvent instanceof LogEvent) {
-            $level = $messageOrEvent->getLevel();
-            $logEvent = $messageOrEvent;
-        } elseif (is_string($messageOrEvent)) {
-            $logEvent = new LogEvent($messageOrEvent, $level);
-        }
+        $logEvent = $this->prepareLogEvent($messageOrEvent, $level);
 
-        if (!isset($logEvent) || !$logEvent instanceof LogEvent) {
-            throw new \InvalidArgumentException('Logger can only handle LogEvents or Strings');
-        }
-
-        if ($level > $this->minimumLogLevel) {
+        if ($logEvent->getLevel() > $this->minimumLogLevel) {
             return;
         }
 
-        if ($level <= self::LOGLEVEL_WARNING) {
+        if ($logEvent->getLevel() <= self::LOGLEVEL_WARNING) {
             $this->severeLogEvents[] = $logEvent;
         }
 
-        if ($level < $this->maximumSeverityEncountered) {
+        if ($logEvent->getLevel() < $this->maximumSeverityEncountered) {
             $this->maximumSeverityEncountered = $level;
         }
 
@@ -296,5 +287,26 @@ class Logger
     public function getMaximumSeverityEncountered(): int
     {
         return $this->maximumSeverityEncountered;
+    }
+
+    /**
+     * @param $messageOrEvent
+     * @param int $level
+     *
+     * @return LogEvent
+     */
+    private function prepareLogEvent($messageOrEvent, int $level): LogEvent
+    {
+        if ($messageOrEvent instanceof LogEvent) {
+            $logEvent = $messageOrEvent;
+        } elseif (is_string($messageOrEvent)) {
+            $logEvent = new LogEvent($messageOrEvent, $level);
+        }
+
+        if (!isset($logEvent) || !$logEvent instanceof LogEvent) {
+            throw new \InvalidArgumentException('Logger can only handle LogEvents or Strings');
+        }
+
+        return $logEvent;
     }
 }
