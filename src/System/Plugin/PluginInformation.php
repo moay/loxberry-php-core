@@ -7,6 +7,8 @@ namespace LoxBerry\System\Plugin;
  */
 class PluginInformation
 {
+    const DEFAULT_ICON = 'icon_64.png';
+
     /** @var int */
     private $number;
 
@@ -252,5 +254,19 @@ class PluginInformation
     public function getChecksum(): string
     {
         return md5($this->authorName.$this->authorEmail.$this->name.$this->folderName);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconPath(): string
+    {
+        return DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, [
+            'system',
+            'images',
+            'icons',
+            $this->name,
+            self::DEFAULT_ICON,
+        ]);
     }
 }

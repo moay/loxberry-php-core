@@ -32,8 +32,18 @@ class PathProviderTest extends TestCase
     {
         return [
             ['LBHOMEDIR', '/opt/loxberry'],
+            ['LBSHTMLAUTHDIR', '/opt/loxberry/webfrontend/htmlauth/system'],
+            ['LBSHTMLDIR', '/opt/loxberry/webfrontend/html/system'],
+            ['LBSTEMPLATEDIR', '/opt/loxberry/templates/system'],
+            ['LBSDATADIR', '/opt/loxberry/data/system'],
+            ['LBSLOGDIR', '/opt/loxberry/log/system'],
+            ['LBSTMPFSLOGDIR', '/opt/loxberry/log/system_tmpfs'],
+            ['LBSCONFIGDIR', '/opt/loxberry/config/system'],
+            ['LBSSBINDIR', '/opt/loxberry/sbin'],
+            ['LBSBINDIR', '/opt/loxberry/bin'],
             ['LOG_DATABASE_FILE', '/opt/loxberry/log/system_tmpfs/logs_sqlite.dat'],
             ['PLUGIN_DATABASE_FILE', '/opt/loxberry/data/system/plugindatabase.dat'],
+            ['REBOOT_REQUIRED_FILE', '/opt/loxberry/log/system_tmpfs/reboot.required'],
         ];
     }
 

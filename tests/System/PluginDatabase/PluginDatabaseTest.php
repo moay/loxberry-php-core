@@ -121,6 +121,7 @@ class PluginDatabaseTest extends TestCase
             ['weather4lox', 'getLogLevel', 3],
             ['weather4lox', 'getChecksum', '9489b114c85717a2122c27bc80b0b9cf'],
             ['weather4lox', 'isLogLevelsEnabled', true],
+            ['weather4lox', 'getIconPath', '/system/images/icons/weather4lox/icon_64.png'],
 
             ['sensebox', 'getNumber', 2],
             ['sensebox', 'getAuthorName', 'moay'],
@@ -136,6 +137,7 @@ class PluginDatabaseTest extends TestCase
             ['sensebox', 'getLogLevel', null],
             ['sensebox', 'getChecksum', 'b30af7534dc5f3ac8fc1abb6a1aaa23e'],
             ['sensebox', 'isLogLevelsEnabled', false],
+            ['sensebox', 'getIconPath', '/system/images/icons/sensebox/icon_64.png'],
         ];
     }
 }
