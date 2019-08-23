@@ -50,31 +50,7 @@ class PluginPathProvider
             throw new \InvalidArgumentException(sprintf('Unknown plugin path %s requested', $pathName));
         }
 
-        switch ($pathName) {
-            case Paths::PATH_PLUGIN_HTMLAUTH:
-                $basePath = Paths::PATH_SYSTEM_HTMLAUTH;
-                break;
-            case Paths::PATH_PLUGIN_HTML:
-                $basePath = Paths::PATH_SYSTEM_HTML;
-                break;
-            case Paths::PATH_PLUGIN_TEMPLATE:
-                $basePath = Paths::PATH_SYSTEM_TEMPLATE;
-                break;
-            case Paths::PATH_PLUGIN_DATA:
-                $basePath = Paths::PATH_SYSTEM_DATA;
-                break;
-            case Paths::PATH_PLUGIN_LOG:
-                $basePath = Paths::PATH_SYSTEM_LOG;
-                break;
-            case Paths::PATH_PLUGIN_CONFIG:
-                $basePath = Paths::PATH_SYSTEM_CONFIG;
-                break;
-            case Paths::PATH_PLUGIN_BIN:
-                $basePath = Paths::PATH_SYSTEM_BIN;
-                break;
-        }
-
-        return $this->getPluginDirectoryFromSystem($basePath).DIRECTORY_SEPARATOR.$this->pluginName;
+        return $this->getPluginDirectoryFromSystem($pathName).DIRECTORY_SEPARATOR.$this->pluginName;
     }
 
     /**
@@ -94,12 +70,24 @@ class PluginPathProvider
     }
 
     /**
-     * @param $directoryName
+     * @param $path
      *
      * @return string
      */
-    private function getPluginDirectoryFromSystem($basePath)
+    private function getPluginDirectoryFromSystem($path)
     {
+        $basePathMap = [
+            Paths::PATH_PLUGIN_HTMLAUTH => Paths::PATH_SYSTEM_HTMLAUTH,
+            Paths::PATH_PLUGIN_HTML => Paths::PATH_SYSTEM_HTML,
+            Paths::PATH_PLUGIN_TEMPLATE => Paths::PATH_SYSTEM_TEMPLATE,
+            Paths::PATH_PLUGIN_DATA => Paths::PATH_SYSTEM_DATA,
+            Paths::PATH_PLUGIN_LOG => Paths::PATH_SYSTEM_LOG,
+            Paths::PATH_PLUGIN_CONFIG => Paths::PATH_SYSTEM_CONFIG,
+            Paths::PATH_PLUGIN_BIN => Paths::PATH_SYSTEM_BIN,
+        ];
+
+        $basePath = $basePathMap[$path];
+
         return $this->pathProvider->getPath($basePath).DIRECTORY_SEPARATOR.'plugins';
     }
 }

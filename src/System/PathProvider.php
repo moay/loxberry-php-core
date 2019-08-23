@@ -54,49 +54,11 @@ class PathProvider
             ));
         }
 
-        switch ($pathName) {
-            case Paths::PATH_LB_HOME:
-                $resolvedPath = $this->getLoxBerryHomePath();
-                break;
-            case Paths::PATH_LOG_DATABASE_FILE:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), FileNames::LOG_DATABASE_FILENAME);
-                break;
-            case Paths::PATH_PLUGIN_DATABASE_FILE:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), FileNames::PLUGIN_DATABASE_FILENAME);
-                break;
-            case Paths::PATH_REBOOT_REQUIRED_FILE:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), FileNames::REBOOT_REQUIRED_FILENAME);
-                break;
-            case Paths::PATH_SYSTEM_HTMLAUTH:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_HTMLAUTH);
-                break;
-            case Paths::PATH_SYSTEM_HTML:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_HTML);
-                break;
-            case Paths::PATH_SYSTEM_TEMPLATE:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_TEMPLATE);
-                break;
-            case Paths::PATH_SYSTEM_DATA:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_DATA);
-                break;
-            case Paths::PATH_SYSTEM_LOG:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_LOG);
-                break;
-            case Paths::PATH_SYSTEM_TMPFSLOG:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_TMPFSLOG);
-                break;
-            case Paths::PATH_SYSTEM_CONFIG:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_CONFIG);
-                break;
-            case Paths::PATH_SYSTEM_SBIN:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_SBIN);
-                break;
-            case Paths::PATH_SYSTEM_BIN:
-                $resolvedPath = $this->getCombined($this->getLoxBerryHomePath(), DirectoryNames::SYSTEM_BIN);
-                break;
+        if (Paths::PATH_LB_HOME === $pathName) {
+            return $this->getLoxBerryHomePath();
         }
 
-        return $resolvedPath;
+        return $this->resolveCombinedPath($pathName);
     }
 
     /**
@@ -106,12 +68,12 @@ class PathProvider
     {
         $environmentPath = $this->lowLevel->getEnvironmentVariable('LBHOMEDIR');
         if (is_string($environmentPath)) {
-            return $environmentPath;
+            return rtrim($environmentPath, '/');
         }
 
         $userInfo = $this->lowLevel->getUserInfo('loxberry');
         if (null !== ($userInfo['uid']['dir'] ?? null)) {
-            return $userInfo['uid']['dir'];
+            return rtrim($userInfo['uid']['dir'], '/');
         }
 
         $this->lowLevel->errorLog('Home dir not properly set, falling back to /opt/loxberry');
@@ -120,13 +82,27 @@ class PathProvider
     }
 
     /**
-     * @param string $path
-     * @param string $fileName
+     * @param string $pathToResolve
      *
      * @return string
      */
-    private function getCombined(string $path, string $fileName): string
+    private function resolveCombinedPath(string $pathToResolve): string
     {
-        return rtrim($path, '/').DIRECTORY_SEPARATOR.$fileName;
+        $pathMap = [
+            Paths::PATH_LOG_DATABASE_FILE => FileNames::LOG_DATABASE_FILENAME,
+            Paths::PATH_PLUGIN_DATABASE_FILE => FileNames::PLUGIN_DATABASE_FILENAME,
+            Paths::PATH_REBOOT_REQUIRED_FILE => FileNames::REBOOT_REQUIRED_FILENAME,
+            Paths::PATH_SYSTEM_HTMLAUTH => DirectoryNames::SYSTEM_HTMLAUTH,
+            Paths::PATH_SYSTEM_HTML => DirectoryNames::SYSTEM_HTML,
+            Paths::PATH_SYSTEM_TEMPLATE => DirectoryNames::SYSTEM_TEMPLATE,
+            Paths::PATH_SYSTEM_DATA => DirectoryNames::SYSTEM_DATA,
+            Paths::PATH_SYSTEM_LOG => DirectoryNames::SYSTEM_LOG,
+            Paths::PATH_SYSTEM_TMPFSLOG => DirectoryNames::SYSTEM_TMPFSLOG,
+            Paths::PATH_SYSTEM_CONFIG => DirectoryNames::SYSTEM_CONFIG,
+            Paths::PATH_SYSTEM_SBIN => DirectoryNames::SYSTEM_SBIN,
+            Paths::PATH_SYSTEM_BIN => DirectoryNames::SYSTEM_BIN,
+        ];
+
+        return $this->getLoxBerryHomePath().DIRECTORY_SEPARATOR.$pathMap[$pathToResolve];
     }
 }
