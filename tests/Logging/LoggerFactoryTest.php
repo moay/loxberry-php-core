@@ -3,6 +3,7 @@
 namespace LoxBerry\Tests\Logging;
 
 use LoxBerry\ConfigurationParser\SystemConfigurationParser;
+use LoxBerry\Logging\Database\LogFileDatabase;
 use LoxBerry\Logging\Database\LogFileDatabaseFactory;
 use LoxBerry\Logging\Logger;
 use LoxBerry\Logging\LoggerFactory;
@@ -42,6 +43,10 @@ class LoggerFactoryTest extends TestCase
         $pathProviderMock = $this->createMock(PathProvider::class);
         $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
 
+        $systemConfigurationMock->expects($this->once())
+            ->method('getLoxBerryVersion')
+            ->willReturn('1.5.0');
+
         $loggerFactory = new LoggerFactory(
             $databaseFactoryMock,
             $lowLevelMock,
@@ -50,26 +55,34 @@ class LoggerFactoryTest extends TestCase
         );
 
         $logger = $loggerFactory->create('eventLog', 'testPlugin', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
-        $this->markTestIncomplete();
-        // Logs LB version
-        // Logs Package/Plugin title and version
-        // Logs LogLevel
+        $loggedStuff = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
+        $this->assertStringContainsString('1.5.0', $loggedStuff);
     }
 
     public function testLogStartDatabaseQueriesAreProperlyExecutedIfFileWritingIsEnabled()
     {
-        $this->markTestIncomplete();
-        // Test log to db if writing to file
-        // Test logs sessino info to db including filename and package info
-        // Test logs params [append, loglevel, loglevel_is_static, logdir, LOGSTARTBYTE, _ISPLUGIN, PLUGINTITLE, stdout, stderr]
-    }
+        $databaseFactoryMock = $this->createMock(LogFileDatabaseFactory::class);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
+        $pathProviderMock = $this->createMock(PathProvider::class);
+        $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
+        $databaseMock = $this->createMock(LogFileDatabase::class);
 
-    public function testLogEndDatabaseQueriesAreProperlyExecutedIfFileWritingIsEnabled()
-    {
-        $this->markTestIncomplete();
-        // Test log to db if writing to file
-        // Test logs session info to db including filename and package info
-        // Test logs params [append, loglevel, loglevel_is_static, logdir, LOGSTARTBYTE, _ISPLUGIN, PLUGINTITLE, stdout, stderr, ATTENTIONMESSAGES, STATUS]
+        $databaseMock->expects($this->once())
+            ->method('logStart')
+            ->with('testPlugin', 'eventLog', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
+
+        $databaseFactoryMock
+            ->method('create')
+            ->willReturn($databaseMock);
+
+        $loggerFactory = new LoggerFactory(
+            $databaseFactoryMock,
+            $lowLevelMock,
+            $pathProviderMock,
+            $systemConfigurationMock
+        );
+
+        $logger = $loggerFactory->create('eventLog', 'testPlugin', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
     }
 
     protected function setUp(): void

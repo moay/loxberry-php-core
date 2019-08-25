@@ -46,6 +46,7 @@ class LoggerFactory
         $this->pathProvider = $pathProvider;
         $this->lowLevelExecutor = $lowLevelExecutor;
         $this->systemConfiguration = $systemConfiguration;
+        $this->database = $this->databaseFactory->create();
     }
 
     /**
@@ -70,6 +71,7 @@ class LoggerFactory
                 throw new \InvalidArgumentException('Cannot enable file writing without logFile');
             }
             $eventLogger->setFileWriter(new LogFileWriter($fileName));
+            $this->database->logStart($packageName, $logName, $fileName);
         }
         if ($writeToStdOut || $writeToStdErr) {
             $eventLogger->setSystemWriter(new LogSystemWriter($this->lowLevelExecutor));
@@ -82,6 +84,12 @@ class LoggerFactory
             new AttributeLogger($this->databaseFactory->create())
         );
 
+        $logger->setWriteToStdErr($writeToStdErr);
+        $logger->setWriteToStdOut($writeToStdOut);
+        $logger->setWriteToFile($writeToFile);
+
+        $logger->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
+
         return $logger;
     }
 
@@ -92,6 +100,12 @@ class LoggerFactory
      */
     public function createFromExistingLogSession(string $logKey): Logger
     {
-        // Todo: Test & implement, should also set all params from existing session if exists.
+        $session = $this->database->getUnclosedLogSessionByKey($logKey);
+        if (null !== $session) {
+            $stderr = $this->database->getAttribute($logKey, 'stderr') ?? false;
+            $stdout = $this->database->getAttribute($logKey, 'stdout') ?? false;
+
+            return $this->create($session['NAME'], $session['PACKAGE'], $session['FILENAME'], true, $stderr, $stdout);
+        }
     }
 }
