@@ -262,89 +262,93 @@ class LBSystem
         return $langarray;
     }
 
-    //###### Get Miniserver array #######
-    public static function get_miniservers()
-    {
-        // If config file was read already, directly return the saved hash
-        global $clouddnsaddress, $msClouddnsFetched;
-        global $miniservers;
-
-        if (!empty($msClouddnsFetched)) {
-            return $miniservers;
-        }
-
-        if (empty($miniservers)) {
-            self::read_generalcfg();
-        }
-
-        foreach ($miniservers as $msnr => $value) {
-            // CloudDNS handling
-            if ($miniservers[$msnr]['UseCloudDNS'] && $miniservers[$msnr]['CloudURL']) {
-                self::set_clouddns($msnr, $clouddnsaddress);
-            }
-            if (!$miniservers[$msnr]['Port']) {
-                $miniservers[$msnr]['Port'] = 80;
-            }
-
-            // Miniserver values consistency check
-            // If a Miniserver entry is not plausible, the full Miniserver entry is deleted
-            if (empty($miniservers[$msnr]['Name']) || empty($miniservers[$msnr]['IPAddress']) || empty($miniservers[$msnr]['Admin']) || empty($miniservers[$msnr]['Pass']) || empty($miniservers[$msnr]['Port'])) {
-                unset($miniservers[$msnr]);
-            }
-        }
-        $msClouddnsFetched = 1;
-
-        return $miniservers;
-    }
-
-    //###### Get Miniserver key by IP Address #######
-    public static function get_miniserver_by_ip($ip)
-    {
-        global $miniservers;
-        $ip = trim(strtolower($ip));
-
-        if (!$miniservers) {
-            self::read_generalcfg();
-        }
-
-        foreach ($miniservers as $key => $ms) {
-            if (strtolower($ms['IPAddress']) == $ip) {
-                return $key;
-            }
-        }
-    }
-
-    //###### Get Miniserver key by Name #######
-    public static function get_miniserver_by_name($myname)
-    {
-        global $miniservers;
-        $myname = trim(strtolower($myname));
-
-        if (!$miniservers) {
-            self::read_generalcfg();
-        }
-
-        foreach ($miniservers as $key => $ms) {
-            if (strtolower($ms['Name']) == $myname) {
-                return $key;
-            }
-        }
-    }
-
-    //###### Get Binaries #######
-    public static function get_binaries()
-    {
-        global $binaries;
-        if ($binaries) {
-            return $binaries;
-        }
-
-        if (!isset($miniservers)) {
-            self::read_generalcfg();
-
-            return $binaries;
-        }
-    }
+//    /**DONE**/
+//    //###### Get Miniserver array #######
+//    public static function get_miniservers()
+//    {
+//        // If config file was read already, directly return the saved hash
+//        global $clouddnsaddress, $msClouddnsFetched;
+//        global $miniservers;
+//
+//        if (!empty($msClouddnsFetched)) {
+//            return $miniservers;
+//        }
+//
+//        if (empty($miniservers)) {
+//            self::read_generalcfg();
+//        }
+//
+//        foreach ($miniservers as $msnr => $value) {
+//            // CloudDNS handling
+//            if ($miniservers[$msnr]['UseCloudDNS'] && $miniservers[$msnr]['CloudURL']) {
+//                self::set_clouddns($msnr, $clouddnsaddress);
+//            }
+//            if (!$miniservers[$msnr]['Port']) {
+//                $miniservers[$msnr]['Port'] = 80;
+//            }
+//
+//            // Miniserver values consistency check
+//            // If a Miniserver entry is not plausible, the full Miniserver entry is deleted
+//            if (empty($miniservers[$msnr]['Name']) || empty($miniservers[$msnr]['IPAddress']) || empty($miniservers[$msnr]['Admin']) || empty($miniservers[$msnr]['Pass']) || empty($miniservers[$msnr]['Port'])) {
+//                unset($miniservers[$msnr]);
+//            }
+//        }
+//        $msClouddnsFetched = 1;
+//
+//        return $miniservers;
+//    }
+//
+//    /**DONE**/
+//    //###### Get Miniserver key by IP Address #######
+//    public static function get_miniserver_by_ip($ip)
+//    {
+//        global $miniservers;
+//        $ip = trim(strtolower($ip));
+//
+//        if (!$miniservers) {
+//            self::read_generalcfg();
+//        }
+//
+//        foreach ($miniservers as $key => $ms) {
+//            if (strtolower($ms['IPAddress']) == $ip) {
+//                return $key;
+//            }
+//        }
+//    }
+//
+//    /**DONE**/
+//    //###### Get Miniserver key by Name #######
+//    public static function get_miniserver_by_name($myname)
+//    {
+//        global $miniservers;
+//        $myname = trim(strtolower($myname));
+//
+//        if (!$miniservers) {
+//            self::read_generalcfg();
+//        }
+//
+//        foreach ($miniservers as $key => $ms) {
+//            if (strtolower($ms['Name']) == $myname) {
+//                return $key;
+//            }
+//        }
+//    }
+//
+//    /**DONE**/
+//    //###### Get Binaries #######
+//    public static function get_binaries()
+//    {
+//        global $binaries;
+//        if ($binaries) {
+//            return $binaries;
+//        }
+//
+//        if (!isset($miniservers)) {
+//            self::read_generalcfg();
+//
+//            return $binaries;
+//        }
+//    }
 
     //#################################################################################
     // Get Plugin Version
@@ -390,30 +394,31 @@ class LBSystem
         return $plugin['PLUGINDB_LOGLEVEL'] ?? 0;
     }
 
-    //#################################################################################
-    // Get Plugindata
-    // Returns the data of the current or named plugin
-    //#################################################################################
-    public static function plugindata($queryname = '')
-    {
-        global $pluginversion;
-        global $lbpplugindir;
-
-        $query = '' != $queryname ? $queryname : $lbpplugindir;
-
-        $plugins = self::get_plugins();
-
-        foreach ($plugins as $plugin) {
-            if ('' != $queryname && ($plugin['PLUGINDB_NAME'] == $queryname || $plugin['PLUGINDB_FOLDER'] == $queryname)) {
-                return $plugin;
-            }
-            if ('' == $queryname && $plugin['PLUGINDB_FOLDER'] == $lbpplugindir) {
-                $pluginversion = $plugin['PLUGINDB_VERSION'];
-
-                return $plugin;
-            }
-        }
-    }
+//    /**DONE**/
+//    //#################################################################################
+//    // Get Plugindata
+//    // Returns the data of the current or named plugin
+//    //#################################################################################
+//    public static function plugindata($queryname = '')
+//    {
+//        global $pluginversion;
+//        global $lbpplugindir;
+//
+//        $query = '' != $queryname ? $queryname : $lbpplugindir;
+//
+//        $plugins = self::get_plugins();
+//
+//        foreach ($plugins as $plugin) {
+//            if ('' != $queryname && ($plugin['PLUGINDB_NAME'] == $queryname || $plugin['PLUGINDB_FOLDER'] == $queryname)) {
+//                return $plugin;
+//            }
+//            if ('' == $queryname && $plugin['PLUGINDB_FOLDER'] == $lbpplugindir) {
+//                $pluginversion = $plugin['PLUGINDB_VERSION'];
+//
+//                return $plugin;
+//            }
+//        }
+//    }
 
     //#################################################################################
     // Get Plugins
@@ -504,79 +509,81 @@ class LBSystem
         return $plugindb_timestamp;
     }
 
-    //#################################################################################
-    // Get System Version
-    // Returns LoxBerry version
-    //#################################################################################
-    public static function lbversion()
-    {
-        global $lbversion;
-
-        if ($lbversion) {
-            return $lbversion;
-        }
-        self::read_generalcfg();
-
-        return $lbversion;
-    }
-
-    //########################################################################
-    // INTERNAL function read_generalcfg
-    //########################################################################
-    public static function read_generalcfg()
-    {
-        global $miniservers;
-        global $miniservercount;
-        global $cfg;
-        global $binaries;
-        global $lbversion;
-        global $lbfriendlyname;
-        global $lblang;
-        global $cfgwasread;
-        global $webserverport;
-        global $clouddnsaddress;
-
-        //	print ("READ miniservers FROM DISK\n");
-
-        $cfg = parse_ini_file(LBHOMEDIR.'/config/system/general.cfg', true, INI_SCANNER_RAW) or error_log('LoxBerry System ERROR: Could not read general.cfg in '.LBHOMEDIR.'/config/system/');
-        $cfgwasread = 1;
-        // error_log("general.cfg Base: " . $cfg['BASE']['VERSION']);
-
-        // Get CloudDNS and Timezones, System language
-        $clouddnsaddress = $cfg['BASE']['CLOUDDNS'] or error_log('LoxBerry System Warning: BASE.CLOUDDNS not defined.');
-        $lbtimezone = $cfg['TIMESERVER']['ZONE'] or error_log('LoxBerry System Warning: TIMESERVER.ZONE not defined.');
-        $lbversion = $cfg['BASE']['VERSION'] or error_log('LoxBerry System Warning: BASE.VERSION not defined.');
-        $lbfriendlyname = $cfg['NETWORK']['FRIENDLYNAME'] ?? null;
-        $webserverport = $cfg['WEBSERVER']['PORT'] ?? null;
-        $lblang = $cfg['BASE']['LANG'] ?? null;
-        // error_log("read_generalcfg: Language is $lblang");
-        $binaries = $cfg['BINARIES'];
-
-        // If no miniservers are defined, return NULL
-        $miniservercount = $cfg['BASE']['MINISERVERS'];
-        if (!$miniservercount || $miniservercount < 1) {
-            return;
-        }
-
-        for ($msnr = 1; $msnr <= $miniservercount; ++$msnr) {
-            $miniservers[$msnr]['Name'] = $cfg["MINISERVER$msnr"]['NAME'];
-            $miniservers[$msnr]['IPAddress'] = $cfg["MINISERVER$msnr"]['IPADDRESS'];
-            $miniservers[$msnr]['Admin'] = $cfg["MINISERVER$msnr"]['ADMIN'];
-            $miniservers[$msnr]['Pass'] = $cfg["MINISERVER$msnr"]['PASS'];
-            $miniservers[$msnr]['Credentials'] = $miniservers[$msnr]['Admin'].':'.$miniservers[$msnr]['Pass'];
-            $miniservers[$msnr]['Note'] = $cfg["MINISERVER$msnr"]['NOTE'];
-            $miniservers[$msnr]['Port'] = $cfg["MINISERVER$msnr"]['PORT'];
-            $miniservers[$msnr]['UseCloudDNS'] = $cfg["MINISERVER$msnr"]['USECLOUDDNS'];
-            $miniservers[$msnr]['CloudURLFTPPort'] = $cfg["MINISERVER$msnr"]['CLOUDURLFTPPORT'];
-            $miniservers[$msnr]['CloudURL'] = $cfg["MINISERVER$msnr"]['CLOUDURL'];
-            $miniservers[$msnr]['Admin_RAW'] = urldecode($miniservers[$msnr]['Admin']);
-            $miniservers[$msnr]['Pass_RAW'] = urldecode($miniservers[$msnr]['Pass']);
-            $miniservers[$msnr]['Credentials_RAW'] = $miniservers[$msnr]['Admin_RAW'].':'.$miniservers[$msnr]['Pass_RAW'];
-
-            $miniservers[$msnr]['SecureGateway'] = isset($cfg["MINISERVER$msnr"]['SECUREGATEWAY']) && is_enabled($cfg["MINISERVER$msnr"]['SECUREGATEWAY']) ? 1 : 0;
-            $miniservers[$msnr]['EncryptResponse'] = isset($cfg["MINISERVER$msnr"]['ENCRYPTRESPONSE']) && is_enabled($cfg["MINISERVER$msnr"]['ENCRYPTRESPONSE']) ? 1 : 0;
-        }
-    }
+//    /**DONE**/
+//    //#################################################################################
+//    // Get System Version
+//    // Returns LoxBerry version
+//    //#################################################################################
+//    public static function lbversion()
+//    {
+//        global $lbversion;
+//
+//        if ($lbversion) {
+//            return $lbversion;
+//        }
+//        self::read_generalcfg();
+//
+//        return $lbversion;
+//    }
+//
+//    /**DONE**/
+//    //########################################################################
+//    // INTERNAL function read_generalcfg
+//    //########################################################################
+//    public static function read_generalcfg()
+//    {
+//        global $miniservers;
+//        global $miniservercount;
+//        global $cfg;
+//        global $binaries;
+//        global $lbversion;
+//        global $lbfriendlyname;
+//        global $lblang;
+//        global $cfgwasread;
+//        global $webserverport;
+//        global $clouddnsaddress;
+//
+//        //	print ("READ miniservers FROM DISK\n");
+//
+//        $cfg = parse_ini_file(LBHOMEDIR.'/config/system/general.cfg', true, INI_SCANNER_RAW) or error_log('LoxBerry System ERROR: Could not read general.cfg in '.LBHOMEDIR.'/config/system/');
+//        $cfgwasread = 1;
+//        // error_log("general.cfg Base: " . $cfg['BASE']['VERSION']);
+//
+//        // Get CloudDNS and Timezones, System language
+//        $clouddnsaddress = $cfg['BASE']['CLOUDDNS'] or error_log('LoxBerry System Warning: BASE.CLOUDDNS not defined.');
+//        $lbtimezone = $cfg['TIMESERVER']['ZONE'] or error_log('LoxBerry System Warning: TIMESERVER.ZONE not defined.');
+//        $lbversion = $cfg['BASE']['VERSION'] or error_log('LoxBerry System Warning: BASE.VERSION not defined.');
+//        $lbfriendlyname = $cfg['NETWORK']['FRIENDLYNAME'] ?? null;
+//        $webserverport = $cfg['WEBSERVER']['PORT'] ?? null;
+//        $lblang = $cfg['BASE']['LANG'] ?? null;
+//        // error_log("read_generalcfg: Language is $lblang");
+//        $binaries = $cfg['BINARIES'];
+//
+//        // If no miniservers are defined, return NULL
+//        $miniservercount = $cfg['BASE']['MINISERVERS'];
+//        if (!$miniservercount || $miniservercount < 1) {
+//            return;
+//        }
+//
+//        for ($msnr = 1; $msnr <= $miniservercount; ++$msnr) {
+//            $miniservers[$msnr]['Name'] = $cfg["MINISERVER$msnr"]['NAME'];
+//            $miniservers[$msnr]['IPAddress'] = $cfg["MINISERVER$msnr"]['IPADDRESS'];
+//            $miniservers[$msnr]['Admin'] = $cfg["MINISERVER$msnr"]['ADMIN'];
+//            $miniservers[$msnr]['Pass'] = $cfg["MINISERVER$msnr"]['PASS'];
+//            $miniservers[$msnr]['Credentials'] = $miniservers[$msnr]['Admin'].':'.$miniservers[$msnr]['Pass'];
+//            $miniservers[$msnr]['Note'] = $cfg["MINISERVER$msnr"]['NOTE'];
+//            $miniservers[$msnr]['Port'] = $cfg["MINISERVER$msnr"]['PORT'];
+//            $miniservers[$msnr]['UseCloudDNS'] = $cfg["MINISERVER$msnr"]['USECLOUDDNS'];
+//            $miniservers[$msnr]['CloudURLFTPPort'] = $cfg["MINISERVER$msnr"]['CLOUDURLFTPPORT'];
+//            $miniservers[$msnr]['CloudURL'] = $cfg["MINISERVER$msnr"]['CLOUDURL'];
+//            $miniservers[$msnr]['Admin_RAW'] = urldecode($miniservers[$msnr]['Admin']);
+//            $miniservers[$msnr]['Pass_RAW'] = urldecode($miniservers[$msnr]['Pass']);
+//            $miniservers[$msnr]['Credentials_RAW'] = $miniservers[$msnr]['Admin_RAW'].':'.$miniservers[$msnr]['Pass_RAW'];
+//
+//            $miniservers[$msnr]['SecureGateway'] = isset($cfg["MINISERVER$msnr"]['SECUREGATEWAY']) && is_enabled($cfg["MINISERVER$msnr"]['SECUREGATEWAY']) ? 1 : 0;
+//            $miniservers[$msnr]['EncryptResponse'] = isset($cfg["MINISERVER$msnr"]['ENCRYPTRESPONSE']) && is_enabled($cfg["MINISERVER$msnr"]['ENCRYPTRESPONSE']) ? 1 : 0;
+//        }
+//    }
 
     //###################################################
     // set_clouddns
@@ -727,6 +734,7 @@ class LBSystem
         return $miniservers[$msnr]['FTPPort'];
     }
 
+
     //###################################################
     // get_localip - Get local ip address
     //###################################################
@@ -741,58 +749,62 @@ class LBSystem
     }
 }
 
-// END of class LBSystem
 
-//###################################################
-// is_enabled - tries to detect if a string says 'True'
-//###################################################
-function is_enabled($text)
-{
-    $text = trim($text);
-    $text = strtolower($text);
 
-    $words = ['true', 'yes', 'on', 'enabled', 'enable', '1', 'check', 'checked', 'select', 'selected'];
-    if (in_array($text, $words)) {
-        return 1;
-    }
+///**DONE**/
+////###################################################
+//// is_enabled - tries to detect if a string says 'True'
+////###################################################
+//function is_enabled($text)
+//{
+//    $text = trim($text);
+//    $text = strtolower($text);
+//
+//    $words = ['true', 'yes', 'on', 'enabled', 'enable', '1', 'check', 'checked', 'select', 'selected'];
+//    if (in_array($text, $words)) {
+//        return 1;
+//    }
+//
+//    return null;
+//}
+//
+///**DONE**/
+////###################################################
+//// is_disabled - tries to detect if a string says 'False'
+////###################################################
+//function is_disabled($text)
+//{
+//    if (!isset($text)) {
+//        return 1;
+//    }
+//    $text = trim($text);
+//    $text = strtolower($text);
+//
+//    $words = ['false', 'no', 'off', 'disabled', 'disable', '0'];
+//    if (in_array($text, $words)) {
+//        return 1;
+//    }
+//
+//    return null;
+//}
+//
+///**DONE**/
+////###################################################
+//// lbfriendlyname - Returns the friendly name
+////###################################################
+//function lbfriendlyname()
+//{
+//    global $cfgwasread;
+//    global $lbfriendlyname;
+//
+//    if (!$cfgwasread) {
+//        LBSystem::read_generalcfg();
+//    }
+//
+//    // print STDERR "LBSYSTEM lbfriendlyname $lbfriendlyname\n";
+//    return $lbfriendlyname;
+//}
 
-    return null;
-}
-
-//###################################################
-// is_disabled - tries to detect if a string says 'False'
-//###################################################
-function is_disabled($text)
-{
-    if (!isset($text)) {
-        return 1;
-    }
-    $text = trim($text);
-    $text = strtolower($text);
-
-    $words = ['false', 'no', 'off', 'disabled', 'disable', '0'];
-    if (in_array($text, $words)) {
-        return 1;
-    }
-
-    return null;
-}
-
-//###################################################
-// lbfriendlyname - Returns the friendly name
-//###################################################
-function lbfriendlyname()
-{
-    global $cfgwasread;
-    global $lbfriendlyname;
-
-    if (!$cfgwasread) {
-        LBSystem::read_generalcfg();
-    }
-
-    // print STDERR "LBSYSTEM lbfriendlyname $lbfriendlyname\n";
-    return $lbfriendlyname;
-}
 
 //###################################################
 // lbhostname - Returns the network hostname
@@ -802,23 +814,24 @@ function lbhostname()
     return gethostname();
 }
 
-//###################################################
-// lbwebserverport - Returns Apaches webserver port
-//###################################################
-function lbwebserverport()
-{
-    global $cfgwasread;
-    global $webserverport;
-
-    if (!$cfgwasread) {
-        LBSystem::read_generalcfg();
-    }
-    if (!$webserverport) {
-        $webserverport = 80;
-    }
-
-    return $webserverport;
-}
+///**DONE**/
+////###################################################
+//// lbwebserverport - Returns Apaches webserver port
+////###################################################
+//function lbwebserverport()
+//{
+//    global $cfgwasread;
+//    global $webserverport;
+//
+//    if (!$cfgwasread) {
+//        LBSystem::read_generalcfg();
+//    }
+//    if (!$webserverport) {
+//        $webserverport = 80;
+//    }
+//
+//    return $webserverport;
+//}
 
 //###################################################
 // currtime - Returns current in different formats

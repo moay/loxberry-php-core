@@ -109,11 +109,11 @@ class SystemConfigurationParser extends ConfigurationParser
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getWebserverPort(): ?int
+    public function getWebserverPort(): int
     {
-        return $this->get(self::SECTION_WEBSERVER, 'PORT') ?? null;
+        return $this->get(self::SECTION_WEBSERVER, 'PORT') ?? 80;
     }
 
     /**

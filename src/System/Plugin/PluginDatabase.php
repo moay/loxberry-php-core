@@ -65,6 +65,26 @@ class PluginDatabase
         ));
     }
 
+    /**
+     * @param string $pluginName
+     *
+     * @return bool
+     */
+    public function isInstalledPlugin(string $pluginName): bool
+    {
+        if (null === $this->plugins) {
+            $this->loadDatabase();
+        }
+
+        foreach ($this->plugins as $pluginInformation) {
+            if ($pluginInformation->getName() === $pluginName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function loadDatabase()
     {
         $databaseFileName = $this->pathProvider->getPath(Paths::PATH_PLUGIN_DATABASE_FILE);

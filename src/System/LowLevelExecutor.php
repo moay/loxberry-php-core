@@ -79,6 +79,33 @@ class LowLevelExecutor
     }
 
     /**
+     * @param $filename
+     * @param bool        $use_include_path
+     * @param string|null $context
+     * @param int         $offset
+     * @param int|null    $maxlen
+     *
+     * @return string|bool
+     */
+    public function fileGetContents($filename, bool $use_include_path = false, $context = null, int $offset = 0, ?int $maxlen = null)
+    {
+        return $this->execLowLevelFunction('file_get_contents', [$filename, $use_include_path, $context, $offset, $maxlen]);
+    }
+
+    /**
+     * @param resource $socket
+     * @param string   $buf
+     * @param int      $len
+     * @param int      $flags
+     * @param string   $addr
+     * @param int      $port
+     */
+    public function sendToSocket($socket, string $buf, int $len, int $flags, string $addr, int $port = 0)
+    {
+        $this->execLowLevelFunction('socket_sendto', func_get_args());
+    }
+
+    /**
      * @param string $functionName
      * @param $arguments
      *

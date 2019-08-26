@@ -17,4 +17,5 @@ class DirectoryNames
     const SYSTEM_SBIN = 'sbin';
     const SYSTEM_BIN = 'bin';
     const SYSTEM_IMAGES = 'system/images';
+    const SYSTEM_UDP_CACHE = 'run/shm';
 }

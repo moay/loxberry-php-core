@@ -104,6 +104,19 @@ class PluginDatabaseTest extends TestCase
         $pluginDatabase->getName();
     }
 
+    public function testIdentifiesInstalledPluginsCorrectly()
+    {
+        $pathProviderMock = $this->createMock(PathProvider::class);
+        $pathProviderMock->expects($this->once())
+            ->method('getPath')
+            ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+
+        $pluginDatabase = new PluginDatabase($pathProviderMock);
+        $this->assertTrue($pluginDatabase->isInstalledPlugin('sensebox'));
+        $this->assertFalse($pluginDatabase->isInstalledPlugin('unknownPlugin'));
+    }
+
     public function expectedPluginInformation()
     {
         return [

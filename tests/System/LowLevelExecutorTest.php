@@ -91,6 +91,28 @@ class LowLevelExecutorTest extends TestCase
         $lowLevel->fwrite(STDERR, 'testmessage');
     }
 
+    public function testFileContentsAreReadProperly()
+    {
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
+        $lowLevel->expects($this->once())
+            ->method('execLowLevelFunction')
+            ->with('file_get_contents', ['testfile', true, null, 0, null])
+            ->willReturn(true);
+
+        $lowLevel->fileGetContents('testfile', true);
+    }
+
+    public function testSocketSending()
+    {
+        $lowLevel = $this->createPartialMock(LowLevelExecutor::class, ['execLowLevelFunction']);
+        $lowLevel->expects($this->once())
+            ->method('execLowLevelFunction')
+            ->with('socket_sendto', ['testsocket', 'testmessage', 11, 0, '123.123.123.123', 50])
+            ->willReturn(true);
+
+        $lowLevel->sendToSocket('testsocket', 'testmessage', 11, 0, '123.123.123.123', 50);
+    }
+
     public function testLowLevelExecutionRunsNativeFunctions()
     {
         $lowLevel = new LowLevelExecutor();
