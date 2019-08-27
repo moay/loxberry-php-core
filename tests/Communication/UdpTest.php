@@ -98,12 +98,12 @@ class UdpTest extends TestCase
         $cacheMock
             ->expects($this->at(0))
             ->method('get')
-            ->with('UDP_CACHING_LAST_FULL_PUSH')
+            ->with('COMMUNICATION_CACHINGLAST_FULL_PUSH')
             ->willReturn((time() - 3200));
         $cacheMock
             ->expects($this->at(1))
             ->method('get')
-            ->with('UDP_CACHING_LAST_REBOOT_CHECK')
+            ->with('COMMUNICATION_CACHINGLAST_REBOOT_CHECK')
             ->willReturn(time() - 100);
         $cacheMock
             ->expects($this->at(2))
@@ -143,7 +143,7 @@ class UdpTest extends TestCase
         $cacheMock
             ->expects($this->at(0))
             ->method('get')
-            ->with('UDP_CACHING_LAST_FULL_PUSH')
+            ->with('COMMUNICATION_CACHINGLAST_FULL_PUSH')
             ->willReturn(time() - 4200);
 
         $lowLevelMock = $this->createMock(LowLevelExecutor::class);
@@ -175,17 +175,17 @@ class UdpTest extends TestCase
         $cacheMock
             ->expects($this->at(0))
             ->method('get')
-            ->with('UDP_CACHING_LAST_FULL_PUSH')
+            ->with('COMMUNICATION_CACHINGLAST_FULL_PUSH')
             ->willReturn(time() - 200);
         $cacheMock
             ->expects($this->at(1))
             ->method('get')
-            ->with('UDP_CACHING_LAST_REBOOT_CHECK')
+            ->with('COMMUNICATION_CACHINGLAST_REBOOT_CHECK')
             ->willReturn(time() - 500);
         $cacheMock
             ->expects($this->at(3))
             ->method('get')
-            ->with('UDP_CACHING_TXP')
+            ->with('COMMUNICATION_CACHINGTXP')
             ->willReturn(200);
 
         $lowLevelMock = $this->createMock(LowLevelExecutor::class);

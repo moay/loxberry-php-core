@@ -10,9 +10,9 @@ use LoxBerry\ConfigurationParser\MiniserverInformation;
  */
 abstract class AbstractCachingCommunicator
 {
-    private const CACHE_KEY_LAST_FULL_PUSH = 'UDP_CACHING_LAST_FULL_PUSH';
-    private const CACHE_KEY_MINISERVER_LAN_PACKAGES = 'UDP_CACHING_TXP';
-    private const CACHE_KEY_LAST_REBOOT_CHECK = 'UDP_CACHING_LAST_REBOOT_CHECK';
+    private const CACHE_KEY_LAST_FULL_PUSH = 'COMMUNICATION_CACHINGLAST_FULL_PUSH';
+    private const CACHE_KEY_MINISERVER_LAN_PACKAGES = 'COMMUNICATION_CACHINGTXP';
+    private const CACHE_KEY_LAST_REBOOT_CHECK = 'COMMUNICATION_CACHINGLAST_REBOOT_CHECK';
 
     private const FULL_PUSH_INTERVAL_DEFAULT = 3600;
     private const REBOOT_CHECK_INTERVAL = 300;
