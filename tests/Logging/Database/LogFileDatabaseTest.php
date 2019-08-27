@@ -4,6 +4,7 @@ namespace LoxBerry\Tests\Logging\Database;
 
 use LoxBerry\Exceptions\LogFileDatabaseException;
 use LoxBerry\Logging\Database\LogFileDatabase;
+use LoxBerry\Tests\Helpers\RetryTrait;
 use Medoo\Medoo;
 use PHPUnit\Framework\TestCase;
 
@@ -12,6 +13,8 @@ use PHPUnit\Framework\TestCase;
  */
 class LogFileDatabaseTest extends TestCase
 {
+    use RetryTrait;
+
     const TEST_DB_FILE = __DIR__.'/test.dat';
 
     /** @var Medoo|\PHPUnit\Framework\MockObject\MockObject */
@@ -27,6 +30,9 @@ class LogFileDatabaseTest extends TestCase
         $this->removeTestDbFile();
     }
 
+    /**
+     * @retry 5
+     */
     public function testDatabaseIsInitializedProperly()
     {
         $this->setupDatabaseMock(['query', 'create']);
@@ -156,6 +162,9 @@ class LogFileDatabaseTest extends TestCase
         $this->assertEquals('testValue123', $logFileDatabase->getAttribute('test', 'testAttrib'));
     }
 
+    /**
+     * @retry 5
+     */
     public function testLogStartIsWrittenProperly()
     {
         $now = new \DateTime();
@@ -178,6 +187,9 @@ class LogFileDatabaseTest extends TestCase
         $this->assertEquals(123, $logFileDatabase->logStart('test', 'testName', 'testFile', $now));
     }
 
+    /**
+     * @retry 5
+     */
     public function testLogStartUsesCurrentDateAsDefaultIfNotProvided()
     {
         $now = new \DateTime();
@@ -191,6 +203,9 @@ class LogFileDatabaseTest extends TestCase
         $this->assertEquals($now->format('Y-m-d H:i:s'), $databaseRecord['LOGSTART']);
     }
 
+    /**
+     * @retry 5
+     */
     public function testLogEndChangesExistingRecordProperly()
     {
         $now = new \DateTime();
