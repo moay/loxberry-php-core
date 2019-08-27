@@ -41,7 +41,7 @@ class PathProviderTest extends TestCase
             ['LBSCONFIGDIR', '/opt/loxberry/config/system'],
             ['LBSSBINDIR', '/opt/loxberry/sbin'],
             ['LBSBINDIR', '/opt/loxberry/bin'],
-            ['LBSUDPCACHEDIR', '/opt/loxberry/run/shm'],
+            ['LBSCOMMUNICATIONCACHEDIR', '/opt/loxberry/run/shm'],
             ['LOG_DATABASE_FILE', '/opt/loxberry/log/system_tmpfs/logs_sqlite.dat'],
             ['PLUGIN_DATABASE_FILE', '/opt/loxberry/data/system/plugindatabase.dat'],
             ['REBOOT_REQUIRED_FILE', '/opt/loxberry/log/system_tmpfs/reboot.required'],

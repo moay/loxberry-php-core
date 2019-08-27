@@ -1,23 +1,21 @@
 <?php
 
-namespace LoxBerry\Communication\Udp;
+namespace LoxBerry\Communication;
 
+use LoxBerry\Communication\ValueCache\UdpValueCache;
 use LoxBerry\ConfigurationParser\MiniserverInformation;
 use LoxBerry\System\LowLevelExecutor;
 
 /**
  * Class Udp.
  */
-class Udp
+class Udp extends AbstractCachingCommunicator
 {
-    const UDP_DELIMITER = '=';
-    const UDP_MAXLENGHT = 220;
+    private const UDP_DELIMITER = '=';
+    private const UDP_MAXLENGTH = 220;
 
     /** @var int */
     private $udpPort;
-
-    /** @var UdpValueCache */
-    private $cache;
 
     /** @var LowLevelExecutor */
     private $lowLevelExecutor;
@@ -31,10 +29,11 @@ class Udp
      * @param UdpValueCache    $cache
      * @param LowLevelExecutor $lowLevelExecutor
      */
-    public function __construct(UdpValueCache $cache, LowLevelExecutor $lowLevelExecutor)
+    public function __construct(UdpValueCache $cache, LowLevelExecutor $lowLevelExecutor, Http $http)
     {
         $this->cache = $cache;
         $this->lowLevelExecutor = $lowLevelExecutor;
+        $this->http = $http;
 
         $this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
     }
@@ -70,7 +69,11 @@ class Udp
      */
     public function pushChanged(MiniserverInformation $miniserver, array $data, ?string $prefix = null)
     {
-        $data = $this->filterChangedValues($miniserver, $data);
+        if (null === $this->udpPort) {
+            throw new \LogicException('Cannot execute UDP call, port must be set first via setUdpPort');
+        }
+
+        $data = $this->handleCaching($miniserver, $data);
 
         $this->push($miniserver, $data, $prefix);
     }
@@ -90,6 +93,14 @@ class Udp
     }
 
     /**
+     * @return int
+     */
+    public function getUdpPort(): int
+    {
+        return $this->udpPort;
+    }
+
+    /**
      * @param array       $data
      * @param string|null $prefix
      *
@@ -103,12 +114,12 @@ class Udp
 
         foreach ($data as $key => $value) {
             $preparedValue = $key.self::UDP_DELIMITER.$value;
-            if (($prefixStrLength + strlen($message.$preparedValue)) > self::UDP_MAXLENGHT) {
+            if (($prefixStrLength + strlen($message.$preparedValue)) > self::UDP_MAXLENGTH) {
                 $messages[] = $message;
                 $message = '';
             }
 
-            if (strlen($message.$preparedValue) > self::UDP_MAXLENGHT) {
+            if (strlen($message.$preparedValue) > self::UDP_MAXLENGTH) {
                 // Message too long for udp, skipping
                 continue;
             }
@@ -118,27 +129,6 @@ class Udp
         $messages[] = rtrim($message);
 
         return $messages;
-    }
-
-    /**
-     * @param MiniserverInformation $miniserver
-     * @param array                 $data
-     *
-     * @return array
-     */
-    private function filterChangedValues(MiniserverInformation $miniserver, array $data): array
-    {
-        $filteredData = [];
-        foreach ($data as $key => $value) {
-            if (!$this->cache->valueDiffersFromStored($key, $value, $miniserver->getIpAddress(), $this->udpPort)) {
-                continue;
-            }
-
-            $this->cache->storeValue($key, $value, $miniserver->getIpAddress(), $this->udpPort);
-            $filteredData[$key] = $value;
-        }
-
-        return $filteredData;
     }
 
     /**

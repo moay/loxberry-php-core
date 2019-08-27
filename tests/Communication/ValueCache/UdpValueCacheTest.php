@@ -1,8 +1,9 @@
 <?php
 
-namespace LoxBerry\Tests\Communication\Udp;
+namespace LoxBerry\Tests\Communication\ValueCache;
 
-use LoxBerry\Communication\Udp\UdpValueCache;
+use LoxBerry\Communication\ValueCache\UdpValueCache;
+use LoxBerry\System\LowLevelExecutor;
 use LoxBerry\System\PathProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UdpValueCacheTest extends TestCase
 {
-    const TEST_CACHE_DIR = __DIR__.'/tmp';
+    const TEST_CACHE_DIR = __DIR__.'/tmp_udp';
 
     public function testStoresValuesCorrectly()
     {
@@ -20,10 +21,29 @@ class UdpValueCacheTest extends TestCase
             ->method('getPath')
             ->willReturn(self::TEST_CACHE_DIR);
 
-        $cache = new UdpValueCache($pathProviderMock);
-        $cache->storeValue('testkey', 'testvalue', '123.123.0.1', 9000);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
+
+        $cache = new UdpValueCache($pathProviderMock, $lowLevelMock);
+        $cache->put('testkey', 'testvalue', '123.123.0.1', 9000);
         $content = file_get_contents(self::TEST_CACHE_DIR.'/msudp_mem_'.md5('123.123.0.1').'_9000.json');
-        $this->assertStringContainsString('"testkey":"testvalue"', $content);
+        $this->assertStringContainsString('"testkey": "testvalue"', $content);
+    }
+
+    public function testReturnsStoredValuesCorrectly()
+    {
+        $pathProviderMock = $this->createMock(PathProvider::class);
+        $pathProviderMock->expects($this->once())
+            ->method('getPath')
+            ->willReturn(self::TEST_CACHE_DIR);
+
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
+
+        $cache = new UdpValueCache($pathProviderMock, $lowLevelMock);
+        $this->assertNull($cache->get('testkey', '123.123.0.1', 9000));
+        $cache->put('testkey', 'testvalue', '123.123.0.1', 9000);
+        $content = file_get_contents(self::TEST_CACHE_DIR.'/msudp_mem_'.md5('123.123.0.1').'_9000.json');
+        $this->assertStringContainsString('"testkey": "testvalue"', $content);
+        $this->assertSame('testvalue', $cache->get('testkey', '123.123.0.1', 9000));
     }
 
     public function testIdentifiesValueStateCorrectly()
@@ -33,8 +53,10 @@ class UdpValueCacheTest extends TestCase
             ->method('getPath')
             ->willReturn(self::TEST_CACHE_DIR);
 
-        $cache = new UdpValueCache($pathProviderMock);
-        $cache->storeValue('testkey', 'testvalue', '123.123.0.1', 9000);
+        $lowLevelMock = $this->createMock(LowLevelExecutor::class);
+
+        $cache = new UdpValueCache($pathProviderMock, $lowLevelMock);
+        $cache->put('testkey', 'testvalue', '123.123.0.1', 9000);
 
         $this->assertFalse($cache->valueDiffersFromStored('testkey', 'testvalue', '123.123.0.1', 9000));
         $this->assertTrue($cache->valueDiffersFromStored('testkey', 'differingValue', '123.123.0.1', 9000));
