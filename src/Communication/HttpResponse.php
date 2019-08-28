@@ -8,7 +8,7 @@ namespace LoxBerry\Communication;
 class HttpResponse
 {
     /** @var string|null */
-    private $content;
+    private $value;
 
     /** @var int */
     private $responseCode;
@@ -19,13 +19,13 @@ class HttpResponse
     /**
      * HttpResponse constructor.
      *
-     * @param string|null $content
+     * @param string|null $value
      * @param int         $responseCode
      * @param string|null $rawResponse
      */
-    public function __construct(?string $content = null, int $responseCode = 500, ?string $rawResponse = null)
+    public function __construct(?string $value = null, int $responseCode = 500, ?string $rawResponse = null)
     {
-        $this->content = $content;
+        $this->value = $value;
         $this->responseCode = $responseCode;
         $this->rawResponse = $rawResponse;
     }
@@ -33,9 +33,9 @@ class HttpResponse
     /**
      * @return string|null
      */
-    public function getContent(): ?string
+    public function getValue(): ?string
     {
-        return $this->content;
+        return $this->value;
     }
 
     /**

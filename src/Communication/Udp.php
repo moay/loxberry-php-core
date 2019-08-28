@@ -18,7 +18,7 @@ class Udp extends AbstractCachingCommunicator
     private $udpPort;
 
     /** @var LowLevelExecutor */
-    private $lowLevelExecutor;
+    private $lowLevel;
 
     /** @var resource */
     private $socket;
@@ -27,12 +27,12 @@ class Udp extends AbstractCachingCommunicator
      * Udp constructor.
      *
      * @param UdpValueCache    $cache
-     * @param LowLevelExecutor $lowLevelExecutor
+     * @param LowLevelExecutor $lowLevel
      */
-    public function __construct(UdpValueCache $cache, LowLevelExecutor $lowLevelExecutor, Http $http)
+    public function __construct(UdpValueCache $cache, LowLevelExecutor $lowLevel, Http $http)
     {
         $this->cache = $cache;
-        $this->lowLevelExecutor = $lowLevelExecutor;
+        $this->lowLevel = $lowLevel;
         $this->http = $http;
 
         $this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -139,7 +139,7 @@ class Udp extends AbstractCachingCommunicator
      */
     private function sendViaUdp(MiniserverInformation $miniserver, string $message)
     {
-        $this->lowLevelExecutor->sendToSocket(
+        $this->lowLevel->sendToSocket(
             $this->socket,
             $message,
             strlen($message),

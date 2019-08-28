@@ -40,7 +40,7 @@ abstract class AbstractCachingCommunicator
      *
      * @return array
      */
-    public function handleCaching(MiniserverInformation $miniserver, $data): array
+    protected function handleCaching(MiniserverInformation $miniserver, $data): array
     {
         if (!$this->fullPushRequired($miniserver) && !$this->miniserverRebooted($miniserver)) {
             $data = $this->filterChangedValues($miniserver, $data);
@@ -61,7 +61,7 @@ abstract class AbstractCachingCommunicator
     {
         $filteredData = [];
         foreach ($data as $key => $value) {
-            if (!$this->cache->valueDiffersFromStored($key, $value, $miniserver->getIpAddress(), $this->getCommunicatorPort())) {
+            if ($this->valueMatchesCache($miniserver, $key, $value)) {
                 continue;
             }
 
@@ -74,10 +74,22 @@ abstract class AbstractCachingCommunicator
 
     /**
      * @param MiniserverInformation $miniserver
+     * @param string                $key
+     * @param $value
      *
      * @return bool
      */
-    private function fullPushRequired(MiniserverInformation $miniserver): bool
+    protected function valueMatchesCache(MiniserverInformation $miniserver, string $key, $value): bool
+    {
+        return !$this->cache->valueDiffersFromStored($key, $value, $miniserver->getIpAddress(), $this->getCommunicatorPort());
+    }
+
+    /**
+     * @param MiniserverInformation $miniserver
+     *
+     * @return bool
+     */
+    protected function fullPushRequired(MiniserverInformation $miniserver): bool
     {
         $lastFullPush = $this->cache->get(self::CACHE_KEY_LAST_FULL_PUSH, $miniserver->getIpAddress(), $this->getCommunicatorPort());
 
@@ -93,7 +105,7 @@ abstract class AbstractCachingCommunicator
      *
      * @return bool
      */
-    private function miniserverRebooted(MiniserverInformation $miniserver): bool
+    protected function miniserverRebooted(MiniserverInformation $miniserver): bool
     {
         $lastRebootCheck = $this->cache->get(self::CACHE_KEY_LAST_REBOOT_CHECK, $miniserver->getIpAddress(), $this->getCommunicatorPort());
 
@@ -132,7 +144,7 @@ abstract class AbstractCachingCommunicator
             return 0;
         }
 
-        return (int) $status->getContent();
+        return (int) $status->getValue();
     }
 
     /**
