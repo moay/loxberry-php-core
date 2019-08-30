@@ -66,6 +66,18 @@ class PluginDatabase
     }
 
     /**
+     * @return array
+     */
+    public function getAllPlugins(): array
+    {
+        if (null === $this->plugins) {
+            $this->loadDatabase();
+        }
+
+        return $this->plugins;
+    }
+
+    /**
      * @param string $pluginName
      *
      * @return bool
@@ -83,6 +95,25 @@ class PluginDatabase
         }
 
         return false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeOfLastDatabaseChange(): int
+    {
+        $databaseFileName = $this->pathProvider->getPath(Paths::PATH_PLUGIN_DATABASE_FILE);
+        if (!is_file($databaseFileName) || !is_readable($databaseFileName)) {
+            throw new PluginDatabaseException('Cannot open plugin database.');
+        }
+
+        $lastChange = filemtime($databaseFileName);
+        if (time() - $lastChange > 60) {
+            clearstatcache($databaseFileName);
+            $lastChange = filemtime($databaseFileName);
+        }
+
+        return $lastChange;
     }
 
     private function loadDatabase()

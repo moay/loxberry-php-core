@@ -117,6 +117,36 @@ class PluginDatabaseTest extends TestCase
         $this->assertFalse($pluginDatabase->isInstalledPlugin('unknownPlugin'));
     }
 
+    public function testTellsTimeOfLastDatabaseChangeProperly()
+    {
+        $pathProviderMock = $this->createMock(PathProvider::class);
+        $pathProviderMock->expects($this->once())
+            ->method('getPath')
+            ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+
+        $pluginDatabase = new PluginDatabase($pathProviderMock);
+        $lastChange = filemtime(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+        $this->assertEquals($lastChange, $pluginDatabase->getTimeOfLastDatabaseChange());
+    }
+
+    public function testProvidesAllInstalledPlugins()
+    {
+        $pathProviderMock = $this->createMock(PathProvider::class);
+        $pathProviderMock->expects($this->once())
+            ->method('getPath')
+            ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+
+        $pluginDatabase = new PluginDatabase($pathProviderMock);
+        $installedPlugins = $pluginDatabase->getAllPlugins();
+        $this->assertIsArray($installedPlugins);
+        $this->assertCount(2, $installedPlugins);
+        foreach ($installedPlugins as $plugin) {
+            $this->assertInstanceOf(PluginInformation::class, $plugin);
+        }
+    }
+
     public function expectedPluginInformation()
     {
         return [
