@@ -126,7 +126,6 @@ class LBSystem
     ///////////////////////////////////////////////////////////////////
     public static function lblanguage()
     {
-        global $lblang;
         if (isset(self::$lang)) {
             // error_log("Language " . LBSystem::$lang . " is already set.");
             return self::$lang;
@@ -143,6 +142,8 @@ class LBSystem
             // error_log("Language " . LBSystem::$lang . " detected from post data");
             return self::$lang;
         }
+
+        global $lblang;
         self::read_generalcfg();
         if (isset($lblang)) {
             self::$lang = $lblang;
@@ -155,7 +156,7 @@ class LBSystem
 
     public static function readlanguage($template = null, $genericlangfile = 'language.ini', $syslang = false)
     {
-        if (!is_object($template) && is_string($template)) {
+        if (is_string($template)) {
             $genericlangfile = $template;
             $template = null;
         }
@@ -350,49 +351,51 @@ class LBSystem
 //        }
 //    }
 
-    //#################################################################################
-    // Get Plugin Version
-    // Returns plugin version from plugindatabase
-    //#################################################################################
-    public static function pluginversion($queryname = '')
-    {
-        global $pluginversion;
-        global $lbpplugindir;
+    ///** DONE */
+//    //#################################################################################
+//    // Get Plugin Version
+//    // Returns plugin version from plugindatabase
+//    //#################################################################################
+//    public static function pluginversion($queryname = '')
+//    {
+//        global $pluginversion;
+//        global $lbpplugindir;
+//
+//        if (isset($pluginversion) && '' == $queryname) {
+//            // error_log("Returning already fetched version\n");
+//            return $pluginversion;
+//        }
+//
+//        $query = '' != $queryname ? $queryname : $lbpplugindir;
+//
+//        $plugin = self::plugindata($query);
+//
+//        if (isset($plugin['PLUGINDB_VERSION']) && '' == $queryname) {
+//            $pluginversion = $plugin['PLUGINDB_VERSION'];
+//        }
+//
+//        return $plugin['PLUGINDB_VERSION'] ?? null;
+//    }
+//
 
-        if (isset($pluginversion) && '' == $queryname) {
-            // error_log("Returning already fetched version\n");
-            return $pluginversion;
-        }
-
-        $query = '' != $queryname ? $queryname : $lbpplugindir;
-
-        $plugin = self::plugindata($query);
-
-        if (isset($plugin['PLUGINDB_VERSION']) && '' == $queryname) {
-            $pluginversion = $plugin['PLUGINDB_VERSION'];
-        }
-
-        return $plugin['PLUGINDB_VERSION'] ?? null;
-    }
-
-    //#################################################################################
-    // Get Plugin Loglevel
-    // Returns plugin loglevel from plugindatabase
-    //#################################################################################
-    public static function pluginloglevel($queryname = '')
-    {
-        global $lbpplugindir;
-
-        $query = '' != $queryname ? $queryname : $lbpplugindir;
-
-        $plugin = self::plugindata($query);
-
-        if (isset($plugin['PLUGINDB_LOGLEVEL']) && '' == $queryname) {
-            $pluginversion = $plugin['PLUGINDB_LOGLEVEL'];
-        }
-
-        return $plugin['PLUGINDB_LOGLEVEL'] ?? 0;
-    }
+    //    //##########DONE#######################################################################
+//    // Get Plugin Loglevel
+//    // Returns plugin loglevel from plugindatabase
+//    //#################################################################################
+//    public static function pluginloglevel($queryname = '')
+//    {
+//        global $lbpplugindir;
+//
+//        $query = '' != $queryname ? $queryname : $lbpplugindir;
+//
+//        $plugin = self::plugindata($query);
+//
+//        if (isset($plugin['PLUGINDB_LOGLEVEL']) && '' == $queryname) {
+//            $pluginversion = $plugin['PLUGINDB_LOGLEVEL'];
+//        }
+//
+//        return $plugin['PLUGINDB_LOGLEVEL'] ?? 0;
+//    }
 
 //    /**DONE**/
 //    //#################################################################################
@@ -420,94 +423,96 @@ class LBSystem
 //        }
 //    }
 
-    //#################################################################################
-    // Get Plugins
-    // Returns an array of all plugins without comments
-    //#################################################################################
-    public static function get_plugins($withcomments = 0, $force = 0)
-    {
-        global $plugins, $plugindb_timestamp_last;
+    ///** Done */
+//    //#################################################################################
+//    // Get Plugins
+//    // Returns an array of all plugins without comments
+//    //#################################################################################
+//    public static function get_plugins($withcomments = 0, $force = 0)
+//    {
+//        global $plugins, $plugindb_timestamp_last;
+//
+//        if (0 != $force) {
+//            $plugins = null;
+//        }
+//
+//        if ($plugindb_timestamp_last != self::plugindb_changed_time()) {
+//            // Changed
+//            $plugindb_timestamp_new = self::plugindb_changed_time();
+//            $plugins = null;
+//            // error_log("get_plugins: Plugindb timestamp has changed (old: $plugindb_timestamp_last new: $plugindb_timestamp_new)");
+//            $plugindb_timestamp_last = $plugindb_timestamp_new;
+//        }
+//
+//        if (is_array($plugins)) {
+//            // error_log("Returning already fetched plugin array");
+//            return $plugins;
+//        }
+//        // error_log("Reading plugindb");
+//
+//        $plugins = [];
+//        // Read Plugin database copied from plugininstall.pl
+//        $filestr = file(LBHOMEDIR.'/data/system/plugindatabase.dat', FILE_IGNORE_NEW_LINES);
+//        //$filestr = file_get_contents(LBHOMEDIR . "/data/system/plugindatabase.dat");
+//        if (!$filestr) {
+//            error_log('LoxBerry System ERROR: Could not read Plugin Database '.LBSDATADIR.'plugindatabase.dat');
+//
+//            return;
+//        }
+//
+//        $plugincount = 0;
+//        foreach ($filestr as $line) {
+//            $fields = explode('|', trim($line));
+//            if ('#' == substr($fields[0], 0, 1)) {
+//                continue;
+//            }
+//            ++$plugincount;
+//            $plugin = [
+//                'PLUGINDB_NO' => $plugincount,
+//                'PLUGINDB_MD5_CHECKSUM' => $fields[0],
+//                'PLUGINDB_AUTHOR_NAME' => $fields[1],
+//                'PLUGINDB_AUTHOR_EMAIL' => $fields[2],
+//                'PLUGINDB_VERSION' => $fields[3],
+//                'PLUGINDB_NAME' => $fields[4],
+//                'PLUGINDB_FOLDER' => $fields[5],
+//                'PLUGINDB_TITLE' => $fields[6],
+//                'PLUGINDB_INTERFACE' => $fields[7] ?? null,
+//                'PLUGINDB_AUTOUPDATE' => $fields[8] ?? null,
+//                'PLUGINDB_RELEASECFG' => $fields[9] ?? null,
+//                'PLUGINDB_PRERELEASECFG' => $fields[10] ?? null,
+//                'PLUGINDB_LOGLEVEL' => $fields[11] ?? null,
+//                'PLUGINDB_LOGLEVELS_ENABLED' => isset($fields[11]) && $fields[11] >= 0 ? 1 : 0,
+//                'PLUGINDB_ICONURI' => "/system/images/icons/$fields[5]/icon_64.png",
+//                ];
+//            // On changes of the plugindatabase format, please change here
+//            // and in libs/perllib/LoxBerry/System.pm, sub get_plugins
+//            array_push($plugins, $plugin);
+//        }
+//
+//        return $plugins;
+//    }
 
-        if (0 != $force) {
-            $plugins = null;
-        }
-
-        if ($plugindb_timestamp_last != self::plugindb_changed_time()) {
-            // Changed
-            $plugindb_timestamp_new = self::plugindb_changed_time();
-            $plugins = null;
-            // error_log("get_plugins: Plugindb timestamp has changed (old: $plugindb_timestamp_last new: $plugindb_timestamp_new)");
-            $plugindb_timestamp_last = $plugindb_timestamp_new;
-        }
-
-        if (is_array($plugins)) {
-            // error_log("Returning already fetched plugin array");
-            return $plugins;
-        }
-        // error_log("Reading plugindb");
-
-        $plugins = [];
-        // Read Plugin database copied from plugininstall.pl
-        $filestr = file(LBHOMEDIR.'/data/system/plugindatabase.dat', FILE_IGNORE_NEW_LINES);
-        //$filestr = file_get_contents(LBHOMEDIR . "/data/system/plugindatabase.dat");
-        if (!$filestr) {
-            error_log('LoxBerry System ERROR: Could not read Plugin Database '.LBSDATADIR.'plugindatabase.dat');
-
-            return;
-        }
-
-        $plugincount = 0;
-        foreach ($filestr as $line) {
-            $fields = explode('|', trim($line));
-            if ('#' == substr($fields[0], 0, 1)) {
-                continue;
-            }
-            ++$plugincount;
-            $plugin = [
-                'PLUGINDB_NO' => $plugincount,
-                'PLUGINDB_MD5_CHECKSUM' => $fields[0],
-                'PLUGINDB_AUTHOR_NAME' => $fields[1],
-                'PLUGINDB_AUTHOR_EMAIL' => $fields[2],
-                'PLUGINDB_VERSION' => $fields[3],
-                'PLUGINDB_NAME' => $fields[4],
-                'PLUGINDB_FOLDER' => $fields[5],
-                'PLUGINDB_TITLE' => $fields[6],
-                'PLUGINDB_INTERFACE' => $fields[7] ?? null,
-                'PLUGINDB_AUTOUPDATE' => $fields[8] ?? null,
-                'PLUGINDB_RELEASECFG' => $fields[9] ?? null,
-                'PLUGINDB_PRERELEASECFG' => $fields[10] ?? null,
-                'PLUGINDB_LOGLEVEL' => $fields[11] ?? null,
-                'PLUGINDB_LOGLEVELS_ENABLED' => isset($fields[11]) && $fields[11] >= 0 ? 1 : 0,
-                'PLUGINDB_ICONURI' => "/system/images/icons/$fields[5]/icon_64.png",
-                ];
-            // On changes of the plugindatabase format, please change here
-            // and in libs/perllib/LoxBerry/System.pm, sub get_plugins
-            array_push($plugins, $plugin);
-        }
-
-        return $plugins;
-    }
-
-    //#################################################################################
-    // INTERNAL function plugindb_changed
-    // Returns the timestamp of the plugindb. Only really checks every minute
-    //#################################################################################
-    public static function plugindb_changed_time()
-    {
-        global $plugindb_timestamp, $plugindb_lastchecked;
-
-        $plugindb_file = LBSDATADIR.'/plugindatabase.dat';
-
-        // If it was never checked, it cannot have changed
-        if (0 == $plugindb_timestamp || ($plugindb_lastchecked + 60) < time()) {
-            clearstatcache(true, $plugindb_file);
-            $plugindb_timestamp = filemtime($plugindb_file);
-            $plugindb_lastchecked = time();
-            // error_log("Updating plugindb timestamp variable to $plugindb_timestamp ($plugindb_file)");
-        }
-
-        return $plugindb_timestamp;
-    }
+//    // DONE
+//    //#################################################################################
+//    // INTERNAL function plugindb_changed
+//    // Returns the timestamp of the plugindb. Only really checks every minute
+//    //#################################################################################
+//    public static function plugindb_changed_time()
+//    {
+//        global $plugindb_timestamp, $plugindb_lastchecked;
+//
+//        $plugindb_file = LBSDATADIR.'/plugindatabase.dat';
+//
+//        // If it was never checked, it cannot have changed
+//        if (0 == $plugindb_timestamp || ($plugindb_lastchecked + 60) < time()) {
+//            clearstatcache(true, $plugindb_file);
+//            $plugindb_timestamp = filemtime($plugindb_file);
+//            $plugindb_lastchecked = time();
+//            // error_log("Updating plugindb timestamp variable to $plugindb_timestamp ($plugindb_file)");
+//        }
+//
+//        return $plugindb_timestamp;
+//    }
 
 //    /**DONE**/
 //    //#################################################################################
@@ -690,66 +695,63 @@ class LBSystem
         }
     }
 
-    //####################################################
-    // get_ftpport
-    // Function to get FTP port  considering CloudDNS Port
-    // Input: $msnr
-    // Output: $port
-    //####################################################
-    public static function get_ftpport($msnr = 1)
-    {
-        global $miniservers;
-        global $miniservercount;
-
-        // If we have no MS list, read the config
-        if (!$miniservers) {
-            self::read_generalcfg();
-        }
-
-        if ($miniservercount < 1) {
-            return;
-        }
-
-        // If CloudDNS is enabled, return the CloudDNS FTP port
-        if ($miniservers[$msnr]['UseCloudDNS'] && $miniservers[$msnr]['CloudURLFTPPort']) {
-            return $miniservers[$msnr]['CloudURLFTPPort'];
-        }
-
-        // If $miniservers does not have FTP set, read FTP from Miniserver and save it in FTPPort
-        if (!isset($miniservers[$msnr]['FTPPort'])) {
-            // Get FTP Port from Miniserver
-            $url = "http://{$miniservers[$msnr]['Credentials']}@{$miniservers[$msnr]['IPAddress']}:{$miniservers[$msnr]['Port']}/dev/cfg/ftp";
-            $response = file_get_contents($url);
-
-            if (!$response) {
-                error_log('Cannot query FTP port because Loxone Miniserver is not reachable.');
-
-                return;
-            }
-            $xml = new \SimpleXMLElement($response);
-            $port = $xml[0]['value'];
-            $miniservers[$msnr]['FTPPort'] = $port;
-        }
-
-        return $miniservers[$msnr]['FTPPort'];
-    }
-
+//    //####################################################
+//    // get_ftpport
+//    // Function to get FTP port  considering CloudDNS Port
+//    // Input: $msnr
+//    // Output: $port
+//    //####################################################
+//    public static function get_ftpport($msnr = 1)
+//    {
+//        global $miniservers;
+//        global $miniservercount;
+//
+//        // If we have no MS list, read the config
+//        if (!$miniservers) {
+//            self::read_generalcfg();
+//        }
+//
+//        if ($miniservercount < 1) {
+//            return;
+//        }
+//
+//        // If CloudDNS is enabled, return the CloudDNS FTP port
+//        if ($miniservers[$msnr]['UseCloudDNS'] && $miniservers[$msnr]['CloudURLFTPPort']) {
+//            return $miniservers[$msnr]['CloudURLFTPPort'];
+//        }
+//
+//        // If $miniservers does not have FTP set, read FTP from Miniserver and save it in FTPPort
+//        if (!isset($miniservers[$msnr]['FTPPort'])) {
+//            // Get FTP Port from Miniserver
+//            $url = "http://{$miniservers[$msnr]['Credentials']}@{$miniservers[$msnr]['IPAddress']}:{$miniservers[$msnr]['Port']}/dev/cfg/ftp";
+//            $response = file_get_contents($url);
+//
+//            if (!$response) {
+//                error_log('Cannot query FTP port because Loxone Miniserver is not reachable.');
+//
+//                return;
+//            }
+//            $xml = new \SimpleXMLElement($response);
+//            $port = $xml[0]['value'];
+//            $miniservers[$msnr]['FTPPort'] = $port;
+//        }
+//
+//        return $miniservers[$msnr]['FTPPort'];
+//    }
 
     //###################################################
     // get_localip - Get local ip address
     //###################################################
-    public static function get_localip()
-    {
-        $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-        socket_connect($sock, '8.8.8.8', 53);
-        socket_getsockname($sock, $localip); // $name passed by reference
-        socket_close($sock);
-
-        return $localip;
-    }
+//    public static function get_localip()
+//    {
+//        $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+//        socket_connect($sock, '8.8.8.8', 53);
+//        socket_getsockname($sock, $localip); // $name passed by reference
+//        socket_close($sock);
+//
+//        return $localip;
+//    }
 }
-
-
 
 ///**DONE**/
 ////###################################################
@@ -805,14 +807,13 @@ class LBSystem
 //    return $lbfriendlyname;
 //}
 
-
 //###################################################
 // lbhostname - Returns the network hostname
 //###################################################
-function lbhostname()
-{
-    return gethostname();
-}
+//function lbhostname()
+//{
+//    return gethostname();
+//}
 
 ///**DONE**/
 ////###################################################
@@ -834,32 +835,6 @@ function lbhostname()
 //}
 
 //###################################################
-// currtime - Returns current in different formats
-//###################################################
-function currtime($format = 'hr')
-{
-    if (!$format || 'hr' == $format) {
-        $timestr = date('d.m.Y H:i:s', time());
-    } elseif ('hrtime' == $format) {
-        $timestr = date('H:i:s', time());
-    } elseif ('hrtimehires' == $format) {
-        [$usec, $sec] = explode(' ', microtime());
-        $usec = substr($usec, 2, 3);
-        $timestr = date('H:i:s', $sec).'.'.$usec;
-    } elseif ('file' == $format) {
-        $timestr = date('Ymd_His', time());
-    } elseif ('filehires' == $format) {
-        [$usec, $sec] = explode(' ', microtime());
-        $usec = substr($usec, 2, 3);
-        $timestr = date('Ymd_His').'_'.$usec;
-    } elseif ('iso' == $format) {
-        $timestr = date('"Y-m-d\TH:i:sO"', time());
-    }
-
-    return $timestr;
-}
-
-//###################################################
 // reboot_required - Sets the reboot required state
 //###################################################
 function reboot_required($message = 'A reboot was requested')
@@ -875,45 +850,75 @@ function reboot_required($message = 'A reboot was requested')
     fclose($fh);
 }
 
-//#####################################################
-// Converts an Epoche (Unix Timestamp, seconds from 1.1.1970 00:00:00 UTC) to Loxone Epoche (seconds from 1.1.2009 00:00:00)
-//####################################################
-function epoch2lox($epoche = null)
-{
-    if (empty($epoche)) {
-        $epoche = time();
-    }
-    $offset = 1230764400; // 1.1.2009 00:00:00
-    $tz_delta = tz_offset();
-    $loxepoche = $epoche - $offset + $tz_delta - 3600;
+///** DONE */
+////#####################################################
+//// Converts an Epoche (Unix Timestamp, seconds from 1.1.1970 00:00:00 UTC) to Loxone Epoche (seconds from 1.1.2009 00:00:00)
+////####################################################
+//function epoch2lox($epoche = null)
+//{
+//    if (empty($epoche)) {
+//        $epoche = time();
+//    }
+//    $offset = 1230764400; // 1.1.2009 00:00:00
+//    $tz_delta = tz_offset();
+//    $loxepoche = $epoche - $offset + $tz_delta - 3600;
+//
+//    return $loxepoche;
+//}
 
-    return $loxepoche;
-}
+/* DONE */
+//function lox2epoch($loxepoche = null)
+//{
+//    if (empty($loxepoche)) {
+//        // For compatibility reasons to epoch2lox - but makes no sense here...
+//        $epoche = time();
+//    } else {
+//        $offset = 1230764400; // 1.1.2009 00:00:00
+//        $tz_delta = tz_offset();
+//        $epoche = $loxepoche + $offset - $tz_delta + 3600;
+//    }
+//
+//    return $epoche;
+//}
 
-function lox2epoch($loxepoche = null)
-{
-    if (empty($loxepoche)) {
-        // For compatibility reasons to epoch2lox - but makes no sense here...
-        $epoche = time();
-    } else {
-        $offset = 1230764400; // 1.1.2009 00:00:00
-        $tz_delta = tz_offset();
-        $epoche = $loxepoche + $offset - $tz_delta + 3600;
-    }
+///** DONE */
+////###################################################
+//// currtime - Returns current in different formats
+////###################################################
+//function currtime($format = 'hr')
+//{
+//    if (!$format || 'hr' == $format) {
+//        $timestr = date('d.m.Y H:i:s', time());
+//    } elseif ('hrtime' == $format) {
+//        $timestr = date('H:i:s', time());
+//    } elseif ('hrtimehires' == $format) {
+//        [$usec, $sec] = explode(' ', microtime());
+//        $usec = substr($usec, 2, 3);
+//        $timestr = date('H:i:s', $sec).'.'.$usec;
+//    } elseif ('file' == $format) {
+//        $timestr = date('Ymd_His', time());
+//    } elseif ('filehires' == $format) {
+//        [$usec, $sec] = explode(' ', microtime());
+//        $usec = substr($usec, 2, 3);
+//        $timestr = date('Ymd_His').'_'.$usec;
+//    } elseif ('iso' == $format) {
+//        $timestr = date('"Y-m-d\TH:i:sO"', time());
+//    }
+//
+//    return $timestr;
+//}
 
-    return $epoche;
-}
-
+// DONE
 // INTERNAL FUNCTION
 // Returns the delta of local time to UTC
-function tz_offset()
-{
-    $origin_tz = date_default_timezone_get();
-    $origin_dtz = new DateTimeZone($origin_tz);
-    $remote_dtz = new DateTimeZone('UTC');
-    $origin_dt = new DateTime('now', $origin_dtz);
-    $remote_dt = new DateTime('now', $remote_dtz);
-    $offset = $origin_dtz->getOffset($origin_dt) - $remote_dtz->getOffset($remote_dt);
-
-    return $offset;
-}
+//function tz_offset()
+//{
+//    $origin_tz = date_default_timezone_get();
+//    $origin_dtz = new DateTimeZone($origin_tz);
+//    $remote_dtz = new DateTimeZone('UTC');
+//    $origin_dt = new DateTime('now', $origin_dtz);
+//    $remote_dt = new DateTime('now', $remote_dtz);
+//    $offset = $origin_dtz->getOffset($origin_dt) - $remote_dtz->getOffset($remote_dt);
+//
+//    return $offset;
+//}
