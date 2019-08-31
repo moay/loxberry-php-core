@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LanguageFileParserTest extends TestCase
 {
-    const TEST_FILE = __DIR__.'/resources/language_en.ini';
+    const TEST_FILE = __DIR__.'/resources/lang/language_en.ini';
 
     /**
      * @dataProvider validTranslations

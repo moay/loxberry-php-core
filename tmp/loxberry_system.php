@@ -160,16 +160,9 @@ class LBSystem
             $genericlangfile = $template;
             $template = null;
         }
-        if (true == $syslang and 'language.ini' != $genericlangfile) {
-            $genericlangfile = LBSTEMPLATEDIR."/lang/$genericlangfile";
-            $widgetlang = true;
-        } elseif (true == $syslang) {
-            $genericlangfile = LBSTEMPLATEDIR.'/lang/language.ini';
-            $widgetlang = false;
-        } else {
-            $genericlangfile = LBPTEMPLATEDIR."/lang/$genericlangfile";
-            $widgetlang = false;
-        }
+
+        $widgetlang = $syslang && 'language.ini' != $genericlangfile;
+        $genericlangfile = LBSTEMPLATEDIR."/lang/$genericlangfile";
 
         // error_log("readlanguage: genericlangfile $genericlangfile");
         $lang = self::lblanguage();
