@@ -1,5 +1,5 @@
 {
-    "name": "moay/loxberry-system",
+    "name": "moay/loxberry-core",
     "description": "The LoxBerry system library for PHP interactions",
     "type": "library",
     "require": {
