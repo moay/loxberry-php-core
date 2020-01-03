@@ -54,7 +54,7 @@
       "folder" : "sensebox",
       "interface" : "2.0",
       "loglevel" : "-1",
-      "loglevels_enabled" : 1,
+      "loglevels_enabled" : 0,
       "md5" : "b30af7534dc5f3ac8fc1abb6a1aaa23e",
       "name" : "sensebox",
       "prereleasecfg" : "",
