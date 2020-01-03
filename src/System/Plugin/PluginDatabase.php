@@ -42,6 +42,11 @@ class PluginDatabase
         $this->pathProvider = $pathProvider;
     }
 
+    /**
+     * @param string $pluginName
+     *
+     * @return PluginInformation
+     */
     public function getPluginInformation(string $pluginName): PluginInformation
     {
         if (null === $this->plugins) {
@@ -57,6 +62,9 @@ class PluginDatabase
         throw new PluginDatabaseException(sprintf('Plugin "%s" is not installed', $pluginName));
     }
 
+    /**
+     * @return array
+     */
     public function getAllPlugins(): array
     {
         if (null === $this->plugins) {
@@ -66,6 +74,11 @@ class PluginDatabase
         return $this->plugins;
     }
 
+    /**
+     * @param string $pluginName
+     *
+     * @return bool
+     */
     public function isInstalledPlugin(string $pluginName): bool
     {
         if (null === $this->plugins) {
@@ -81,6 +94,9 @@ class PluginDatabase
         return false;
     }
 
+    /**
+     * @return int
+     */
     public function getTimeOfLastDatabaseChange(): int
     {
         $databaseFileName = $this->pathProvider->getPath(Paths::PATH_PLUGIN_DATABASE_FILE);
@@ -124,7 +140,7 @@ class PluginDatabase
             throw new PluginDatabaseException('Plugindatabase is malformed, invalid number of fields found');
         }
 
-        $plugin = new PluginInformation();
+        $plugin = new PluginInformation(new PluginPathProvider($this->pathProvider));
         $plugin->setNumber($number);
         $plugin->setName($fields[self::FIELD_NAME_NAME]);
         $plugin->setTitle($fields[self::FIELD_NAME_TITLE]);

@@ -2,6 +2,8 @@
 
 namespace LoxBerry\System\Plugin;
 
+use LoxBerry\System\PathProvider;
+
 /**
  * Class PluginInformation.
  */
@@ -56,6 +58,19 @@ class PluginInformation
 
     /** @var array|string[] */
     private $files;
+
+    /** @var PluginPathProvider */
+    private $pluginPathProvider;
+
+    /**
+     * PluginInformation constructor.
+     *
+     * @param PluginPathProvider $pluginPathProvider
+     */
+    public function __construct(PluginPathProvider $pluginPathProvider)
+    {
+        $this->pluginPathProvider = $pluginPathProvider;
+    }
 
     /**
      * @return int
@@ -135,6 +150,7 @@ class PluginInformation
     public function setName(string $name): void
     {
         $this->name = $name;
+        $this->pluginPathProvider->setPluginName($name);
     }
 
     /**
@@ -322,6 +338,26 @@ class PluginInformation
     public function setFiles($files): void
     {
         $this->files = $files;
+    }
+
+    /**
+     * @param string $pathName
+     *
+     * @return mixed|string
+     */
+    public function getFile(string $fileName)
+    {
+        return $this->files[$fileName];
+    }
+
+    /**
+     * @param string $pathName
+     *
+     * @return mixed|string
+     */
+    public function getPath(string $pathName)
+    {
+        return $this->directories[$pathName] ?? $this->pluginPathProvider->getPath(strtoupper($pathName));
     }
 
     /**
