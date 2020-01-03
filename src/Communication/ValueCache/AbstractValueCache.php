@@ -120,10 +120,7 @@ abstract class AbstractValueCache
 
         $fileName = $this->cacheDirectory.DIRECTORY_SEPARATOR.$this->getCacheFileName($miniserverIp, $port);
         if (!file_exists($fileName) && !touch($fileName)) {
-            throw new \RuntimeException(sprintf(
-                'Udp cache file "%s" could not be created',
-                $fileName
-            ));
+            throw new \RuntimeException(sprintf('Udp cache file "%s" could not be created', $fileName));
         }
 
         return file_put_contents($fileName, json_encode($values, JSON_PRETTY_PRINT, 20))
@@ -133,10 +130,7 @@ abstract class AbstractValueCache
     private function prepareCacheDirectory()
     {
         if (!file_exists($cacheDirectory = $this->cacheDirectory) && !mkdir($cacheDirectory) && !is_dir($cacheDirectory)) {
-            throw new \RuntimeException(sprintf(
-                'Udp cache directory "%s" could not be created',
-                $cacheDirectory
-            ));
+            throw new \RuntimeException(sprintf('Udp cache directory "%s" could not be created', $cacheDirectory));
         }
     }
 }

@@ -1,0 +1,66 @@
+{
+  "plugins" : {
+    "9489b114c85717a2122c27bc80b0b9cf" : {
+      "author_email" : "Michael@loxberry.de",
+      "author_name" : "Michael Schlenstedt",
+      "autoupdate" : 3,
+      "directories" : {
+        "installfiles" : "/opt/loxberry/data/system/install/weather4lox",
+        "lbpbindir" : "/opt/loxberry/bin/plugins/weather4lox",
+        "lbpconfigdir" : "/opt/loxberry/config/plugins/weather4lox",
+        "lbpdatadir" : "/opt/loxberry/data/plugins/weather4lox",
+        "lbphtmlauthdir" : "/opt/loxberry/webfrontend/htmlauth/plugins/weather4lox",
+        "lbphtmldir" : "/opt/loxberry/webfrontend/html/plugins/weather4lox",
+        "lbplogdir" : "/opt/loxberry/log/plugins/weather4lox",
+        "lbptemplatedir" : "/opt/loxberry/templates/plugins/weather4lox"
+      },
+      "epoch_firstinstalled" : 1577783543,
+      "files" : {
+        "daemon" : "/opt/loxberry/system/daemons/plugins/weather4lox",
+        "sudoers" : "/opt/loxberry/system/sudoers/weather4lox",
+        "uninstall" : "/opt/loxberry/data/system/uninstall/weather4lox"
+      },
+      "folder" : "weather4lox",
+      "interface" : "2.0",
+      "loglevel" : "3",
+      "loglevels_enabled" : 1,
+      "md5" : "9489b114c85717a2122c27bc80b0b9cf",
+      "name" : "weather4lox",
+      "prereleasecfg" : "https://raw.githubusercontent.com/mschlenstedt/LoxBerry-Plugin-Weather4Lox/master/prerelease.cfg",
+      "releasecfg" : "https://raw.githubusercontent.com/mschlenstedt/LoxBerry-Plugin-Weather4Lox/master/release.cfg",
+      "title" : "Weather 4 Loxone",
+      "version" : "4.6.0.2"
+    },
+    "b30af7534dc5f3ac8fc1abb6a1aaa23e" : {
+      "author_email" : "mv@moay.de",
+      "author_name" : "moay",
+      "autoupdate" : 0,
+      "directories" : {
+        "installfiles" : "/opt/loxberry/data/system/install/sensebox",
+        "lbpbindir" : "/opt/loxberry/bin/plugins/sensebox",
+        "lbpconfigdir" : "/opt/loxberry/config/plugins/sensebox",
+        "lbpdatadir" : "/opt/loxberry/data/plugins/sensebox",
+        "lbphtmlauthdir" : "/opt/loxberry/webfrontend/htmlauth/plugins/sensebox",
+        "lbphtmldir" : "/opt/loxberry/webfrontend/html/plugins/sensebox",
+        "lbplogdir" : "/opt/loxberry/log/plugins/sensebox",
+        "lbptemplatedir" : "/opt/loxberry/templates/plugins/sensebox"
+      },
+      "epoch_firstinstalled" : 1577783543,
+      "files" : {
+        "daemon" : "/opt/loxberry/system/daemons/plugins/sensebox",
+        "sudoers" : "/opt/loxberry/system/sudoers/sensebox",
+        "uninstall" : "/opt/loxberry/data/system/uninstall/sensebox"
+      },
+      "folder" : "sensebox",
+      "interface" : "2.0",
+      "loglevel" : "-1",
+      "loglevels_enabled" : 1,
+      "md5" : "b30af7534dc5f3ac8fc1abb6a1aaa23e",
+      "name" : "sensebox",
+      "prereleasecfg" : "",
+      "releasecfg" : "",
+      "title" : "senseBox",
+      "version" : "1.0"
+    }
+  }
+}

@@ -114,10 +114,7 @@ class LowLevelExecutor
     public function execLowLevelFunction(string $functionName, $arguments)
     {
         if (!function_exists($functionName)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Cannot call low level function %s',
-                $functionName
-            ));
+            throw new \InvalidArgumentException(sprintf('Cannot call low level function %s', $functionName));
         }
 
         if (!is_array($arguments)) {

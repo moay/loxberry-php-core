@@ -22,6 +22,7 @@
         'is_null' => true,
         'dir_constant' => true,
         'function_to_constant' => true,
+        'no_superfluous_phpdoc_tags' => false,
       ])
       ->setRiskyAllowed(true)
 

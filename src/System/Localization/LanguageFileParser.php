@@ -48,18 +48,12 @@ class LanguageFileParser
     private function parseTranslations()
     {
         if (!file_exists($this->fileName) || !is_readable($this->fileName)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Non existing translation file %s requested.',
-                $this->fileName
-            ));
+            throw new \InvalidArgumentException(sprintf('Non existing translation file %s requested.', $this->fileName));
         }
 
         $contents = file($this->fileName, FILE_SKIP_EMPTY_LINES);
         if (!$contents) {
-            throw new \InvalidArgumentException(sprintf(
-                'Malformed translation file %s requested. Unable to parse.',
-                $this->fileName
-            ));
+            throw new \InvalidArgumentException(sprintf('Malformed translation file %s requested. Unable to parse.', $this->fileName));
         }
 
         $filteredContents = $this->removeCommentLines($contents);

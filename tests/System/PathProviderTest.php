@@ -2,8 +2,8 @@
 
 namespace LoxBerry\Tests\System;
 
-use LoxBerry\System\PathProvider;
 use LoxBerry\System\LowLevelExecutor;
+use LoxBerry\System\PathProvider;
 use PHPUnit\Framework\TestCase;
 
 /**

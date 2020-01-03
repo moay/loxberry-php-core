@@ -50,10 +50,7 @@ class PathProvider
     public function getPath(string $pathName): string
     {
         if (!in_array($pathName, self::KNOWN_PATHS)) {
-            throw new PathProviderException(sprintf(
-                'Unknown path %s requested',
-                $pathName
-            ));
+            throw new PathProviderException(sprintf('Unknown path %s requested', $pathName));
         }
 
         if (Paths::PATH_LB_HOME === $pathName) {

@@ -20,10 +20,7 @@ class ConfigurationParser implements ConfigurationParserInterface
     public function __construct(string $fileName)
     {
         if (!file_exists($fileName)) {
-            throw new ConfigurationException(sprintf(
-                'Configuration file %s does not exist',
-                $fileName
-            ));
+            throw new ConfigurationException(sprintf('Configuration file %s does not exist', $fileName));
         }
         $this->config = new \Config_Lite($fileName);
     }

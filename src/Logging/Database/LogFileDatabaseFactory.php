@@ -2,9 +2,9 @@
 
 namespace LoxBerry\Logging\Database;
 
+use LoxBerry\System\LowLevelExecutor;
 use LoxBerry\System\PathProvider;
 use LoxBerry\System\Paths;
-use LoxBerry\System\LowLevelExecutor;
 use Medoo\Medoo;
 
 /**

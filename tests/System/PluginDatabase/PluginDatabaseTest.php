@@ -23,7 +23,7 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
         $information = $pluginDatabase->getPluginInformation($pluginName);
@@ -53,7 +53,7 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
         $information = $pluginDatabase->{$method}($pluginName);
@@ -66,7 +66,7 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
         $this->expectException(PluginDatabaseException::class);
@@ -88,7 +88,7 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
         $this->expectException(PluginDatabaseException::class);
@@ -110,7 +110,7 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
         $this->assertTrue($pluginDatabase->isInstalledPlugin('sensebox'));
@@ -123,10 +123,10 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
-        $lastChange = filemtime(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+        $lastChange = filemtime(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
         $this->assertEquals($lastChange, $pluginDatabase->getTimeOfLastDatabaseChange());
     }
 
@@ -136,7 +136,7 @@ class PluginDatabaseTest extends TestCase
         $pathProviderMock->expects($this->once())
             ->method('getPath')
             ->with(Paths::PATH_PLUGIN_DATABASE_FILE)
-            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.dat');
+            ->willReturn(__DIR__.DIRECTORY_SEPARATOR.'plugindatabase.json');
 
         $pluginDatabase = new PluginDatabase($pathProviderMock);
         $installedPlugins = $pluginDatabase->getAllPlugins();

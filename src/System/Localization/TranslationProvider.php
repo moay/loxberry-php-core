@@ -121,11 +121,7 @@ class TranslationProvider
         }
 
         if (!file_exists($translationFile) || !is_readable($translationFile)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Cannot find translation file %s nor fallback file %s.',
-                $originalTranslationFile,
-                $translationFile
-            ));
+            throw new \InvalidArgumentException(sprintf('Cannot find translation file %s nor fallback file %s.', $originalTranslationFile, $translationFile));
         }
 
         return $translationFile;

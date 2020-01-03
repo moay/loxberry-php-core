@@ -8,8 +8,8 @@ use LoxBerry\Logging\Logger\AttributeLogger;
 use LoxBerry\Logging\Logger\EventLogger;
 use LoxBerry\Logging\Writer\LogFileWriter;
 use LoxBerry\Logging\Writer\LogSystemWriter;
-use LoxBerry\System\PathProvider;
 use LoxBerry\System\LowLevelExecutor;
+use LoxBerry\System\PathProvider;
 
 /**
  * Class LoggerFactory.

@@ -57,16 +57,10 @@ class AjaxStorageHandler extends AbstractHttpAccess
         foreach ($flagsAndConfigurations as $configurationOrKey => $flagOrValue) {
             if (is_numeric($configurationOrKey)) {
                 if (!in_array($flagOrValue, self::KNOWN_FLAGS)) {
-                    throw new \InvalidArgumentException(sprintf(
-                        'Unknown flag %s provided. Lookup documentation for the correct flags to use.',
-                        $flagOrValue
-                    ));
+                    throw new \InvalidArgumentException(sprintf('Unknown flag %s provided. Lookup documentation for the correct flags to use.', $flagOrValue));
                 }
             } elseif (!in_array($configurationOrKey, self::KNOWN_CONFIGURATIONS)) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Unknown configuration %s provided. Lookup documentation for the correct configurations to use.',
-                    $configurationOrKey
-                ));
+                throw new \InvalidArgumentException(sprintf('Unknown configuration %s provided. Lookup documentation for the correct configurations to use.', $configurationOrKey));
             }
         }
 
