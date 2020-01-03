@@ -45,6 +45,18 @@ class PluginInformation
     /** @var int|null */
     private $logLevel;
 
+    /** @var bool */
+    private $logLevelsEnabled = true;
+
+    /** @var \DateTimeImmutable */
+    private $installedAt;
+
+    /** @var array|string[] */
+    private $directories;
+
+    /** @var array|string[] */
+    private $files;
+
     /**
      * @return int
      */
@@ -245,7 +257,15 @@ class PluginInformation
      */
     public function isLogLevelsEnabled(): bool
     {
-        return null !== $this->logLevel;
+        return $this->logLevelsEnabled;
+    }
+
+    /**
+     * @param bool $logLevelsEnabled
+     */
+    public function setLogLevelsEnabled(bool $logLevelsEnabled): void
+    {
+        $this->logLevelsEnabled = $logLevelsEnabled;
     }
 
     /**
@@ -254,6 +274,54 @@ class PluginInformation
     public function getChecksum(): string
     {
         return md5($this->authorName.$this->authorEmail.$this->name.$this->folderName);
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getInstalledAt(): \DateTimeImmutable
+    {
+        return $this->installedAt;
+    }
+
+    /**
+     * @param \DateTimeImmutable $installedAt
+     */
+    public function setInstalledAt(\DateTimeImmutable $installedAt): void
+    {
+        $this->installedAt = $installedAt;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
+    }
+
+    /**
+     * @param array|string[] $directories
+     */
+    public function setDirectories($directories): void
+    {
+        $this->directories = $directories;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param array|string[] $files
+     */
+    public function setFiles($files): void
+    {
+        $this->files = $files;
     }
 
     /**

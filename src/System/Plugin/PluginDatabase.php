@@ -137,6 +137,10 @@ class PluginDatabase
         $plugin->setPreReleaseCfg($fields[self::FIELD_NAME_PRERELEASECFG] ?? null);
         $plugin->setReleaseCfg($fields[self::FIELD_NAME_RELEASECFG] ?? null);
         $plugin->setUiVersion($fields[self::FIELD_NAME_UI_VERSION] ?? null);
+        $plugin->setLogLevelsEnabled($fields[self::FIELD_NAME_LOGLEVELS_ENABLED] ?? true);
+        $plugin->setInstalledAt((new \DateTimeImmutable())->setTimestamp($fields[self::FIELD_NAME_INSTALLED_AT]));
+        $plugin->setDirectories($fields[self::FIELD_NAME_DIRECTORIES] ?? []);
+        $plugin->setFiles($fields[self::FIELD_NAME_FILES] ?? []);
 
         if (!$plugin->getChecksum() === $fields[self::FIELD_NAME_MD5_CHECKSUM]) {
             throw new PluginDatabaseException(sprintf('Plugin database entry for plugin %s seems to be corrupt, checksum is invalid', $plugin->getName()));
