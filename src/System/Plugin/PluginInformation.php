@@ -2,8 +2,6 @@
 
 namespace LoxBerry\System\Plugin;
 
-use LoxBerry\System\PathProvider;
-
 /**
  * Class PluginInformation.
  */
