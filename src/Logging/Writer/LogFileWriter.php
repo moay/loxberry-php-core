@@ -75,8 +75,8 @@ class LogFileWriter
      */
     public function logEvent(LogEvent $event)
     {
-        if (!$this->initialized) {
-            $this->initialize();
+        if (!$this->started) {
+            $this->logStart();
         }
 
         $this->writeLine(sprintf(
