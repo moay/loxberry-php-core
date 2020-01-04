@@ -31,6 +31,14 @@ class LogFileDatabaseFactory
     }
 
     /**
+     * @return LogFileDatabase
+     */
+    public function __invoke(bool $forceRecreate = false): LogFileDatabase
+    {
+        return $this->create($forceRecreate);
+    }
+
+    /**
      * @param bool $forceRecreate
      *
      * @return LogFileDatabase

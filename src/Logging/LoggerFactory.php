@@ -50,6 +50,27 @@ class LoggerFactory
     }
 
     /**
+     * @param string      $logName
+     * @param string      $packageName
+     * @param string|null $fileName
+     * @param bool        $writeToFile
+     * @param bool        $writeToStdErr
+     * @param bool        $writeToStdOut
+     *
+     * @return Logger
+     */
+    public function __invoke(
+        string $logName,
+        string $packageName,
+        ?string $fileName = null,
+        bool $writeToFile = true,
+        bool $writeToStdErr = false,
+        bool $writeToStdOut = false
+    ) {
+        return $this->create($logName, $packageName, $fileName, $writeToFile, $writeToStdErr, $writeToStdOut);
+    }
+
+    /**
      * @param string $packageName
      * @param bool   $writeToFile
      * @param bool   $writeToStdErr
