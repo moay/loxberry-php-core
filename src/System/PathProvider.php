@@ -22,6 +22,13 @@ class PathProvider
         Paths::PATH_SYSTEM_CONFIG,
         Paths::PATH_SYSTEM_SBIN,
         Paths::PATH_SYSTEM_BIN,
+        Paths::PATH_PLUGIN_HTMLAUTH,
+        Paths::PATH_PLUGIN_HTML,
+        Paths::PATH_PLUGIN_TEMPLATE,
+        Paths::PATH_PLUGIN_DATA,
+        Paths::PATH_PLUGIN_LOG,
+        Paths::PATH_PLUGIN_CONFIG,
+        Paths::PATH_PLUGIN_BIN,
         Paths::PATH_SYSTEM_COMMUNICATION_CACHE,
         Paths::PATH_LOG_DATABASE_FILE,
         Paths::PATH_PLUGIN_DATABASE_FILE,
@@ -102,6 +109,13 @@ class PathProvider
             Paths::PATH_PLUGIN_DATABASE_FILE => FileNames::PLUGIN_DATABASE_FILENAME,
             Paths::PATH_REBOOT_REQUIRED_FILE => FileNames::REBOOT_REQUIRED_FILENAME,
             Paths::PATH_CENTRAL_CONFIG_FILE => FileNames::CENTRAL_CONFIGURATION_FILENAME,
+            Paths::PATH_PLUGIN_HTMLAUTH => DirectoryNames::PLUGIN_HTMLAUTH,
+            Paths::PATH_PLUGIN_HTML => DirectoryNames::PLUGIN_HTML,
+            Paths::PATH_PLUGIN_TEMPLATE => DirectoryNames::PLUGIN_TEMPLATE,
+            Paths::PATH_PLUGIN_DATA => DirectoryNames::PLUGIN_DATA,
+            Paths::PATH_PLUGIN_LOG => DirectoryNames::PLUGIN_LOG,
+            Paths::PATH_PLUGIN_CONFIG => DirectoryNames::PLUGIN_CONFIG,
+            Paths::PATH_PLUGIN_BIN => DirectoryNames::PLUGIN_BIN,
         ];
 
         return $this->getLoxBerryHomePath().DIRECTORY_SEPARATOR.$pathMap[$pathToResolve];

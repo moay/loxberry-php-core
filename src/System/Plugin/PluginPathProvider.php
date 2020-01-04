@@ -76,18 +76,6 @@ class PluginPathProvider
      */
     private function getPluginDirectoryFromSystem($path)
     {
-        $basePathMap = [
-            Paths::PATH_PLUGIN_HTMLAUTH => Paths::PATH_SYSTEM_HTMLAUTH,
-            Paths::PATH_PLUGIN_HTML => Paths::PATH_SYSTEM_HTML,
-            Paths::PATH_PLUGIN_TEMPLATE => Paths::PATH_SYSTEM_TEMPLATE,
-            Paths::PATH_PLUGIN_DATA => Paths::PATH_SYSTEM_DATA,
-            Paths::PATH_PLUGIN_LOG => Paths::PATH_SYSTEM_LOG,
-            Paths::PATH_PLUGIN_CONFIG => Paths::PATH_SYSTEM_CONFIG,
-            Paths::PATH_PLUGIN_BIN => Paths::PATH_SYSTEM_BIN,
-        ];
-
-        $basePath = $basePathMap[$path];
-
-        return $this->pathProvider->getPath($basePath).DIRECTORY_SEPARATOR.'plugins';
+        return $this->pathProvider->getPath($path);
     }
 }

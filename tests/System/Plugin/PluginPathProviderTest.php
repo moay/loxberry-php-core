@@ -52,13 +52,13 @@ class PluginPathProviderTest extends TestCase
     public function expectedPluginPaths()
     {
         return [
-            ['test', Paths::PATH_PLUGIN_HTMLAUTH, Paths::PATH_SYSTEM_HTMLAUTH, '/testable/directory/plugins/test'],
-            ['test', Paths::PATH_PLUGIN_HTML, Paths::PATH_SYSTEM_HTML, '/testable/directory/plugins/test'],
-            ['test', Paths::PATH_PLUGIN_TEMPLATE, Paths::PATH_SYSTEM_TEMPLATE, '/testable/directory/plugins/test'],
-            ['test', Paths::PATH_PLUGIN_DATA, Paths::PATH_SYSTEM_DATA, '/testable/directory/plugins/test'],
-            ['test', Paths::PATH_PLUGIN_LOG, Paths::PATH_SYSTEM_LOG, '/testable/directory/plugins/test'],
-            ['test', Paths::PATH_PLUGIN_CONFIG, Paths::PATH_SYSTEM_CONFIG, '/testable/directory/plugins/test'],
-            ['test', Paths::PATH_PLUGIN_BIN, Paths::PATH_SYSTEM_BIN, '/testable/directory/plugins/test'],
+            ['test', Paths::PATH_PLUGIN_HTMLAUTH, Paths::PATH_PLUGIN_HTMLAUTH, '/testable/directory/test'],
+            ['test', Paths::PATH_PLUGIN_HTML, Paths::PATH_PLUGIN_HTML, '/testable/directory/test'],
+            ['test', Paths::PATH_PLUGIN_TEMPLATE, Paths::PATH_PLUGIN_TEMPLATE, '/testable/directory/test'],
+            ['test', Paths::PATH_PLUGIN_DATA, Paths::PATH_PLUGIN_DATA, '/testable/directory/test'],
+            ['test', Paths::PATH_PLUGIN_LOG, Paths::PATH_PLUGIN_LOG, '/testable/directory/test'],
+            ['test', Paths::PATH_PLUGIN_CONFIG, Paths::PATH_PLUGIN_CONFIG, '/testable/directory/test'],
+            ['test', Paths::PATH_PLUGIN_BIN, Paths::PATH_PLUGIN_BIN, '/testable/directory/test'],
         ];
     }
 }
