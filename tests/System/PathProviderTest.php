@@ -50,7 +50,7 @@ class PathProviderTest extends TestCase
             ['LBPCONFIGDIR', '/opt/loxberry/config/plugins'],
             ['LBPBINDIR', '/opt/loxberry/bin/plugins'],
             ['LOG_DATABASE_FILE', '/opt/loxberry/log/system_tmpfs/logs_sqlite.dat'],
-            ['PLUGIN_DATABASE_FILE', '/opt/loxberry/data/system/plugindatabase.dat'],
+            ['PLUGIN_DATABASE_FILE', '/opt/loxberry/data/system/plugindatabase.json'],
             ['REBOOT_REQUIRED_FILE', '/opt/loxberry/log/system_tmpfs/reboot.required'],
             ['CENTRAL_CONFIG_FILE', '/opt/loxberry/config/system/general.cfg'],
         ];
