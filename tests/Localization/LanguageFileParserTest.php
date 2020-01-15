@@ -30,11 +30,11 @@ class LanguageFileParserTest extends TestCase
         $this->assertSame($expectedTranslation, $parser->getTranslated($section.'.'.$key));
     }
 
-    public function testReturnsEmptyStringIfUnknownSectionAndOrKey()
+    public function testReturnsInputIfUnknownSectionAndOrKey()
     {
         $parser = new LanguageFileParser(self::TEST_FILE);
-        $this->assertSame('', $parser->getTranslated('SECUREPIN', 'LABEL_NEW_SECUREPIN'));
-        $this->assertSame('', $parser->getTranslated('SECUREPIN.LABEL_NEW_SECUREPIN'));
+        $this->assertSame('LABEL_NEW_SECUREPIN', $parser->getTranslated('SECUREPIN', 'LABEL_NEW_SECUREPIN'));
+        $this->assertSame('SECUREPIN.LABEL_NEW_SECUREPIN', $parser->getTranslated('SECUREPIN.LABEL_NEW_SECUREPIN'));
     }
 
     public function testThrowsExceptionIfFileDoesNotExist()

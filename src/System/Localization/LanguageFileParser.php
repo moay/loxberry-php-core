@@ -30,10 +30,11 @@ class LanguageFileParser
      *
      * @return string|null
      */
-    public function getTranslated(string $section, ?string $key = null): ?string
+    public function getTranslated(string $section, ?string $key = null): string
     {
         if (null === $key) {
             $key = explode('.', $section)[1] ?? '';
+            $originalSection = $section;
             $section = explode('.', $section)[0] ?? '';
         }
 
@@ -42,7 +43,7 @@ class LanguageFileParser
             return $this->parsedTranslations[$section][$key];
         }
 
-        return '';
+        return $originalSection ?? $key;
     }
 
     private function parseTranslations()
