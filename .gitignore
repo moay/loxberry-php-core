@@ -4,3 +4,4 @@
 .php_cs.cache
 /tests/Logging/Database/test.dat-wal
 /tests/Logging/Database/test.dat-shm
+/tests/Logging/**/*.log
