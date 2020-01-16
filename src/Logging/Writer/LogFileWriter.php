@@ -100,7 +100,7 @@ class LogFileWriter
 
         if ($shutdown) {
             $this->writeLine(sprintf(
-                '%s <LOGEND> SYSTEM SHUTDOWN',
+                '%s <LOGEND> END OF SCRIPT EXECUTION',
                 (new \DateTime())->format('Y-m-d H:i:s')
             ));
 
