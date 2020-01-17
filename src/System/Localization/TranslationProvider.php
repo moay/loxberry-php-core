@@ -14,6 +14,7 @@ class TranslationProvider
     const TRANSLATION_FILE_ENDING = '.ini';
     const FALLBACK_LANGUAGE = 'en';
     const LANGFILE_SUBDIRECTORY = '/lang';
+    const DEFAULT_TRANSLATION_FILE_PREFIX = 'language';
 
     /** @var PathProvider */
     private $pathProvider;
@@ -45,14 +46,15 @@ class TranslationProvider
     }
 
     /**
-     * @param string      $translationFileNamePrefix
+     * @param string|null $translationFileNamePrefix
      * @param string|null $language
      *
      * @return LanguageFileParser
      */
-    public function getSystemTranslations(?string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
+    public function getSystemTranslations(?string $translationFileNamePrefix, ?string $language = null): LanguageFileParser
     {
         $language = $language ?? $this->languageDeterminator->getLanguage();
+        $translationFileNamePrefix = $translationFileNamePrefix ?? self::DEFAULT_TRANSLATION_FILE_PREFIX;
         if (
             array_key_exists($language, $this->parsedTranslations)
             && array_key_exists($translationFileNamePrefix, $this->parsedTranslations[$language]['system'])
@@ -69,14 +71,15 @@ class TranslationProvider
 
     /**
      * @param string      $pluginName
-     * @param string      $translationFileNamePrefix
+     * @param string|null $translationFileNamePrefix
      * @param string|null $language
      *
      * @return LanguageFileParser
      */
-    public function getPluginTranslations(string $pluginName, ?string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
+    public function getPluginTranslations(string $pluginName, ?string $translationFileNamePrefix, ?string $language = null): LanguageFileParser
     {
         $language = $language ?? $this->languageDeterminator->getLanguage();
+        $translationFileNamePrefix = $translationFileNamePrefix ?? self::DEFAULT_TRANSLATION_FILE_PREFIX;
         if (
             array_key_exists($language, $this->parsedTranslations)
             && array_key_exists($pluginName, $this->parsedTranslations[$language])
