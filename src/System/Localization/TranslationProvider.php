@@ -50,7 +50,7 @@ class TranslationProvider
      *
      * @return LanguageFileParser
      */
-    public function getSystemTranslations(string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
+    public function getSystemTranslations(?string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
     {
         $language = $language ?? $this->languageDeterminator->getLanguage();
         if (
@@ -74,7 +74,7 @@ class TranslationProvider
      *
      * @return LanguageFileParser
      */
-    public function getPluginTranslations(string $pluginName, string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
+    public function getPluginTranslations(string $pluginName, ?string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
     {
         $language = $language ?? $this->languageDeterminator->getLanguage();
         if (
