@@ -51,7 +51,7 @@ class TranslationProvider
      *
      * @return LanguageFileParser
      */
-    public function getSystemTranslations(?string $translationFileNamePrefix, ?string $language = null): LanguageFileParser
+    public function getSystemTranslations(?string $translationFileNamePrefix = null, ?string $language = null): LanguageFileParser
     {
         $language = $language ?? $this->languageDeterminator->getLanguage();
         $translationFileNamePrefix = $translationFileNamePrefix ?? self::DEFAULT_TRANSLATION_FILE_PREFIX;
@@ -76,7 +76,7 @@ class TranslationProvider
      *
      * @return LanguageFileParser
      */
-    public function getPluginTranslations(string $pluginName, ?string $translationFileNamePrefix, ?string $language = null): LanguageFileParser
+    public function getPluginTranslations(string $pluginName, ?string $translationFileNamePrefix = null, ?string $language = null): LanguageFileParser
     {
         $language = $language ?? $this->languageDeterminator->getLanguage();
         $translationFileNamePrefix = $translationFileNamePrefix ?? self::DEFAULT_TRANSLATION_FILE_PREFIX;
