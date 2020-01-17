@@ -45,13 +45,14 @@ class TranslationProvider
     }
 
     /**
-     * @param string $translationFileNamePrefix
+     * @param string      $translationFileNamePrefix
+     * @param string|null $language
      *
      * @return LanguageFileParser
      */
-    public function getSystemTranslations(string $translationFileNamePrefix = 'language'): LanguageFileParser
+    public function getSystemTranslations(string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
     {
-        $language = $this->languageDeterminator->getLanguage();
+        $language = $language ?? $this->languageDeterminator->getLanguage();
         if (
             array_key_exists($language, $this->parsedTranslations)
             && array_key_exists($translationFileNamePrefix, $this->parsedTranslations[$language]['system'])
@@ -67,14 +68,15 @@ class TranslationProvider
     }
 
     /**
-     * @param string $pluginName
-     * @param string $translationFileNamePrefix
+     * @param string      $pluginName
+     * @param string      $translationFileNamePrefix
+     * @param string|null $language
      *
      * @return LanguageFileParser
      */
-    public function getPluginTranslations(string $pluginName, string $translationFileNamePrefix = 'language'): LanguageFileParser
+    public function getPluginTranslations(string $pluginName, string $translationFileNamePrefix = 'language', ?string $language = null): LanguageFileParser
     {
-        $language = $this->languageDeterminator->getLanguage();
+        $language = $language ?? $this->languageDeterminator->getLanguage();
         if (
             array_key_exists($language, $this->parsedTranslations)
             && array_key_exists($pluginName, $this->parsedTranslations[$language])
@@ -111,13 +113,7 @@ class TranslationProvider
 
         if (!file_exists($translationFile) || !is_readable($translationFile)) {
             $originalTranslationFile = $translationFile;
-            $translationFile = sprintf(
-                '%s/%s_%s%s',
-                $directory,
-                $translationFileNamePrefix,
-                self::FALLBACK_LANGUAGE,
-                self::TRANSLATION_FILE_ENDING
-            );
+            $translationFile = $this->getFallbackFileName($directory, $translationFileNamePrefix);
         }
 
         if (!file_exists($translationFile) || !is_readable($translationFile)) {
@@ -125,5 +121,22 @@ class TranslationProvider
         }
 
         return $translationFile;
+    }
+
+    /**
+     * @param string $directory
+     * @param string $translationFileNamePrefix
+     *
+     * @return string
+     */
+    private function getFallbackFileName(string $directory, string $translationFileNamePrefix): string
+    {
+        return sprintf(
+            '%s/%s_%s%s',
+            $directory,
+            $translationFileNamePrefix,
+            self::FALLBACK_LANGUAGE,
+            self::TRANSLATION_FILE_ENDING
+        );
     }
 }
