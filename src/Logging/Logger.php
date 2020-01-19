@@ -152,6 +152,8 @@ class Logger
             $this->started = true;
             $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
 
+            $this->setLogAttribute('_ISPLUGIN', '1');
+
             if ($autoEnd) {
                 register_shutdown_function([$this, 'logEnd']);
             }

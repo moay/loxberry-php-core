@@ -113,11 +113,11 @@ class LoggerFactory
     }
 
     /**
-     * @param string $logKey
+     * @param int $logKey
      *
      * @return Logger
      */
-    public function createFromExistingLogSession(string $logKey): Logger
+    public function createFromExistingLogSession(int $logKey): Logger
     {
         $session = $this->database->getUnclosedLogSessionByKey($logKey);
         if (null !== $session) {

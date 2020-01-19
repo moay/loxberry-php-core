@@ -81,7 +81,6 @@ class LogFileDatabase
             'FILENAME' => $fileName,
             'LOGSTART' => $logStart,
             'LASTMODIFIED' => $logStart,
-            '_ISPLUGIN' => '1',
         ]);
 
         return $this->database->id();
