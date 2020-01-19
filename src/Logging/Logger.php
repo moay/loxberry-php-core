@@ -106,7 +106,6 @@ class Logger
     {
         if (!$this->started) {
             $this->logStart();
-            $this->setLogAttribute('STATUS', $this->maximumSeverityEncountered);
         }
 
         $logEvent = $this->prepareLogEvent($messageOrEvent, $level);
@@ -158,6 +157,7 @@ class Logger
 
             $this->setLogAttribute('_ISPLUGIN', '1');
             $this->setLogAttribute('LOGSTARTMESSAGE', $logStartMessage ?? $this->logName);
+            $this->setLogAttribute('STATUS', $this->maximumSeverityEncountered);
 
             register_shutdown_function([$this, 'logEnd']);
         }
