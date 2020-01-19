@@ -58,7 +58,7 @@ class Logger
     private $attributeLogger;
 
     /** @var int */
-    private $minimumLogLevel = self::LOGLEVEL_FATAL_ERROR;
+    private $minimumLogLevel = self::LOGLEVEL_DEBUG;
 
     /** @var LogEvent[]|array */
     private $severeLogEvents = [];

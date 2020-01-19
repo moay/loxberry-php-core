@@ -10,6 +10,7 @@ use LoxBerry\Logging\Writer\LogFileWriter;
 use LoxBerry\Logging\Writer\LogSystemWriter;
 use LoxBerry\System\LowLevelExecutor;
 use LoxBerry\System\PathProvider;
+use LoxBerry\System\Plugin\PluginDatabase;
 
 /**
  * Class LoggerFactory.
@@ -28,6 +29,9 @@ class LoggerFactory
     /** @var SystemConfigurationParser */
     private $systemConfiguration;
 
+    /** @var PluginDatabase */
+    private $pluginDatabase;
+
     /**
      * LoggerFactory constructor.
      *
@@ -35,18 +39,21 @@ class LoggerFactory
      * @param LowLevelExecutor          $lowLevelExecutor
      * @param PathProvider              $pathProvider
      * @param SystemConfigurationParser $systemConfiguration
+     * @param PluginDatabase            $pluginDatabase
      */
     public function __construct(
         LogFileDatabaseFactory $databaseFactory,
         LowLevelExecutor $lowLevelExecutor,
         PathProvider $pathProvider,
-        SystemConfigurationParser $systemConfiguration
+        SystemConfigurationParser $systemConfiguration,
+        PluginDatabase $pluginDatabase
     ) {
         $this->databaseFactory = $databaseFactory;
         $this->pathProvider = $pathProvider;
         $this->lowLevelExecutor = $lowLevelExecutor;
         $this->systemConfiguration = $systemConfiguration;
         $this->database = $this->databaseFactory->create();
+        $this->pluginDatabase = $pluginDatabase;
     }
 
     /**
@@ -67,7 +74,11 @@ class LoggerFactory
         bool $writeToStdErr = false,
         bool $writeToStdOut = false
     ) {
-        return $this->create($logName, $packageName, $fileName, $writeToFile, $writeToStdErr, $writeToStdOut);
+        $logger = $this->create($logName, $packageName, $fileName, $writeToFile, $writeToStdErr, $writeToStdOut);
+        $pluginInformation = $this->pluginDatabase->getPluginInformation($packageName);
+        $logger->setMinimumLogLevel($pluginInformation->getLogLevel() ?? Logger::LOGLEVEL_ERROR);
+
+        return $logger;
     }
 
     /**
