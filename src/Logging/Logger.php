@@ -173,7 +173,11 @@ class Logger
 
         if ($this->writeToFile) {
             $this->eventLogger->getFileWriter()->logEnd($message);
+            $this->attributeLogger->getDatabase()->logEnd($this->logKey);
             $this->setLogAttribute('LOGENDMESSAGE', $message);
+            $this->setLogAttribute('ATTENTIONMESSAGES', implode(PHP_EOL, array_map(function (LogEvent $logEvent) {
+                return $logEvent->getMessage();
+            }, $this->severeLogEvents ?? [])));
             foreach ($this->logAttributes as $key => $value) {
                 $this->attributeLogger->logAttribute($this->logKey, $key, $value);
             }

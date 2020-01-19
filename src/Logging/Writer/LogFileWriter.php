@@ -67,7 +67,7 @@ class LogFileWriter
         ));
 
         $this->started = true;
-        register_shutdown_function([$this, 'logEnd'], true);
+        register_shutdown_function([$this, 'logEnd'], null, true);
     }
 
     /**
