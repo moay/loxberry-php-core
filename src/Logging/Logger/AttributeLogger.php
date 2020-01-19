@@ -23,11 +23,11 @@ class AttributeLogger
     }
 
     /**
-     * @param string $logKey
+     * @param int    $logKey
      * @param string $key
      * @param $value
      */
-    public function logAttribute(string $logKey, string $key, $value)
+    public function logAttribute(int $logKey, string $key, $value)
     {
         $this->database->logAttribute($logKey, $key, $value);
     }

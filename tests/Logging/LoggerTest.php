@@ -158,7 +158,6 @@ class LoggerTest extends TestCase
             ->method('getLoxBerryVersion')
             ->willReturn('1.5.0');
 
-
         $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock, $systemConfigurationMock);
         $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
         $logger->logEvents($logEvents);

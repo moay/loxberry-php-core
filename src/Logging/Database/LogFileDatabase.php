@@ -45,11 +45,11 @@ class LogFileDatabase
     }
 
     /**
-     * @param string $logKey
+     * @param int $logKey
      *
      * @return array|null
      */
-    public function getUnclosedLogSessionByKey(string $logKey): ?array
+    public function getUnclosedLogSessionByKey(int $logKey): ?array
     {
         $sessions = $this->database->select(
             'logs',
@@ -81,19 +81,20 @@ class LogFileDatabase
             'FILENAME' => $fileName,
             'LOGSTART' => $logStart,
             'LASTMODIFIED' => $logStart,
+            '_ISPLUGIN' => '1',
         ]);
 
         return $this->database->id();
     }
 
     /**
-     * @param string $packageName
+     * @param int $logKey
      *
      * @throws \Exception
      */
-    public function logEnd(string $packageName)
+    public function logEnd(int $logKey)
     {
-        $record = $this->database->select('logs', ['LOGKEY' => $packageName])[0] ?? null;
+        $record = $this->database->select('logs', ['LOGKEY' => $logKey])[0] ?? null;
         if (null === $record) {
             throw new LogFileDatabaseException('Cannot find log session to close');
         }
@@ -102,15 +103,15 @@ class LogFileDatabase
         $this->database->update('logs', [
             'LOGEND' => $logEnd,
             'LASTMODIFIED' => $logEnd,
-        ], ['LOGKEY' => $packageName]);
+        ], ['LOGKEY' => $logKey]);
     }
 
     /**
-     * @param string $logKey
+     * @param int    $logKey
      * @param string $attributeKey
      * @param $value
      */
-    public function logAttribute(string $logKey, string $attributeKey, $value)
+    public function logAttribute(int $logKey, string $attributeKey, $value)
     {
         $this->database->query(
             'INSERT OR REPLACE INTO <logs_attr> (<keyref>, <attrib>, <value>) VALUES (:keyref, :attrib, :value)',
@@ -123,12 +124,12 @@ class LogFileDatabase
     }
 
     /**
-     * @param string $logKey
+     * @param int    $logKey
      * @param string $attributeKey
      *
      * @return mixed|null
      */
-    public function getAttribute(string $logKey, string $attributeKey)
+    public function getAttribute(int $logKey, string $attributeKey)
     {
         $attributes = $this->database->select(
             'logs_attr',
@@ -143,11 +144,11 @@ class LogFileDatabase
     }
 
     /**
-     * @param string $logKey
+     * @param int $logKey
      *
      * @return array
      */
-    public function getAllAttributes(string $logKey): array
+    public function getAllAttributes(int $logKey): array
     {
         $attributes = $this->database->select(
             'logs_attr',

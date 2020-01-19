@@ -72,6 +72,9 @@ class Logger
     /** @var bool */
     private $started = false;
 
+    /** @var int */
+    private $logKey;
+
     /**
      * Logger constructor.
      *
@@ -131,14 +134,14 @@ class Logger
         }
     }
 
-    public function logStart()
+    public function logStart(bool $autoEnd = true)
     {
         if ($this->started) {
             return;
         }
 
         if ($this->writeToFile) {
-            $this->attributeLogger->getDatabase()->logStart(
+            $this->logKey = $this->attributeLogger->getDatabase()->logStart(
                 $this->logPackage,
                 $this->logName,
                 $this->eventLogger->getFileWriter()->getFileName()
@@ -148,6 +151,10 @@ class Logger
 
             $this->started = true;
             $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
+
+            if ($autoEnd) {
+                register_shutdown_function([$this, 'logEnd']);
+            }
         }
     }
 
@@ -164,10 +171,10 @@ class Logger
 
         if ($this->writeToFile) {
             $this->eventLogger->getFileWriter()->logEnd($message);
-        }
-        foreach ($this->logAttributes as $key => $value) {
             $this->setLogAttribute('LOGENDMESSAGE', $message);
-            $this->attributeLogger->logAttribute($this->logPackage, $key, $value);
+            foreach ($this->logAttributes as $key => $value) {
+                $this->attributeLogger->logAttribute($this->logKey, $key, $value);
+            }
         }
 
         $this->started = false;
