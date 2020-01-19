@@ -91,8 +91,7 @@ class LoggerFactory
             if (!is_string($fileName)) {
                 throw new \InvalidArgumentException('Cannot enable file writing without logFile');
             }
-            $eventLogger->setFileWriter(new LogFileWriter($fileName));
-            $this->database->logStart($packageName, $logName, $fileName);
+            $eventLogger->setFileWriter(new LogFileWriter($fileName, false));
         }
         if ($writeToStdOut || $writeToStdErr) {
             $eventLogger->setSystemWriter(new LogSystemWriter($this->lowLevelExecutor));
@@ -102,14 +101,13 @@ class LoggerFactory
             $logName,
             $packageName,
             $eventLogger,
-            new AttributeLogger($this->databaseFactory->create())
+            new AttributeLogger($this->database),
+            $this->systemConfiguration
         );
 
         $logger->setWriteToStdErr($writeToStdErr);
         $logger->setWriteToStdOut($writeToStdOut);
         $logger->setWriteToFile($writeToFile);
-
-        $logger->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
 
         return $logger;
     }

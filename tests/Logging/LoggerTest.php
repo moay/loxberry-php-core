@@ -2,6 +2,7 @@
 
 namespace LoxBerry\Tests\Logging;
 
+use LoxBerry\ConfigurationParser\SystemConfigurationParser;
 use LoxBerry\Logging\Event\LogEvent;
 use LoxBerry\Logging\Logger;
 use LoxBerry\Logging\Writer\LogSystemWriter;
@@ -42,7 +43,7 @@ class LoggerTest extends TestCase
             }
             if ($logToFile) {
                 $eventLoggerMock
-                    ->expects($this->once())
+                    ->expects($this->atMost(2))
                     ->method('logToFile');
             }
         }
@@ -57,8 +58,13 @@ class LoggerTest extends TestCase
                 ->expects($this->never())
                 ->method('logToFile');
         }
+        $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
 
-        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+        $systemConfigurationMock->expects($this->atMost(1))
+            ->method('getLoxBerryVersion')
+            ->willReturn('1.5.0');
+
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock, $systemConfigurationMock);
         $logger->setWriteToFile($logToFile);
         $logger->setWriteToStdErr($logToStdErr);
         $logger->setWriteToStdOut($logToStdOut);
@@ -83,7 +89,12 @@ class LoggerTest extends TestCase
     {
         $eventLoggerMock = $this->createMock(Logger\EventLogger::class);
         $attributeLoggerMock = $this->createMock(Logger\AttributeLogger::class);
-        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+        $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
+
+        $systemConfigurationMock->expects($this->atMost(1))
+            ->method('getLoxBerryVersion')
+            ->willReturn('1.5.0');
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock, $systemConfigurationMock);
         $logger->setWriteToFile(false);
         $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
 
@@ -121,7 +132,12 @@ class LoggerTest extends TestCase
             ->method('logToFile')
             ->with($logEvent);
 
-        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+        $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
+        $systemConfigurationMock->expects($this->atMost(1))
+            ->method('getLoxBerryVersion')
+            ->willReturn('1.5.0');
+
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock, $systemConfigurationMock);
         $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
         $logger->log($logEvent);
     }
@@ -137,8 +153,13 @@ class LoggerTest extends TestCase
             ->with($logEvent);
 
         $logEvents = [$logEvent, $logEvent];
+        $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
+        $systemConfigurationMock->expects($this->atMost(1))
+            ->method('getLoxBerryVersion')
+            ->willReturn('1.5.0');
 
-        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock);
+
+        $logger = new Logger('test', 'test', $eventLoggerMock, $attributeLoggerMock, $systemConfigurationMock);
         $logger->setMinimumLogLevel(Logger::LOGLEVEL_OK);
         $logger->logEvents($logEvents);
     }

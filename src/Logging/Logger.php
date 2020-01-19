@@ -2,6 +2,7 @@
 
 namespace LoxBerry\Logging;
 
+use LoxBerry\ConfigurationParser\SystemConfigurationParser;
 use LoxBerry\Logging\Event\LogEvent;
 use LoxBerry\Logging\Logger\AttributeLogger;
 use LoxBerry\Logging\Logger\EventLogger;
@@ -65,24 +66,33 @@ class Logger
     /** @var int */
     private $maximumSeverityEncountered = self::LOGLEVEL_DEBUG;
 
+    /** @var SystemConfigurationParser */
+    private $systemConfiguration;
+
+    /** @var bool */
+    private $started = false;
+
     /**
      * Logger constructor.
      *
-     * @param string          $logName
-     * @param string          $packageName
-     * @param EventLogger     $eventLogger
-     * @param AttributeLogger $attributeLogger
+     * @param string                    $logName
+     * @param string                    $packageName
+     * @param EventLogger               $eventLogger
+     * @param AttributeLogger           $attributeLogger
+     * @param SystemConfigurationParser $systemConfiguration
      */
     public function __construct(
         string $logName,
         string $packageName,
         EventLogger $eventLogger,
-        AttributeLogger $attributeLogger
+        AttributeLogger $attributeLogger,
+        SystemConfigurationParser $systemConfiguration
     ) {
         $this->logName = $logName;
         $this->logPackage = $packageName;
         $this->eventLogger = $eventLogger;
         $this->attributeLogger = $attributeLogger;
+        $this->systemConfiguration = $systemConfiguration;
     }
 
     /**
@@ -91,6 +101,10 @@ class Logger
      */
     public function log($messageOrEvent, int $level = self::LOGLEVEL_DEBUG)
     {
+        if (!$this->started) {
+            $this->logStart();
+        }
+
         $logEvent = $this->prepareLogEvent($messageOrEvent, $level);
 
         if ($logEvent->getLevel() > $this->minimumLogLevel) {
@@ -103,6 +117,7 @@ class Logger
 
         if ($logEvent->getLevel() < $this->maximumSeverityEncountered) {
             $this->maximumSeverityEncountered = $level;
+            $this->setLogAttribute('STATUS', $this->maximumSeverityEncountered);
         }
 
         if ($this->writeToStdErr) {
@@ -114,6 +129,48 @@ class Logger
         if ($this->writeToFile) {
             $this->eventLogger->logToFile($logEvent);
         }
+    }
+
+    public function logStart()
+    {
+        if ($this->started) {
+            return;
+        }
+
+        if ($this->writeToFile) {
+            $this->attributeLogger->getDatabase()->logStart(
+                $this->logPackage,
+                $this->logName,
+                $this->eventLogger->getFileWriter()->getFileName()
+            );
+
+            $this->eventLogger->getFileWriter()->logStart();
+
+            $this->started = true;
+            $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
+        }
+    }
+
+    /**
+     * @param string|null $message
+     *
+     * @throws \Exception
+     */
+    public function logEnd(?string $message = 'Task finished')
+    {
+        if (!$this->started) {
+            return;
+        }
+
+        if ($this->writeToFile) {
+            $this->eventLogger->getFileWriter()->logEnd($message);
+        }
+        foreach ($this->logAttributes as $key => $value) {
+            $this->setLogAttribute('LOGENDMESSAGE', $message);
+            $this->attributeLogger->logAttribute($this->logPackage, $key, $value);
+        }
+
+        $this->started = false;
     }
 
     /**

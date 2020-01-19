@@ -55,6 +55,7 @@ class LoggerFactoryTest extends TestCase
         );
 
         $logger = $loggerFactory->create('eventLog', 'testPlugin', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
+        $logger->log('Test');
         $loggedStuff = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $this->assertStringContainsString('1.5.0', $loggedStuff);
     }
@@ -83,6 +84,7 @@ class LoggerFactoryTest extends TestCase
         );
 
         $logger = $loggerFactory->create('eventLog', 'testPlugin', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
+        $logger->log('test');
     }
 
     protected function setUp(): void

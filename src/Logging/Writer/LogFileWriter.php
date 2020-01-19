@@ -88,11 +88,12 @@ class LogFileWriter
     }
 
     /**
-     * @param bool $shutdown
+     * @param string|null $message
+     * @param bool        $shutdown
      *
      * @throws \Exception
      */
-    public function logEnd($shutdown = false)
+    public function logEnd(?string $message = 'TASK FINISHED', $shutdown = false)
     {
         if (!$this->started) {
             return;
@@ -108,8 +109,9 @@ class LogFileWriter
         }
 
         $this->writeLine(sprintf(
-            '%s <LOGEND> TASK FINISHED',
-            (new \DateTime())->format('Y-m-d H:i:s')
+            '%s <LOGEND> %s',
+            (new \DateTime())->format('Y-m-d H:i:s'),
+            $message
         ));
 
         $this->started = false;
@@ -143,5 +145,13 @@ class LogFileWriter
             '%s',
             $event->getMessage()
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return $this->fileName;
     }
 }

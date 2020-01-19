@@ -31,4 +31,12 @@ class AttributeLogger
     {
         $this->database->logAttribute($logKey, $key, $value);
     }
+
+    /**
+     * @return LogFileDatabase
+     */
+    public function getDatabase(): LogFileDatabase
+    {
+        return $this->database;
+    }
 }
