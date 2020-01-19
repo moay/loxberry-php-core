@@ -106,6 +106,7 @@ class Logger
     {
         if (!$this->started) {
             $this->logStart();
+            $this->setLogAttribute('STATUS', $this->maximumSeverityEncountered);
         }
 
         $logEvent = $this->prepareLogEvent($messageOrEvent, $level);
@@ -134,7 +135,7 @@ class Logger
         }
     }
 
-    public function logStart()
+    public function logStart(?string $logStartMessage = null)
     {
         if ($this->started) {
             return;
@@ -153,6 +154,7 @@ class Logger
             $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
 
             $this->setLogAttribute('_ISPLUGIN', '1');
+            $this->setLogAttribute('LOGSTARTMESSAGE', $logStartMessage ?? $this->logName);
         }
     }
 
@@ -352,6 +354,14 @@ class Logger
     public function getMaximumSeverityEncountered(): int
     {
         return $this->maximumSeverityEncountered;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLogKey(): int
+    {
+        return $this->logKey;
     }
 
     /**
