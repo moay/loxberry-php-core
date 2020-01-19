@@ -134,7 +134,7 @@ class Logger
         }
     }
 
-    public function logStart(bool $autoEnd = true)
+    public function logStart()
     {
         if ($this->started) {
             return;
@@ -153,10 +153,6 @@ class Logger
             $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
 
             $this->setLogAttribute('_ISPLUGIN', '1');
-
-            if ($autoEnd) {
-                register_shutdown_function([$this, 'logEnd']);
-            }
         }
     }
 
@@ -173,7 +169,6 @@ class Logger
 
         if ($this->writeToFile) {
             $this->eventLogger->getFileWriter()->logEnd($message);
-            $this->attributeLogger->getDatabase()->logEnd($this->logKey);
             $this->setLogAttribute('LOGENDMESSAGE', $message);
             $this->setLogAttribute('ATTENTIONMESSAGES', implode(PHP_EOL, array_map(function (LogEvent $logEvent) {
                 return $logEvent->getMessage();

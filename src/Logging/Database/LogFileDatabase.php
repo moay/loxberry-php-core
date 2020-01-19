@@ -83,7 +83,11 @@ class LogFileDatabase
             'LASTMODIFIED' => $logStart,
         ]);
 
-        return $this->database->id();
+        $logKey = $this->database->id();
+
+        register_shutdown_function([$this, 'logEnd'], $logKey);
+
+        return $logKey;
     }
 
     /**
