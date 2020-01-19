@@ -67,7 +67,6 @@ class LogFileWriter
         ));
 
         $this->started = true;
-        register_shutdown_function([$this, 'logEnd'], null, true);
     }
 
     /**
@@ -85,36 +84,6 @@ class LogFileWriter
             self::LOG_LABELS[$event->getLevel()],
             $this->getLogEventMessage($event)
         ));
-    }
-
-    /**
-     * @param string|null $message
-     * @param bool        $shutdown
-     *
-     * @throws \Exception
-     */
-    public function logEnd(?string $message = 'TASK FINISHED', $shutdown = false)
-    {
-        if (!$this->started) {
-            return;
-        }
-
-        if ($shutdown) {
-            $this->writeLine(sprintf(
-                '%s <LOGEND> END OF SCRIPT EXECUTION',
-                (new \DateTime())->format('Y-m-d H:i:s')
-            ));
-
-            return;
-        }
-
-        $this->writeLine(sprintf(
-            '%s <LOGEND> %s',
-            (new \DateTime())->format('Y-m-d H:i:s'),
-            $message
-        ));
-
-        $this->started = false;
     }
 
     /**
