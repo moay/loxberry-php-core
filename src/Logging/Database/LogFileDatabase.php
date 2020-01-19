@@ -97,7 +97,7 @@ class LogFileDatabase
      */
     public function logEnd(int $logKey)
     {
-        $record = $this->database->select('logs', ['LOGKEY' => $logKey])[0] ?? null;
+        $record = $this->database->select('logs', '*', ['LOGKEY' => $logKey])[0] ?? null;
         if (null === $record) {
             throw new LogFileDatabaseException('Cannot find log session to close');
         }
