@@ -58,7 +58,7 @@ class Logger
     private $attributeLogger;
 
     /** @var int */
-    private $minimumLogLevel = self::LOGLEVEL_DEBUG;
+    private $minimumLogLevel = self::LOGLEVEL_FATAL_ERROR;
 
     /** @var LogEvent[]|array */
     private $severeLogEvents = [];
@@ -155,6 +155,8 @@ class Logger
 
             $this->setLogAttribute('_ISPLUGIN', '1');
             $this->setLogAttribute('LOGSTARTMESSAGE', $logStartMessage ?? $this->logName);
+
+            register_shutdown_function([$this, 'logEnd']);
         }
     }
 
