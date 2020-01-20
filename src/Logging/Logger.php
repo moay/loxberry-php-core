@@ -134,9 +134,6 @@ class Logger
         }
     }
 
-    /**
-     * @param string|null $logStartMessage
-     */
     public function logStart(?string $logStartMessage = null)
     {
         if ($this->started) {
@@ -178,6 +175,7 @@ class Logger
         }
 
         if ($this->writeToFile) {
+            $this->eventLogger->getFileWriter()->logEnd($message);
             $this->setLogAttribute('LOGENDMESSAGE', $message);
             $this->setLogAttribute('ATTENTIONMESSAGES', implode(PHP_EOL, array_map(function (LogEvent $logEvent) {
                 return $logEvent->getMessage();
