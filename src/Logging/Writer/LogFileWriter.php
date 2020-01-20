@@ -85,8 +85,6 @@ class LogFileWriter
             self::LOG_LABELS[$event->getLevel()],
             $this->getLogEventMessage($event)
         ));
-
-        $this->started = false;
     }
 
     /**
@@ -95,7 +93,7 @@ class LogFileWriter
      *
      * @throws \Exception
      */
-    public function logEnd(?string $message = 'TASK FINISHED', $shutdown = false)
+    public function logEnd(?string $message = null, $shutdown = false)
     {
         if (!$this->started) {
             return;
@@ -113,7 +111,7 @@ class LogFileWriter
         $this->writeLine(sprintf(
             '%s <LOGEND> %s',
             (new \DateTime())->format('Y-m-d H:i:s'),
-            $message
+            $message ?? 'TASK FINISHED'
         ));
 
         $this->started = false;

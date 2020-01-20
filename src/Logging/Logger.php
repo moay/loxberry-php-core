@@ -148,8 +148,6 @@ class Logger
             );
 
             $this->eventLogger->getFileWriter()->logStart();
-
-            $this->started = true;
             $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
 
             $this->setLogAttribute('LOGSTARTMESSAGE', $logStartMessage ?? $this->logName);
@@ -161,6 +159,8 @@ class Logger
 
             register_shutdown_function([$this, 'logEnd']);
         }
+
+        $this->started = true;
     }
 
     /**
