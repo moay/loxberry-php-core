@@ -88,6 +88,8 @@ class LogFileWriter
             self::LOG_LABELS[$event->getLevel()],
             $this->getLogEventMessage($event)
         ));
+
+        $this->started = false;
     }
 
     /**
