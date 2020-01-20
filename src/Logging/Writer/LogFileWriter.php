@@ -33,9 +33,6 @@ class LogFileWriter
     /** @var bool */
     private $started = false;
 
-    /** @var string */
-    private $outputFileName;
-
     /**
      * LogFileWriter constructor.
      *
@@ -45,7 +42,6 @@ class LogFileWriter
     public function __construct(string $fileName, bool $appendToExisting = false)
     {
         $this->fileName = $fileName;
-        $this->outputFileName = $fileName;
         $this->appendToExisting = $appendToExisting;
     }
 
@@ -53,10 +49,11 @@ class LogFileWriter
     {
         if (!$this->appendToExisting) {
             do {
-                $fileName = date('Ymd-His-').$this->outputFileName;
+                $fileName = date('Ymd-His-').$this->fileName;
             } while (file_exists($fileName));
-            $this->outputFileName = $fileName;
+            $this->fileName = $fileName;
         }
+        touch($this->fileName);
         $this->initialized = true;
     }
 
@@ -130,7 +127,7 @@ class LogFileWriter
      */
     private function writeLine(string $content)
     {
-        file_put_contents($this->outputFileName, $content.PHP_EOL, FILE_APPEND);
+        file_put_contents($this->fileName, $content.PHP_EOL, FILE_APPEND);
     }
 
     /**
@@ -161,13 +158,5 @@ class LogFileWriter
     public function getFileName(): string
     {
         return $this->fileName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOutputFileName(): string
-    {
-        return $this->outputFileName;
     }
 }

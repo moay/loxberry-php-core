@@ -144,7 +144,7 @@ class Logger
             $this->logKey = $this->attributeLogger->getDatabase()->logStart(
                 $this->logPackage,
                 $this->logName,
-                $this->eventLogger->getFileWriter()->getOutputFileName()
+                $this->eventLogger->getFileWriter()->getFileName()
             );
 
             $this->eventLogger->getFileWriter()->logStart();
