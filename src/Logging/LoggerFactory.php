@@ -102,7 +102,7 @@ class LoggerFactory
             if (!is_string($fileName)) {
                 throw new \InvalidArgumentException('Cannot enable file writing without logFile');
             }
-            $eventLogger->setFileWriter(new LogFileWriter($fileName, false));
+            $eventLogger->setFileWriter(new LogFileWriter($fileName));
         }
         if ($writeToStdOut || $writeToStdErr) {
             $eventLogger->setSystemWriter(new LogSystemWriter($this->lowLevelExecutor));

@@ -25,7 +25,7 @@ class LogFileWriter
     private $fileName;
 
     /** @var bool */
-    private $removeExisting;
+    private $appendToExisting;
 
     /** @var bool */
     private $initialized = false;
@@ -37,18 +37,21 @@ class LogFileWriter
      * LogFileWriter constructor.
      *
      * @param string $fileName
-     * @param bool   $removeExisting
+     * @param bool   $appendToExisting
      */
-    public function __construct(string $fileName, bool $removeExisting = true)
+    public function __construct(string $fileName, bool $appendToExisting = false)
     {
         $this->fileName = $fileName;
-        $this->removeExisting = $removeExisting;
+        $this->appendToExisting = $appendToExisting;
     }
 
     public function initialize()
     {
-        if (file_exists($this->fileName) && $this->removeExisting) {
-            unlink($this->fileName);
+        if (!$this->appendToExisting) {
+            do {
+                $fileName = date('Ymd-His-').$this->fileName;
+            } while (file_exists($fileName));
+            $this->fileName = $fileName;
         }
         touch($this->fileName);
         $this->initialized = true;
