@@ -104,6 +104,7 @@ class LogFileWriter
                 '%s <LOGEND> END OF SCRIPT EXECUTION',
                 (new \DateTime())->format('Y-m-d H:i:s')
             ));
+            $this->started = false;
 
             return;
         }
@@ -113,7 +114,6 @@ class LogFileWriter
             (new \DateTime())->format('Y-m-d H:i:s'),
             $message ?? 'TASK FINISHED'
         ));
-
         $this->started = false;
     }
 
