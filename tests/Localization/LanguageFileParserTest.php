@@ -35,6 +35,7 @@ class LanguageFileParserTest extends TestCase
         $parser = new LanguageFileParser(self::TEST_FILE);
         $this->assertSame('LABEL_NEW_SECUREPIN', $parser->getTranslated('SECUREPIN', 'LABEL_NEW_SECUREPIN'));
         $this->assertSame('SECUREPIN.LABEL_NEW_SECUREPIN', $parser->getTranslated('SECUREPIN.LABEL_NEW_SECUREPIN'));
+        $this->assertSame('SECUREPIN.LABEL_NEW_SECUREPIN', $parser->getTranslated('SECUREPIN.LABEL_NEW_SECUREPIN'));
     }
 
     public function testThrowsExceptionIfFileDoesNotExist()
@@ -49,6 +50,7 @@ class LanguageFileParserTest extends TestCase
           ['ADMIN', 'WIDGETLABEL', 'Administrator'],
           ['ADMIN', 'LABEL_NEW_SECUREPIN', 'New SecurePIN:'],
           ['SECUREPIN', 'SUCCESS', 'You have entered the correct SecurePIN.'],
+          ['TEST', 'FANCY', 'Your stuff contains <a href="something special">normal stuff</a>'],
         ];
     }
 }

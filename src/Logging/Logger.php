@@ -148,7 +148,6 @@ class Logger
             );
 
             $this->eventLogger->getFileWriter()->logStart();
-            $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
 
             $this->setLogAttribute('LOGSTARTMESSAGE', $logStartMessage ?? $this->logName);
             $this->setLogAttribute('STATUS', $this->maximumSeverityEncountered);
@@ -156,11 +155,11 @@ class Logger
             $this->setLogAttribute('PLUGINTITLE', $this->logPackage);
             $this->setLogAttribute('PACKAGE', $this->logPackage);
             $this->setLogAttribute('NAME', $this->logName);
-
-            register_shutdown_function([$this, 'logEnd']);
         }
 
         $this->started = true;
+        $this->info('LoxBerry Version '.$this->systemConfiguration->getLoxBerryVersion());
+        register_shutdown_function([$this, 'logEnd']);
     }
 
     /**
