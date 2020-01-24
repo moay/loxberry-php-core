@@ -71,7 +71,7 @@ class LogFileDatabaseTest extends TestCase
         $this->setupDatabaseMock(['select']);
         $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('logs', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
+            ->with('logs', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 123, 'LOGEND[!]' => null])
             ->willReturn([[
                 'PACKAGE' => 'test',
                 'NAME' => 'test',
@@ -81,7 +81,7 @@ class LogFileDatabaseTest extends TestCase
 
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
-        $session = $logFileDatabase->getUnclosedLogSessionByKey('test');
+        $session = $logFileDatabase->getUnclosedLogSessionByKey(123);
         $this->assertEquals('test', $session['FILENAME']);
         $this->assertEquals('2000-01-01 00:00:00', $session['LOGSTART']);
     }
@@ -91,13 +91,13 @@ class LogFileDatabaseTest extends TestCase
         $this->setupDatabaseMock(['select']);
         $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('logs', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 'test', 'LOGEND[!]' => null])
+            ->with('logs', ['PACKAGE', 'NAME', 'FILENAME', 'LOGSTART'], ['LOGKEY' => 123, 'LOGEND[!]' => null])
             ->willReturn([]);
 
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
         $this->expectException(LogFileDatabaseException::class);
-        $logFileDatabase->getUnclosedLogSessionByKey('test');
+        $logFileDatabase->getUnclosedLogSessionByKey(123);
     }
 
     public function testReturnsAllLogAttributesProperly()
@@ -105,12 +105,12 @@ class LogFileDatabaseTest extends TestCase
         $this->setupDatabaseMock(['select']);
         $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('logs_attr', ['attrib', 'value'], ['keyref' => 'test'])
+            ->with('logs_attr', ['attrib', 'value'], ['keyref' => 123])
             ->willReturn([['attrib' => 'test1', 'value' => 'testy'], ['attrib' => 'test2', 'value' => 'testy2']]);
 
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
-        $this->assertEquals(['test1' => 'testy', 'test2' => 'testy2'], $logFileDatabase->getAllAttributes('test'));
+        $this->assertEquals(['test1' => 'testy', 'test2' => 'testy2'], $logFileDatabase->getAllAttributes(123));
     }
 
     public function testReturnsASingleLogAttributeProperly()
@@ -118,12 +118,12 @@ class LogFileDatabaseTest extends TestCase
         $this->setupDatabaseMock(['select']);
         $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('logs_attr', 'value', ['keyref' => 'test', 'attrib' => 'test2'])
+            ->with('logs_attr', 'value', ['keyref' => 123, 'attrib' => 'test2'])
             ->willReturn(['testy2']);
 
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
-        $this->assertEquals('testy2', $logFileDatabase->getAttribute('test', 'test2'));
+        $this->assertEquals('testy2', $logFileDatabase->getAttribute(123, 'test2'));
     }
 
     public function testReturnsNullForNonExistantAttributes()
@@ -131,12 +131,12 @@ class LogFileDatabaseTest extends TestCase
         $this->setupDatabaseMock(['select']);
         $this->databaseMock->expects($this->once())
             ->method('select')
-            ->with('logs_attr', 'value', ['keyref' => 'test', 'attrib' => 'test2'])
+            ->with('logs_attr', 'value', ['keyref' => 123, 'attrib' => 'test2'])
             ->willReturn([]);
 
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
 
-        $this->assertEquals(null, $logFileDatabase->getAttribute('test', 'test2'));
+        $this->assertEquals(null, $logFileDatabase->getAttribute(123, 'test2'));
     }
 
     public function testAttributesAreInsertedProperly()
@@ -145,21 +145,21 @@ class LogFileDatabaseTest extends TestCase
         $this->databaseMock->expects($this->at(1))
             ->method('query')
             ->with('INSERT OR REPLACE INTO <logs_attr> (<keyref>, <attrib>, <value>) VALUES (:keyref, :attrib, :value)', [
-                ':keyref' => 'test',
+                ':keyref' => 123,
                 ':attrib' => 'testAttrib',
                 ':value' => 'testValue',
             ]);
 
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
-        $logFileDatabase->logAttribute('test', 'testAttrib', 'testValue');
+        $logFileDatabase->logAttribute(123, 'testAttrib', 'testValue');
     }
 
     public function testWritingAndReadingActuallyWork()
     {
         $this->setupDatabaseMock();
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
-        $logFileDatabase->logAttribute('test', 'testAttrib', 'testValue123');
-        $this->assertEquals('testValue123', $logFileDatabase->getAttribute('test', 'testAttrib'));
+        $logFileDatabase->logAttribute(123, 'testAttrib', 'testValue123');
+        $this->assertEquals('testValue123', $logFileDatabase->getAttribute(123, 'testAttrib'));
     }
 
     /**
@@ -211,17 +211,17 @@ class LogFileDatabaseTest extends TestCase
         $now = new \DateTime();
         $this->setupDatabaseMock(['select', 'update']);
         $this->databaseMock->method('select')
-            ->willReturn([['test']]);
+            ->willReturn([[123]]);
         $this->databaseMock->expects($this->once())
             ->method('update')
             ->with('logs', [
                 'LASTMODIFIED' => $now->format('Y-m-d H:i:s'),
                 'LOGEND' => $now->format('Y-m-d H:i:s'),
             ], [
-                'LOGKEY' => 'test',
+                'LOGKEY' => 123,
             ]);
         $logFileDatabase = new LogFileDatabase($this->databaseMock);
-        $logFileDatabase->logEnd('test');
+        $logFileDatabase->logEnd(123);
     }
 
     public function testLogEndWillThrowExceptionIfDatabaseRecordNotFound()
@@ -231,7 +231,7 @@ class LogFileDatabaseTest extends TestCase
 
         $this->expectException(LogFileDatabaseException::class);
         $this->expectExceptionMessage('Cannot find log session to close');
-        $logFileDatabase->logEnd('something');
+        $logFileDatabase->logEnd(123);
     }
 
     private function setupDatabaseMock($methods = [])

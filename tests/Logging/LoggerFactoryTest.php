@@ -9,6 +9,7 @@ use LoxBerry\Logging\Logger;
 use LoxBerry\Logging\LoggerFactory;
 use LoxBerry\System\LowLevelExecutor;
 use LoxBerry\System\PathProvider;
+use LoxBerry\System\Plugin\PluginDatabase;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,12 +25,14 @@ class LoggerFactoryTest extends TestCase
         $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $pathProviderMock = $this->createMock(PathProvider::class);
         $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
+        $pluginDatabaseMock = $this->createMock(PluginDatabase::class);
 
         $loggerFactory = new LoggerFactory(
             $databaseFactoryMock,
             $lowLevelMock,
             $pathProviderMock,
-            $systemConfigurationMock
+            $systemConfigurationMock,
+            $pluginDatabaseMock
         );
 
         $logger = $loggerFactory->create('eventLog', 'testPlugin', null, false);
@@ -42,6 +45,7 @@ class LoggerFactoryTest extends TestCase
         $lowLevelMock = $this->createMock(LowLevelExecutor::class);
         $pathProviderMock = $this->createMock(PathProvider::class);
         $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
+        $pluginDatabaseMock = $this->createMock(PluginDatabase::class);
 
         $systemConfigurationMock->expects($this->once())
             ->method('getLoxBerryVersion')
@@ -51,7 +55,8 @@ class LoggerFactoryTest extends TestCase
             $databaseFactoryMock,
             $lowLevelMock,
             $pathProviderMock,
-            $systemConfigurationMock
+            $systemConfigurationMock,
+            $pluginDatabaseMock
         );
 
         $logger = $loggerFactory->create('eventLog', 'testPlugin', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
@@ -67,6 +72,7 @@ class LoggerFactoryTest extends TestCase
         $pathProviderMock = $this->createMock(PathProvider::class);
         $systemConfigurationMock = $this->createMock(SystemConfigurationParser::class);
         $databaseMock = $this->createMock(LogFileDatabase::class);
+        $pluginDatabaseMock = $this->createMock(PluginDatabase::class);
 
         $databaseMock->expects($this->once())
             ->method('logStart')
@@ -80,7 +86,8 @@ class LoggerFactoryTest extends TestCase
             $databaseFactoryMock,
             $lowLevelMock,
             $pathProviderMock,
-            $systemConfigurationMock
+            $systemConfigurationMock,
+            $pluginDatabaseMock
         );
 
         $logger = $loggerFactory->create('eventLog', 'testPlugin', __DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);

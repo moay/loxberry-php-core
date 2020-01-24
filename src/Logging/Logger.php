@@ -141,13 +141,14 @@ class Logger
         }
 
         if ($this->writeToFile) {
+            $fileWriter = $this->eventLogger->getFileWriter();
             $this->logKey = $this->attributeLogger->getDatabase()->logStart(
                 $this->logPackage,
                 $this->logName,
-                $this->eventLogger->getFileWriter()->getFileName()
+                $fileWriter->getFileName()
             );
 
-            $this->eventLogger->getFileWriter()->logStart();
+            $fileWriter->logStart();
 
             $this->setLogAttribute('LOGSTARTMESSAGE', $logStartMessage ?? $this->logName);
             $this->setLogAttribute('STATUS', $this->maximumSeverityEncountered);

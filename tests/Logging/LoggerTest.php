@@ -28,22 +28,28 @@ class LoggerTest extends TestCase
         $eventLoggerMock = $this->createMock(Logger\EventLogger::class);
         $attributeLoggerMock = $this->createMock(Logger\AttributeLogger::class);
 
+        $sequenceCount = 0;
         if ($minimumLogLevel >= Logger::LOGLEVEL_ERROR) {
+            if ($logToFile) {
+                $eventLoggerMock
+                    ->expects($this->at($sequenceCount++))
+                    ->method('getFileWriter');
+            }
             if ($logToStdErr) {
                 $eventLoggerMock
-                    ->expects($this->at(0))
+                    ->expects($this->at($sequenceCount++))
                     ->method('logToSystem')
                     ->with(LogSystemWriter::TARGET_STDERR);
             }
             if ($logToStdOut) {
                 $eventLoggerMock
-                    ->expects($this->at($logToStdErr ? 1 : 0))
+                    ->expects($this->at($sequenceCount++))
                     ->method('logToSystem')
                     ->with(LogSystemWriter::TARGET_STDOUT);
             }
             if ($logToFile) {
                 $eventLoggerMock
-                    ->expects($this->atMost(2))
+                    ->expects($this->at($sequenceCount++))
                     ->method('logToFile');
             }
         }

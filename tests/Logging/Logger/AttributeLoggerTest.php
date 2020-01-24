@@ -16,8 +16,8 @@ class AttributeLoggerTest extends TestCase
         $databaseMock = $this->createMock(LogFileDatabase::class);
         $databaseMock->expects($this->once())
             ->method('logAttribute')
-            ->with('test', 'testKey', 'testValue');
+            ->with(123, 'testKey', 'testValue');
         $logger = new AttributeLogger($databaseMock);
-        $logger->logAttribute('test', 'testKey', 'testValue');
+        $logger->logAttribute(123, 'testKey', 'testValue');
     }
 }

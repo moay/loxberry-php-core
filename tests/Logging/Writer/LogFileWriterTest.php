@@ -27,7 +27,7 @@ class LogFileWriterTest extends TestCase
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test');
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
-        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE, false);
         $logWriter->initialize();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringNotContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
@@ -38,7 +38,7 @@ class LogFileWriterTest extends TestCase
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test');
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
-        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE, false);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->initialize();
         $this->assertFileExists(__DIR__.'/'.self::TEST_FILE);
         $this->assertStringContainsString('test', file_get_contents(__DIR__.'/'.self::TEST_FILE));
@@ -88,7 +88,7 @@ class LogFileWriterTest extends TestCase
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);
 
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test'.PHP_EOL);
-        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE, false);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
         $logWriter->logEvent($logEvent);
         $this->assertStringContainsString('This is a test'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
     }
@@ -98,7 +98,7 @@ class LogFileWriterTest extends TestCase
         $logEvent = new LogEvent('testerror', Logger::LOGLEVEL_ERROR, 'testfile', 22);
 
         file_put_contents(__DIR__.'/'.self::TEST_FILE, 'This is a test'.PHP_EOL);
-        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE);
+        $logWriter = new LogFileWriter(__DIR__.DIRECTORY_SEPARATOR.self::TEST_FILE, false);
         $logWriter->logEvent($logEvent);
         $this->assertStringNotContainsString('This is a test'.PHP_EOL, file_get_contents(__DIR__.'/'.self::TEST_FILE));
     }

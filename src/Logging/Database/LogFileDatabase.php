@@ -85,7 +85,7 @@ class LogFileDatabase
 
         $logKey = $this->database->id();
 
-        register_shutdown_function([$this, 'logEnd'], $logKey);
+        register_shutdown_function([$this, 'logEnd'], $logKey, true);
 
         return $logKey;
     }
@@ -95,11 +95,15 @@ class LogFileDatabase
      *
      * @throws \Exception
      */
-    public function logEnd(int $logKey)
+    public function logEnd(int $logKey, bool $isShutdown = false)
     {
         $record = $this->database->select('logs', '*', ['LOGKEY' => $logKey])[0] ?? null;
         if (null === $record) {
-            throw new LogFileDatabaseException('Cannot find log session to close');
+            if (!$isShutdown) {
+                throw new LogFileDatabaseException('Cannot find log session to close');
+            }
+
+            return;
         }
 
         $logEnd = (new \DateTime())->format('Y-m-d H:i:s');
