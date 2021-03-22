@@ -29,8 +29,8 @@ class ConfigurationParserTest extends TestCase
     public function testConfigurationIsReadFromFile()
     {
         $configuration = new ConfigurationParser(self::TEST_CONFIG_FILE);
-        $this->assertEquals('test', $configuration->get('TEST1', 'test'));
-        $this->assertEquals('test4', $configuration->get('TEST3', 'test4'));
+        $this->assertEquals('\'test\'', $configuration->get('TEST1', 'test'));
+        $this->assertEquals('\'test4\'', $configuration->get('TEST3', 'test4'));
     }
 
     public function testConfigurationThrowsExceptionIfFileDoesNotExist()

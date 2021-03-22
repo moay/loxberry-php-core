@@ -76,7 +76,7 @@ class SystemConfigurationParserTest extends TestCase
             ['BINARIES', 'REBOOT', '/sbin/reboot'],
             ['BINARIES', 'NTPDATE', '/usr/sbin/ntpdate'],
             ['BINARIES', 'AWK', '/usr/bin/awk'],
-            ['MINISERVER1', 'PASS', 'test12345'],
+            ['MINISERVER1', 'PASS', 'test12345!'],
             ['MINISERVER1', 'IPADDRESS', '192.168.0.0'],
             ['MINISERVER1', 'ADMIN', 'Admin'],
             ['MINISERVER1', 'ENCRYPTRESPONSE', null],
@@ -189,11 +189,11 @@ class SystemConfigurationParserTest extends TestCase
         $this->assertFalse($miniserverByName->isSecureGateway());
         $this->assertFalse($miniserverByName->isUseCloudDns());
         $this->assertSame('Admin', $miniserverByName->getAdminUsername());
-        $this->assertSame('test12345', $miniserverByName->getAdminPassword());
-        $this->assertSame('Admin:test12345', $miniserverByName->getCredentials());
+        $this->assertSame('test12345!', $miniserverByName->getAdminPassword());
+        $this->assertSame('Admin:test12345!', $miniserverByName->getCredentials());
         $this->assertSame('Admin', $miniserverByName->getAdminUsername(true));
-        $this->assertSame('test12345', $miniserverByName->getAdminPassword(true));
-        $this->assertSame('Admin:test12345', $miniserverByName->getCredentials(true));
+        $this->assertSame('test12345!', $miniserverByName->getAdminPassword(true));
+        $this->assertSame('Admin:test12345!', $miniserverByName->getCredentials(true));
         $this->assertSame('', $miniserverByName->getCloudUrl());
         $this->assertEquals(80, $miniserverByName->getPort());
     }
