@@ -22,7 +22,7 @@ class ConfigurationParser implements ConfigurationParserInterface
         if (!file_exists($fileName)) {
             throw new ConfigurationException(sprintf('Configuration file %s does not exist', $fileName));
         }
-        $this->config = new \Config_Lite($fileName);
+        $this->config = new \Config_Lite($fileName,null,INI_SCANNER_RAW );
     }
 
     /**
